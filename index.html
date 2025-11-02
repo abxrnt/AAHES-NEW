@@ -12,7 +12,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
-
+  <script>
+  // 🔒 Redirect if user not logged in
+  if (!localStorage.getItem("user")) {
+    window.location.href = "login.html";
+  }
+</script>
   <style>
     body {
       font-family: 'Inter', sans-serif; 
@@ -137,22 +142,40 @@
     <li>
       <a href="nothing.html" class="nav-link px-3 py-1 rounded-md transition-all duration-300 hover:text-gray-300 hover:shadow-lg hover:bg-gray-700/40">Contact Us</a>
     </li>
+    <li>
+  <button onclick="logoutUser()" 
+    class="bg-red-600 hover:bg-red-700 px-4 py-1 rounded-md text-white font-semibold transition-all duration-300">
+    Logout
+  </button>
+    </li>
   </ul>
 
   <!-- Mobile Hamburger -->
-  <div class="md:hidden ml-auto">
-    <button id="menu-btn" class="focus:outline-none flex flex-col justify-center items-center space-y-1 transition-all duration-300">
-      <span class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
-      <span class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
-      <span class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
-    </button>
-  </div>
+<div class="md:hidden ml-auto">
+  <button id="menu-btn" class="focus:outline-none flex flex-col justify-center items-center space-y-1 transition-all duration-300">
+    <span class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
+    <span class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
+    <span class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
+  </button>
+</div>
 </nav>
 
 <!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed top-[60px] left-0 w-full bg-gradient-to-b from-gray-800 via-gray-900 to-gray-800 text-white px-4 py-4 space-y-3 shadow-2xl md:hidden z-50 rounded-b-2xl text-sm">
+<div id="mobile-menu" class="fixed top-[60px] left-0 w-full bg-gradient-to-b from-gray-800 via-gray-900 to-gray-800 text-white px-4 py-4 space-y-3 shadow-2xl md:hidden z-50 rounded-b-2xl text-sm hidden">
   <a href="index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-700/50 hover:shadow-lg transition-all duration-300">🏠 Home</a>
+  <a href="about.html" class="block px-3 py-2 rounded-lg hover:bg-gray-700/50 hover:shadow-lg transition-all duration-300">ℹ️ About Us</a>
+  <a href="cee-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-700/50 hover:shadow-lg transition-all duration-300">📘 CEE Guide</a>
+  <a href="contact.html" class="block px-3 py-2 rounded-lg hover:bg-gray-700/50 hover:shadow-lg transition-all duration-300">✉️ Contact Us</a>
+
+  <hr class="border-gray-700 my-2">
+
+  <a href="login.html" class="block px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 text-center font-semibold">🔐 Login / Register</a>
+
+  <button onclick="logoutUser()" class="block w-full text-left px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300 text-center font-semibold">
+    🚪 Logout
+  </button>
 </div>
+
 
 
 <!-- Hero Section -->
@@ -390,6 +413,7 @@
       dropdownArrow.classList.remove("rotate-180");
     }
   });
+
   // Fade-up animation delays
   document.querySelectorAll(".fade-up").forEach((el, i) => {
     const delay = el.getAttribute("style")?.match(/--delay:(.*?);/)?.[1] || `${i*0.1}s`;
@@ -432,6 +456,7 @@
     }
   });
 
+  // Typing effect
   const texts = [
     "Your gateway to top engineering colleges.",
     "Resources, guidance, and support at your fingertips.",
@@ -474,83 +499,106 @@
   });
 
   // --- Download Section Pagination ---
-const pages = [
-  // Page 1
-  [
-    {
-      title: "CEE 2025 Answer Key",
-      desc: "Official Answer Key PDF released by ASTU.",
-      link: "https://drive.google.com/file/d/1inBKliONQDKxvUH8CEtw5aJ190DW-Ix3/view?usp=drive_link"
-    },
-    {
-      title: "CEE 2025 Question Paper",
-      desc: "Last Question Paper of Combined Entrance Examination",
-      link: "https://drive.google.com/file/d/1ZDbY5LsJzo50xvinUQ5EXKRXHg8eZejH/view?usp=drive_link"
-    },
-    {
-      title: "Important Circular - October 2025",
-      desc: "Official notice for all CEE aspirants.",
-      link: "#"
-    },
-    {
-      title: "CEE 2023 Cutoff Sheet",
-      desc: "Branch-wise closing ranks for all colleges.",
-      link: "#"
+  const pages = [
+    // Page 1
+    [
+      {
+        title: "CEE 2025 Answer Key",
+        desc: "Official Answer Key PDF released by ASTU.",
+        link: "https://drive.google.com/file/d/1inBKliONQDKxvUH8CEtw5aJ190DW-Ix3/view?usp=drive_link"
+      },
+      {
+        title: "CEE 2025 Question Paper",
+        desc: "Last Question Paper of Combined Entrance Examination",
+        link: "https://drive.google.com/file/d/1ZDbY5LsJzo50xvinUQ5EXKRXHg8eZejH/view?usp=drive_link"
+      },
+      {
+        title: "Important Circular - October 2025",
+        desc: "Official notice for all CEE aspirants.",
+        link: "#"
+      },
+      {
+        title: "CEE 2023 Cutoff Sheet",
+        desc: "Branch-wise closing ranks for all colleges.",
+        link: "#"
+      }
+    ],
+    [
+      {
+        title: "Counselling Guidelines 2025",
+        desc: "Updated admission procedure by ASTU.",
+        link: "#"
+      },
+      {
+        title: "B.Tech Syllabus (1st & 2nd Sem)",
+        desc: "Download official ASTU syllabus PDF.",
+        link: "#"
+      }
+    ]
+  ];
+
+  let currentPage = 0;
+
+  function renderDownloads() {
+    const list = document.getElementById("download-list");
+    const indicator = document.getElementById("pageIndicator");
+    list.innerHTML = "";
+
+    pages[currentPage].forEach(item => {
+      list.innerHTML += `
+        <div class="bg-green-50 border border-green-200 rounded-xl p-6 text-left shadow hover:shadow-lg transition">
+          <h3 class="text-green-700 font-bold text-lg mb-2">${item.title}</h3>
+          <p class="text-gray-600 mb-3 text-sm">${item.desc}</p>
+          <a href="${item.link}" target="_blank" class="inline-block bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Download</a>
+        </div>
+      `;
+    });
+
+    indicator.textContent = `Page ${currentPage + 1} of ${pages.length}`;
+    document.getElementById("prevPage").disabled = currentPage === 0;
+    document.getElementById("nextPage").disabled = currentPage === pages.length - 1;
+  }
+
+  document.getElementById("prevPage").addEventListener("click", () => {
+    if (currentPage > 0) {
+      currentPage--;
+      renderDownloads();
     }
-  ],
-
-  [
-    
-    {
-      title: "Counselling Guidelines 2025",
-      desc: "Updated admission procedure by ASTU.",
-      link: "#"
-    },
-    {
-      title: "B.Tech Syllabus (1st & 2nd Sem)",
-      desc: "Download official ASTU syllabus PDF.",
-      link: "#"
+  });
+  document.getElementById("nextPage").addEventListener("click", () => {
+    if (currentPage < pages.length - 1) {
+      currentPage++;
+      renderDownloads();
     }
-  ]
-];
-
-let currentPage = 0;
-
-function renderDownloads() {
-  const list = document.getElementById("download-list");
-  const indicator = document.getElementById("pageIndicator");
-  list.innerHTML = "";
-
-  pages[currentPage].forEach(item => {
-    list.innerHTML += `
-      <div class="bg-green-50 border border-green-200 rounded-xl p-6 text-left shadow hover:shadow-lg transition">
-        <h3 class="text-green-700 font-bold text-lg mb-2">${item.title}</h3>
-        <p class="text-gray-600 mb-3 text-sm">${item.desc}</p>
-        <a href="${item.link}" target="_blank" class="inline-block bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Download</a>
-      </div>
-    `;
   });
 
-  indicator.textContent = `Page ${currentPage + 1} of ${pages.length}`;
-  document.getElementById("prevPage").disabled = currentPage === 0;
-  document.getElementById("nextPage").disabled = currentPage === pages.length - 1;
-}
+  window.addEventListener("load", renderDownloads);
 
-document.getElementById("prevPage").addEventListener("click", () => {
-  if (currentPage > 0) {
-    currentPage--;
-    renderDownloads();
-  }
-});
-document.getElementById("nextPage").addEventListener("click", () => {
-  if (currentPage < pages.length - 1) {
-    currentPage++;
-    renderDownloads();
-  }
-});
 
-window.addEventListener("load", renderDownloads);
+  // 🔹 Added: Logout Function
+  function logoutUser() {
+    localStorage.removeItem("user");
+    alert("You have been logged out successfully!");
+    window.location.href = "login.html";
+  }
+
+  // 🔹 Added: Toggle Login/Logout Visibility
+  window.addEventListener("load", () => {
+    const isLoggedIn = localStorage.getItem("user");
+    const loginBtn = document.querySelector('a[href="login.html"]');
+    const logoutBtns = document.querySelectorAll('button[onclick="logoutUser()"]');
+
+    if (isLoggedIn) {
+      loginBtn?.classList.add("hidden");
+      logoutBtns.forEach(btn => btn.classList.remove("hidden"));
+    } else {
+      loginBtn?.classList.remove("hidden");
+      logoutBtns.forEach(btn => btn.classList.add("hidden"));
+    }
+  });
+
 </script>
+
 
 </body>
 </html>
