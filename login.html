@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | AAHES</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-slate-900 flex items-center justify-center h-screen font-[Poppins]">
+
+  <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-96">
+    <h2 class="text-2xl font-semibold text-center text-white mb-6">Login</h2>
+
+    <button id="googleLogin"
+      class="w-full bg-white text-gray-700 py-2 rounded-md flex items-center justify-center gap-2 hover:bg-gray-100 transition">
+      <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
+      Continue with Google
+    </button>
+
+    <div class="flex items-center my-4">
+      <hr class="flex-grow border-gray-600" />
+      <span class="text-gray-400 text-sm mx-2">OR</span>
+      <hr class="flex-grow border-gray-600" />
+    </div>
+
+    <form id="loginForm" class="space-y-5">
+      <div>
+        <label class="block text-gray-300 mb-1">Email</label>
+        <input type="email" id="email" required
+               class="w-full px-3 py-2 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-emerald-400 outline-none" />
+      </div>
+      <div>
+        <label class="block text-gray-300 mb-1">Password</label>
+        <input type="password" id="password" required
+               class="w-full px-3 py-2 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-emerald-400 outline-none" />
+      </div>
+
+      <button type="submit"
+              class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-md transition">
+        Login
+      </button>
+    </form>
+
+    <p id="error" class="text-red-400 text-sm text-center mt-4 hidden"></p>
+    <p class="text-gray-400 text-sm text-center mt-4">
+      Don’t have an account? <a href="register.html" class="text-emerald-400 hover:underline">Register</a>
+    </p>
+  </div>
+
+  <!-- Firebase Login -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+    // ✅ Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+      authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+      projectId: "aahes-cee-cutoffs",
+      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+      messagingSenderId: "706066626405",
+      appId: "1:706066626405:web:0c45d6933884163008938c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const errorText = document.getElementById("error");
+
+    // --- Google Sign-In ---
+    document.getElementById("googleLogin").addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        localStorage.setItem("userEmail", user.email);
+        window.location.href = "index.html";
+      } catch (error) {
+        console.error(error);
+        errorText.textContent = "Google sign-in failed.";
+        errorText.classList.remove("hidden");
+      }
+    });
+
+    // --- Email/Password Sign-In (optional) ---
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        localStorage.setItem("userEmail", email);
+        window.location.href = "index.html";
+      } catch (error) {
+        console.error(error);
+        errorText.textContent = "Invalid email or password.";
+        errorText.classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
