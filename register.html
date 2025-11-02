@@ -46,9 +46,11 @@
     </p>
   </div>
 
+  <!-- Firebase Registration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
     // ✅ Firebase Config
     const firebaseConfig = {
@@ -63,6 +65,7 @@
     // 🔹 Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     // 🔹 Register Logic
     const form = document.getElementById("registerForm");
@@ -79,9 +82,18 @@
       successEl.classList.add("hidden");
 
       try {
+        // Create user in Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
 
+        // Save user data in Firestore
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          name,
+          email,
+          createdAt: new Date().toISOString()
+        });
+
+        // Show success message
         successEl.textContent = "✅ Account created successfully! Redirecting...";
         successEl.classList.remove("hidden");
 
