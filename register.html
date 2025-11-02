@@ -46,7 +46,6 @@
     </p>
   </div>
 
-  <!-- Firebase Register Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -61,39 +60,44 @@
       appId: "1:706066626405:web:0c45d6933884163008938c"
     };
 
+    // 🔹 Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const registerForm = document.getElementById("registerForm");
-    const errorText = document.getElementById("error");
-    const successText = document.getElementById("success");
+    // 🔹 Register Logic
+    const form = document.getElementById("registerForm");
+    const errorEl = document.getElementById("error");
+    const successEl = document.getElementById("success");
 
-    registerForm.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
+
+      errorEl.classList.add("hidden");
+      successEl.classList.add("hidden");
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
 
+        successEl.textContent = "✅ Account created successfully! Redirecting...";
+        successEl.classList.remove("hidden");
+
         localStorage.setItem("userEmail", email);
-        successText.textContent = "Account created successfully! Redirecting...";
-        successText.classList.remove("hidden");
-        errorText.classList.add("hidden");
 
         setTimeout(() => {
           window.location.href = "index.html";
         }, 1500);
       } catch (error) {
         console.error(error);
-        successText.classList.add("hidden");
-        errorText.textContent = error.message.includes("email-already-in-use")
-          ? "Email is already registered."
-          : "Failed to create account.";
-        errorText.classList.remove("hidden");
+        let msg = "Failed to create account.";
+        if (error.code === "auth/email-already-in-use") msg = "Email is already registered.";
+        if (error.code === "auth/invalid-email") msg = "Invalid email format.";
+        if (error.code === "auth/weak-password") msg = "Password should be at least 6 characters.";
+        errorEl.textContent = msg;
+        errorEl.classList.remove("hidden");
       }
     });
   </script>
