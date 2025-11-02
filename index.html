@@ -12,12 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
-  <script>
-  // 🔒 Redirect if user not logged in
-  if (!localStorage.getItem("user")) {
-    window.location.href = "login.html";
-  }
-</script>
   <style>
     body {
       font-family: 'Inter', sans-serif; 
@@ -168,12 +162,6 @@
   <a href="contact.html" class="block px-3 py-2 rounded-lg hover:bg-gray-700/50 hover:shadow-lg transition-all duration-300">✉️ Contact Us</a>
 
   <hr class="border-gray-700 my-2">
-
-  <a href="login.html" class="block px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 text-center font-semibold">🔐 Login / Register</a>
-
-  <button onclick="logoutUser()" class="block w-full text-left px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300 text-center font-semibold">
-    🚪 Logout
-  </button>
 </div>
 
 
@@ -574,31 +562,9 @@
 
   window.addEventListener("load", renderDownloads);
 
-
-  // 🔹 Added: Logout Function
-  function logoutUser() {
-    localStorage.removeItem("user");
-    alert("You have been logged out successfully!");
-    window.location.href = "login.html";
-  }
-
-  // 🔹 Added: Toggle Login/Logout Visibility
-  window.addEventListener("load", () => {
-    const isLoggedIn = localStorage.getItem("user");
-    const loginBtn = document.querySelector('a[href="login.html"]');
-    const logoutBtns = document.querySelectorAll('button[onclick="logoutUser()"]');
-
-    if (isLoggedIn) {
-      loginBtn?.classList.add("hidden");
-      logoutBtns.forEach(btn => btn.classList.remove("hidden"));
-    } else {
-      loginBtn?.classList.remove("hidden");
-      logoutBtns.forEach(btn => btn.classList.add("hidden"));
-    }
-  });
-
 </script>
 
 
 </body>
 </html>
+
