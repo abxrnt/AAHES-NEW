@@ -12,6 +12,7 @@
   <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-96">
     <h2 class="text-2xl font-semibold text-center text-white mb-6">Login</h2>
 
+    <!-- ✅ Google Login -->
     <button id="googleLogin"
       class="w-full bg-white text-gray-700 py-2 rounded-md flex items-center justify-center gap-2 hover:bg-gray-100 transition">
       <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
@@ -24,6 +25,7 @@
       <hr class="flex-grow border-gray-600" />
     </div>
 
+    <!-- ✅ Email/Password Login -->
     <form id="loginForm" class="space-y-5">
       <div>
         <label class="block text-gray-300 mb-1">Email</label>
@@ -44,32 +46,40 @@
 
     <p id="error" class="text-red-400 text-sm text-center mt-4 hidden"></p>
     <p class="text-gray-400 text-sm text-center mt-4">
-      Don’t have an account? <a href="register.html" class="text-emerald-400 hover:underline">Register</a>
+      Don’t have an account?
+      <a href="register.html" class="text-emerald-400 hover:underline">Register</a>
     </p>
   </div>
 
-  <!-- Firebase Login -->
+  <!-- ✅ Firebase Authentication -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import {
+      getAuth,
+      signInWithPopup,
+      GoogleAuthProvider,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-    // ✅ Firebase Config
+    // ✅ Correct Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
       authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+      databaseURL: "https://aahes-cee-cutoffs-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "aahes-cee-cutoffs",
-      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+      storageBucket: "aahes-cee-cutoffs.appspot.com",
       messagingSenderId: "706066626405",
       appId: "1:706066626405:web:0c45d6933884163008938c"
     };
 
+    // ✅ Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
     const errorText = document.getElementById("error");
 
-    // --- Google Sign-In ---
+    // ✅ Google Sign-In
     document.getElementById("googleLogin").addEventListener("click", async () => {
       try {
         const result = await signInWithPopup(auth, provider);
@@ -77,13 +87,13 @@
         localStorage.setItem("userEmail", user.email);
         window.location.href = "index.html";
       } catch (error) {
-        console.error(error);
-        errorText.textContent = "Google sign-in failed.";
+        console.error("Google Sign-In Error:", error);
+        errorText.textContent = "Google sign-in failed. Check console for details.";
         errorText.classList.remove("hidden");
       }
     });
 
-    // --- Email/Password Sign-In (optional) ---
+    // ✅ Email/Password Sign-In
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
@@ -94,7 +104,7 @@
         localStorage.setItem("userEmail", email);
         window.location.href = "index.html";
       } catch (error) {
-        console.error(error);
+        console.error("Email Login Error:", error);
         errorText.textContent = "Invalid email or password.";
         errorText.classList.remove("hidden");
       }
