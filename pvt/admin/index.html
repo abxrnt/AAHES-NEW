@@ -1,1 +1,611 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width,initial-scale=1" /> <title>AAHES | Admin Panel</title> <script src="https://cdn.tailwindcss.com"></script> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> <script src="https://kit.fontawesome.com/a2e0ef7f4b.js" crossorigin="anonymous"></script> <style> :root { --panel-bg: #0f172a; --card-bg: #111827; --muted: #94a3b8; --accent: #10b981; } html,body { height: 100%; } body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0f172a, #000); color: #e5e7eb; margin: 0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; } input, textarea, select { background-color: #0f172a; color: #e2e8f0; border: 1px solid #334155; transition: all 0.12s ease; } input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(16,185,129,0.08); outline: none; } /* Table adjustments */ table { width: 100%; border-collapse: collapse; } th, td { padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #172033; text-align: left; } thead th { background: #071025; color: var(--accent); position: sticky; top: 0; } tr:hover td { background: rgba(255,255,255,0.01); } /* Edit Modal */ .modal-backdrop { background: rgba(1,6,12,0.6); position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index: 60; } .modal-card { width: 760px; max-width: calc(100% - 40px); } /* small screens adjustments */ @media (max-width: 920px) { .two-col { flex-direction: column; gap: 12px; } #uploadForm { grid-template-columns: 1fr; } } </style> </head> <body> <!-- NAV --> <header class="w-full bg-gray-900 border-b border-gray-700 py-3 px-6 flex items-center justify-between"> <div class="flex items-center gap-4"> <h1 class="text-xl font-bold text-emerald-400">AAHES Admin Panel</h1> <!-- View toggles --> <div class="ml-4 flex items-center gap-2"> <button id="dataEntryBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition"> <i class="fa-solid fa-pen-to-square mr-1"></i> Data Entry </button> <button id="databaseBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition"> <i class="fa-solid fa-table mr-1"></i> Database </button> </div> </div> <div class="flex items-center gap-4"> <button id="loginBtn" class="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-4 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-green-700 transition"> <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-4 h-4 bg-white rounded-full p-0.5"> Sign in with Google </button> <div id="userSection" class="hidden items-center gap-3"> <p class="text-xs text-gray-300">Logged in as <span id="userEmail" class="text-emerald-400 font-medium"></span></p> <button id="logoutBtn" class="bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-600 transition"> <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout </button> </div> </div> </header> <!-- MAIN --> <main id="dataEntryView" class="min-h-[calc(100vh-96px)] px-6 py-6"> <div class="max-w-6xl mx-auto two-col flex gap-6"> <!-- Left panel: Manual --> <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col"> <h3 class="text-lg font-semibold text-emerald-400 mb-2 flex items-center gap-2"> <i class="fa-solid fa-pen-to-square"></i> Manual Entry </h3> <form id="uploadForm" class="grid grid-cols-2 gap-3 flex-grow"> <input type="text" id="college" name="college" placeholder="College (AEC)" class="p-2 rounded-lg text-sm" required> <input type="text" id="branch" name="branch" placeholder="Branch (CSE)" class="p-2 rounded-lg text-sm" required> <input type="text" id="cat" name="cat" placeholder="Category (GEN/OBC...)" class="p-2 rounded-lg text-sm" required> <input type="text" id="round" name="round" placeholder="Round (1)" class="p-2 rounded-lg text-sm" required> <input type="number" id="close" name="close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required> <input type="number" id="marks" name="marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required> </form> <button id="singleUploadBtn" class="mt-4 w-full py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-medium rounded-lg text-sm hover:from-emerald-600 hover:to-green-700 transition"> <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Single Entry </button> </section> <!-- Right panel: JSON --> <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col"> <h3 class="text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2"> <i class="fa-solid fa-file-code"></i> Bulk Upload via JSON </h3> <textarea id="jsonInput" rows="8" placeholder='Paste JSON array here (e.g. [ { "round":"1", "college":"AEC", ... } ])' class="flex-grow p-2 rounded-lg text-sm mb-3"></textarea> <div class="flex items-center gap-3"> <input type="file" id="jsonFile" accept=".json" class="bg-gray-900 p-2 rounded-lg border border-gray-600 text-sm w-1/2"> <button id="uploadJSONBtn" class="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-lg text-sm hover:from-cyan-600 hover:to-blue-700 transition"> <i class="fa-solid fa-database mr-1"></i> Upload JSON Data </button> </div> </section> </div> </main> <!-- DATABASE VIEW (hidden initially) --> <main id="databaseView" class="hidden min-h-[calc(100vh-96px)] px-6 py-6"> <div class="max-w-7xl mx-auto"> <!-- Controls: filters + sort + refresh --> <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"> <div class="flex items-center gap-3 flex-wrap"> <label class="text-xs text-gray-400">Filter College</label> <select id="filterCollege" class="p-2 rounded-lg text-sm min-w-[140px]"> <option value="">All</option> </select> <label class="text-xs text-gray-400">Filter Category</label> <select id="filterCat" class="p-2 rounded-lg text-sm min-w-[120px]"> <option value="">All</option> <option>GEN</option><option>OBC</option><option>SC</option><option>STP</option><option>STH</option> </select> <label class="text-xs text-gray-400">Sort by</label> <select id="sortBy" class="p-2 rounded-lg text-sm min-w-[140px]"> <option value="college">College</option> <option value="branch">Branch</option> <option value="cat">Category</option> <option value="close">Closing Rank</option> <option value="marks">Marks</option> </select> <select id="sortDir" class="p-2 rounded-lg text-sm"> <option value="asc">Asc</option> <option value="desc">Desc</option> </select> <button id="refreshBtn" class="px-3 py-2 bg-gray-700 rounded-lg text-sm hover:bg-gray-600 transition"> <i class="fa-solid fa-arrows-rotate"></i> Refresh </button> </div> <div class="flex items-center gap-3"> <input id="searchInput" placeholder="Search (college/branch/cat)" class="p-2 rounded-lg bg-gray-900 text-sm" /> <div id="tableInfo" class="text-sm text-gray-400">0 records</div> </div> </div> <!-- Table --> <div class="bg-gray-800 rounded-2xl border border-gray-700 p-2"> <table> <thead> <tr> <th style="width:12%;">College</th> <th style="width:10%;">Branch</th> <th style="width:9%;">Category</th> <th style="width:8%;">Round</th> <th style="width:12%;">Closing Rank</th> <th style="width:9%;">Marks</th> <th style="width:20%;">Actions</th> </tr> </thead> <tbody id="dataBody"> <!-- rows injected here --> </tbody> </table> </div> </div> </main> <!-- EDIT MODAL (hidden) --> <div id="editModal" class="modal-backdrop hidden"> <div class="modal-card bg-gray-900 rounded-2xl p-4 modal-card"> <div class="flex justify-between items-center mb-3"> <h4 class="text-lg text-emerald-400">Edit Record</h4> <button id="closeEdit" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button> </div> <form id="editForm" class="grid grid-cols-2 gap-3"> <input type="text" id="edit_college" placeholder="College" class="p-2 rounded-lg text-sm" required /> <input type="text" id="edit_branch" placeholder="Branch" class="p-2 rounded-lg text-sm" required /> <input type="text" id="edit_cat" placeholder="Category" class="p-2 rounded-lg text-sm" required /> <input type="text" id="edit_round" placeholder="Round" class="p-2 rounded-lg text-sm" required /> <input type="number" id="edit_close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required /> <input type="number" id="edit_marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required /> <input type="hidden" id="edit_id" /> </form> <div class="mt-3 flex items-center gap-3 justify-end"> <button id="saveEdit" class="px-4 py-2 bg-emerald-500 rounded-lg text-sm text-white hover:bg-emerald-600">Save</button> <button id="cancelEdit" class="px-4 py-2 bg-gray-700 rounded-lg text-sm text-white hover:bg-gray-600">Cancel</button> </div> </div> </div> <!-- FOOTER --> <footer class="py-3 text-center text-gray-400 text-xs"> © 2025 AAHES Admin Panel </footer> <!-- FIREBASE + APP LOGIC --> <script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"; import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"; import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"; // ---------- CONFIG ---------- const firebaseConfig = { apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY", authDomain: "aahes-cee-cutoffs.firebaseapp.com", projectId: "aahes-cee-cutoffs", storageBucket: "aahes-cee-cutoffs.firebasestorage.app", messagingSenderId: "706066626405", appId: "1:706066626405:web:0d254ab82beb288108938c" }; const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(); const provider = new GoogleAuthProvider(); // ---------- ELEMENTS ---------- const loginBtn = document.getElementById('loginBtn'); const logoutBtn = document.getElementById('logoutBtn'); const userSection = document.getElementById('userSection'); const userEmail = document.getElementById('userEmail'); const dataEntryBtn = document.getElementById('dataEntryBtn'); const databaseBtn = document.getElementById('databaseBtn'); const dataEntryView = document.getElementById('dataEntryView'); const databaseView = document.getElementById('databaseView'); const uploadForm = document.getElementById('uploadForm'); const singleUploadBtn = document.getElementById('singleUploadBtn'); const jsonInput = document.getElementById('jsonInput'); const jsonFile = document.getElementById('jsonFile'); const uploadJSONBtn = document.getElementById('uploadJSONBtn'); const dataBody = document.getElementById('dataBody'); const filterCollege = document.getElementById('filterCollege'); const filterCat = document.getElementById('filterCat'); const sortBy = document.getElementById('sortBy'); const sortDir = document.getElementById('sortDir'); const refreshBtn = document.getElementById('refreshBtn'); const searchInput = document.getElementById('searchInput'); const tableInfo = document.getElementById('tableInfo'); const editModal = document.getElementById('editModal'); const editForm = document.getElementById('editForm'); const edit_id = document.getElementById('edit_id'); const edit_college = document.getElementById('edit_college'); const edit_branch = document.getElementById('edit_branch'); const edit_cat = document.getElementById('edit_cat'); const edit_round = document.getElementById('edit_round'); const edit_close = document.getElementById('edit_close'); const edit_marks = document.getElementById('edit_marks'); const saveEdit = document.getElementById('saveEdit'); const cancelEdit = document.getElementById('cancelEdit'); const closeEdit = document.getElementById('closeEdit'); // ---------- STATE ---------- let allRecords = []; // { id, data... } let unsubscribeSnapshot = null; // ---------- AUTH ---------- loginBtn.addEventListener('click', async () => { try { await signInWithPopup(auth, provider); } catch (e) { alert('Sign-in failed: ' + e.message); } }); logoutBtn.addEventListener('click', async () => { await signOut(auth); }); onAuthStateChanged(auth, (user) => { if (user) { loginBtn.classList.add('hidden'); userSection.classList.remove('hidden'); userEmail.textContent = user.email; // show data entry by default showDataEntry(); } else { loginBtn.classList.remove('hidden'); userSection.classList.add('hidden'); // hide views until login dataEntryView.classList.add('hidden'); databaseView.classList.add('hidden'); } }); // ---------- VIEW TOGGLE ---------- dataEntryBtn.addEventListener('click', showDataEntry); databaseBtn.addEventListener('click', showDatabase); function showDataEntry() { dataEntryView.classList.remove('hidden'); databaseView.classList.add('hidden'); // unsubscribe DB snapshot if exists if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; } } function showDatabase() { dataEntryView.classList.add('hidden'); databaseView.classList.remove('hidden'); startRealtimeListener(); } // ---------- UPLOAD SINGLE ---------- singleUploadBtn.addEventListener('click', async (e) => { e.preventDefault(); const newDoc = { college: uploadForm.college.value.trim(), branch: uploadForm.branch.value.trim(), cat: uploadForm.cat.value.trim(), round: uploadForm.round.value.trim(), close: Number(uploadForm.close.value), marks: Number(uploadForm.marks.value) }; try { await addDoc(collection(db, 'cutoffs'), newDoc); alert('✅ Single entry uploaded!'); uploadForm.reset(); } catch (err) { alert('❌ Upload failed: ' + err.message); } }); // ---------- JSON FILE HANDLING ---------- jsonFile.addEventListener('change', async (e) => { const file = e.target.files[0]; if (!file) return; const text = await file.text(); jsonInput.value = text; }); uploadJSONBtn.addEventListener('click', async () => { let jsonData; try { jsonData = JSON.parse(jsonInput.value); } catch (e) { alert('⚠️ Invalid JSON: ' + e.message); return; } if (!Array.isArray(jsonData)) { alert('⚠️ JSON must be an array of objects'); return; } let count = 0; for (const item of jsonData) { try { await addDoc(collection(db, 'cutoffs'), item); count++; } catch (err) { console.error('Upload error', err); } } alert(✅ Uploaded ${count} records!); jsonInput.value = ''; jsonFile.value = ''; }); // ---------- REALTIME LISTENER ---------- function startRealtimeListener() { // if already listening, do nothing if (unsubscribeSnapshot) return; const collRef = collection(db, 'cutoffs'); unsubscribeSnapshot = onSnapshot(collRef, snapshot => { allRecords = []; snapshot.forEach(docSnap => { allRecords.push({ id: docSnap.id, ...docSnap.data() }); }); populateFilters(); renderTable(); }, err => { console.error('Snapshot error', err); alert('Could not load data: ' + err.message); }); } // ---------- TABLE RENDER / FILTER / SORT ---------- function populateFilters() { // fill filterCollege with unique colleges (preserve existing selection if possible) const colleges = Array.from(new Set(allRecords.map(r => r.college))).sort(); const prev = filterCollege.value || ''; filterCollege.innerHTML = <option value="">All</option> + colleges.map(c => <option value="${c}">${c}</option>).join(''); if (colleges.includes(prev)) filterCollege.value = prev; } function renderTable() { // apply search, filters, sort let rows = allRecords.slice(); const search = (searchInput.value || '').trim().toLowerCase(); if (search) { rows = rows.filter(r => (r.college && r.college.toLowerCase().includes(search)) || (r.branch && r.branch.toLowerCase().includes(search)) || (r.cat && r.cat.toLowerCase().includes(search)) ); } const fc = filterCollege.value; if (fc) rows = rows.filter(r => r.college === fc); const fc2 = filterCat.value; if (fc2) rows = rows.filter(r => r.cat === fc2); const sBy = sortBy.value; const dir = sortDir.value === 'asc' ? 1 : -1; rows.sort((a,b) => { let va = a[sBy], vb = b[sBy]; // numeric compare if both numbers if (typeof va === 'number' && typeof vb === 'number') return (va - vb) * dir; // fallback string compare va = (va === undefined || va === null) ? '' : String(va).toLowerCase(); vb = (vb === undefined || vb === null) ? '' : String(vb).toLowerCase(); if (va < vb) return -1 * dir; if (va > vb) return 1 * dir; return 0; }); // build rows tableInfo.textContent = ${rows.length} records; if (rows.length === 0) { dataBody.innerHTML = <tr><td colspan="7" class="text-gray-400 py-4">No records found</td></tr>; return; } const html = rows.map(r => <tr data-id="${r.id}"> <td>${escapeHTML(r.college)}</td> <td>${escapeHTML(r.branch)}</td> <td>${escapeHTML(r.cat)}</td> <td>${escapeHTML(r.round)}</td> <td>${r.close ?? ''}</td> <td>${r.marks ?? ''}</td> <td> <button class="editBtn px-3 py-1 mr-2 bg-emerald-600 rounded text-xs text-white">Edit</button> <button class="deleteBtn px-3 py-1 bg-red-600 rounded text-xs text-white">Delete</button> </td> </tr> ).join(''); dataBody.innerHTML = html; // attach handlers document.querySelectorAll('.editBtn').forEach(btn => btn.addEventListener('click', onEditClick)); document.querySelectorAll('.deleteBtn').forEach(btn => btn.addEventListener('click', onDeleteClick)); } // ---------- HELPERS ---------- function escapeHTML(str) { if (str === undefined || str === null) return ''; return String(str) .replace(/&/g, '&amp;') .replace(/</g, '&lt;') .replace(/>/g, '&gt;'); } // ---------- EDIT / DELETE ---------- function onEditClick(e) { const tr = e.target.closest('tr'); const id = tr.dataset.id; const rec = allRecords.find(r => r.id === id); if (!rec) { alert('Record not found'); return; } edit_id.value = rec.id; edit_college.value = rec.college || ''; edit_branch.value = rec.branch || ''; edit_cat.value = rec.cat || ''; edit_round.value = rec.round || ''; edit_close.value = rec.close ?? ''; edit_marks.value = rec.marks ?? ''; openEditModal(); } async function onDeleteClick(e) { const tr = e.target.closest('tr'); const id = tr.dataset.id; if (!confirm('Delete this record? This cannot be undone.')) return; try { await deleteDoc(doc(db, 'cutoffs', id)); alert('✅ Deleted'); } catch (err) { alert('Delete failed: ' + err.message); } } function openEditModal() { editModal.classList.remove('hidden'); editModal.style.display = 'flex'; } function closeEditModal() { editModal.classList.add('hidden'); editModal.style.display = 'none'; } closeEdit.addEventListener('click', closeEditModal); cancelEdit.addEventListener('click', closeEditModal); saveEdit.addEventListener('click', async () => { const id = edit_id.value; if (!id) return; const updated = { college: edit_college.value.trim(), branch: edit_branch.value.trim(), cat: edit_cat.value.trim(), round: edit_round.value.trim(), close: Number(edit_close.value), marks: Number(edit_marks.value) }; try { await updateDoc(doc(db, 'cutoffs', id), updated); alert('✅ Updated'); closeEditModal(); } catch (err) { alert('Update failed: ' + err.message); } }); // ---------- SEARCH / FILTER HOOKS ---------- [filterCollege, filterCat, sortBy, sortDir, searchInput].forEach(el => { el.addEventListener('change', renderTable); el.addEventListener('input', renderTable); }); refreshBtn.addEventListener('click', () => { // manual refresh: re-run query; onSnapshot already live updates, but we can re-render renderTable(); }); // ---------- UTILITY: load once if needed ---------- async function loadOnce() { const snap = await getDocs(collection(db, 'cutoffs')); allRecords = []; snap.forEach(s => allRecords.push({ id: s.id, ...s.data() })); populateFilters(); renderTable(); } // ---------- initial small UX: hide DB button until logged in ---------- databaseBtn.style.display = 'none'; dataEntryBtn.style.display = 'none'; // show toggles when logged in onAuthStateChanged(auth, user => { if (user) { databaseBtn.style.display = ''; dataEntryBtn.style.display = ''; } else { databaseBtn.style.display = 'none'; dataEntryBtn.style.display = 'none'; } }); // In case user switches away without clicking Database, ensure Data Entry visible by default on load window.addEventListener('load', () => { dataEntryView.classList.remove('hidden'); databaseView.classList.add('hidden'); }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AAHES | Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2e0ef7f4b.js" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --panel-bg: #0f172a;
+      --card-bg: #111827;
+      --muted: #94a3b8;
+      --accent: #10b981;
+    }
+    html,body { height: 100%; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #000);
+      color: #e5e7eb;
+      margin: 0;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    input, textarea, select {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      transition: all 0.12s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(16,185,129,0.08);
+      outline: none;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 8px 10px;
+      font-size: 13px;
+      border-bottom: 1px solid #172033;
+      text-align: left;
+    }
+    thead th {
+      background: #071025;
+      color: var(--accent);
+      position: sticky; top: 0;
+    }
+    tr:hover td { background: rgba(255,255,255,0.01); }
+
+    .modal-backdrop {
+      background: rgba(1,6,12,0.6);
+      position: fixed;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index: 60;
+    }
+    .modal-card { width: 760px; max-width: calc(100% - 40px); }
+
+    @media (max-width: 920px) {
+      .two-col { flex-direction: column; gap: 12px; }
+      #uploadForm { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="w-full bg-gray-900 border-b border-gray-700 py-3 px-6 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <h1 class="text-xl font-bold text-emerald-400">AAHES Admin Panel</h1>
+
+      <div class="ml-4 flex items-center gap-2">
+        <button id="dataEntryBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
+          <i class="fa-solid fa-pen-to-square mr-1"></i> Data Entry
+        </button>
+        <button id="databaseBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
+          <i class="fa-solid fa-table mr-1"></i> Database
+        </button>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- LOGIN FORM -->
+      <form id="loginForm" class="flex items-center gap-2">
+        <input type="email" id="emailInput" placeholder="Email" class="p-2 rounded-lg bg-gray-800 text-sm" required>
+        <input type="password" id="passwordInput" placeholder="Password" class="p-2 rounded-lg bg-gray-800 text-sm" required>
+        <button type="submit" id="loginBtn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700 transition">
+          Login
+        </button>
+      </form>
+
+      <div id="userSection" class="hidden items-center gap-3">
+        <p class="text-xs text-gray-300">Logged in as <span id="userEmail" class="text-emerald-400 font-medium"></span></p>
+        <button id="logoutBtn" class="bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-600 transition">
+          <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main id="dataEntryView" class="min-h-[calc(100vh-96px)] px-6 py-6 hidden">
+    <div class="max-w-6xl mx-auto two-col flex gap-6">
+
+      <!-- Left panel: Manual -->
+      <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i> Manual Entry
+        </h3>
+
+        <form id="uploadForm" class="grid grid-cols-2 gap-3 flex-grow">
+          <input type="text" id="college" name="college" placeholder="College (AEC)" class="p-2 rounded-lg text-sm" required>
+          <input type="text" id="branch" name="branch" placeholder="Branch (CSE)" class="p-2 rounded-lg text-sm" required>
+          <input type="text" id="cat" name="cat" placeholder="Category (GEN/OBC...)" class="p-2 rounded-lg text-sm" required>
+          <input type="text" id="round" name="round" placeholder="Round (1)" class="p-2 rounded-lg text-sm" required>
+          <input type="number" id="close" name="close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required>
+          <input type="number" id="marks" name="marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required>
+        </form>
+
+        <button id="singleUploadBtn" class="mt-4 w-full py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-medium rounded-lg text-sm hover:from-emerald-600 hover:to-green-700 transition">
+          <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Single Entry
+        </button>
+      </section>
+
+      <!-- Right panel: JSON -->
+      <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
+        <h3 class="text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-file-code"></i> Bulk Upload via JSON
+        </h3>
+
+        <textarea id="jsonInput" rows="8" placeholder='Paste JSON array here (e.g. [ { "round":"1", "college":"AEC", ... } ])' class="flex-grow p-2 rounded-lg text-sm mb-3"></textarea>
+
+        <div class="flex items-center gap-3">
+          <input type="file" id="jsonFile" accept=".json" class="bg-gray-900 p-2 rounded-lg border border-gray-600 text-sm w-1/2">
+          <button id="uploadJSONBtn" class="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-lg text-sm hover:from-cyan-600 hover:to-blue-700 transition">
+            <i class="fa-solid fa-database mr-1"></i> Upload JSON Data
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- DATABASE VIEW (hidden initially) -->
+  <main id="databaseView" class="hidden min-h-[calc(100vh-96px)] px-6 py-6">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Controls: filters + sort + refresh -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+        <div class="flex items-center gap-3 flex-wrap">
+          <label class="text-xs text-gray-400">Filter College</label>
+          <select id="filterCollege" class="p-2 rounded-lg text-sm min-w-[140px]">
+            <option value="">All</option>
+          </select>
+
+          <label class="text-xs text-gray-400">Filter Category</label>
+          <select id="filterCat" class="p-2 rounded-lg text-sm min-w-[120px]">
+            <option value="">All</option>
+            <option>GEN</option><option>OBC</option><option>SC</option><option>STP</option><option>STH</option>
+          </select>
+
+          <label class="text-xs text-gray-400">Sort by</label>
+          <select id="sortBy" class="p-2 rounded-lg text-sm min-w-[140px]">
+            <option value="college">College</option>
+            <option value="branch">Branch</option>
+            <option value="cat">Category</option>
+            <option value="close">Closing Rank</option>
+            <option value="marks">Marks</option>
+          </select>
+
+          <select id="sortDir" class="p-2 rounded-lg text-sm">
+            <option value="asc">Asc</option>
+            <option value="desc">Desc</option>
+          </select>
+
+          <button id="refreshBtn" class="px-3 py-2 bg-gray-700 rounded-lg text-sm hover:bg-gray-600 transition">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <input id="searchInput" placeholder="Search (college/branch/cat)" class="p-2 rounded-lg bg-gray-900 text-sm" />
+          <div id="tableInfo" class="text-sm text-gray-400">0 records</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="bg-gray-800 rounded-2xl border border-gray-700 p-2">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:12%;">College</th>
+              <th style="width:10%;">Branch</th>
+              <th style="width:9%;">Category</th>
+              <th style="width:8%;">Round</th>
+              <th style="width:12%;">Closing Rank</th>
+              <th style="width:9%;">Marks</th>
+              <th style="width:20%;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody">
+            <!-- rows injected here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- EDIT MODAL (hidden) -->
+  <div id="editModal" class="modal-backdrop hidden">
+    <div class="modal-card bg-gray-900 rounded-2xl p-4 modal-card">
+      <div class="flex justify-between items-center mb-3">
+        <h4 class="text-lg text-emerald-400">Edit Record</h4>
+        <button id="closeEdit" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="editForm" class="grid grid-cols-2 gap-3">
+        <input type="text" id="edit_college" placeholder="College" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_branch" placeholder="Branch" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_cat" placeholder="Category" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_round" placeholder="Round" class="p-2 rounded-lg text-sm" required />
+        <input type="number" id="edit_close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required />
+        <input type="number" id="edit_marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required />
+        <input type="hidden" id="edit_id" />
+      </form>
+
+      <div class="mt-3 flex items-center gap-3 justify-end">
+        <button id="saveEdit" class="px-4 py-2 bg-emerald-500 rounded-lg text-sm text-white hover:bg-emerald-600">Save</button>
+        <button id="cancelEdit" class="px-4 py-2 bg-gray-700 rounded-lg text-sm text-white hover:bg-gray-600">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="py-3 text-center text-gray-400 text-xs">
+    © 2025 AAHES Admin Panel
+  </footer>
+
+  <!-- FIREBASE + APP LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, getDocs, onSnapshot,
+      doc, updateDoc, deleteDoc, query, where
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    // ---------- CONFIG ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+      authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+      projectId: "aahes-cee-cutoffs",
+      storageBucket: "aahes-cee-cutoffs.appspot.com",
+      messagingSenderId: "706066626405",
+      appId: "1:706066626405:web:0d254ab82beb288108938c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ---------- ELEMENTS ----------
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userSection = document.getElementById('userSection');
+    const userEmail = document.getElementById('userEmail');
+
+    const dataEntryBtn = document.getElementById('dataEntryBtn');
+    const databaseBtn = document.getElementById('databaseBtn');
+    const dataEntryView = document.getElementById('dataEntryView');
+    const databaseView = document.getElementById('databaseView');
+
+    const uploadForm = document.getElementById('uploadForm');
+    const singleUploadBtn = document.getElementById('singleUploadBtn');
+    const jsonInput = document.getElementById('jsonInput');
+    const jsonFile = document.getElementById('jsonFile');
+    const uploadJSONBtn = document.getElementById('uploadJSONBtn');
+
+    const dataBody = document.getElementById('dataBody');
+    const filterCollege = document.getElementById('filterCollege');
+    const filterCat = document.getElementById('filterCat');
+    const sortBy = document.getElementById('sortBy');
+    const sortDir = document.getElementById('sortDir');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const searchInput = document.getElementById('searchInput');
+    const tableInfo = document.getElementById('tableInfo');
+
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const edit_id = document.getElementById('edit_id');
+    const edit_college = document.getElementById('edit_college');
+    const edit_branch = document.getElementById('edit_branch');
+    const edit_cat = document.getElementById('edit_cat');
+    const edit_round = document.getElementById('edit_round');
+    const edit_close = document.getElementById('edit_close');
+    const edit_marks = document.getElementById('edit_marks');
+    const saveEdit = document.getElementById('saveEdit');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const closeEdit = document.getElementById('closeEdit');
+
+    // ---------- STATE ----------
+    let allRecords = []; // { id, data... }
+    let unsubscribeSnapshot = null;
+    let currentUserEmail = null;
+
+    // ---------- LOGIN (Firestore-based) ----------
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = (emailInput.value || '').trim();
+      const password = (passwordInput.value || '').trim();
+
+      if (!email || !password) { alert('Enter email & password'); return; }
+
+      try {
+        // query admins collection for matching email & password
+        const q = query(collection(db, 'admins'), where('email', '==', email), where('password', '==', password));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          alert('Invalid credentials or admin not found.');
+          return;
+        }
+
+        // success
+        currentUserEmail = email;
+        userEmail.textContent = currentUserEmail;
+        loginForm.classList.add('hidden');
+        userSection.classList.remove('hidden');
+        dataEntryBtn.classList.remove('hidden');
+        databaseBtn.classList.remove('hidden');
+        dataEntryView.classList.remove('hidden');
+        databaseView.classList.add('hidden');
+        // clear password input for safety
+        passwordInput.value = '';
+        alert('✅ Logged in');
+      } catch (err) {
+        console.error(err);
+        alert('Login error: ' + err.message);
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      currentUserEmail = null;
+      userEmail.textContent = '';
+      userSection.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      dataEntryBtn.classList.add('hidden');
+      databaseBtn.classList.add('hidden');
+      dataEntryView.classList.add('hidden');
+      databaseView.classList.add('hidden');
+      // stop realtime listener if any
+      if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+    });
+
+    // ---------- VIEW TOGGLE ----------
+    dataEntryBtn.addEventListener('click', showDataEntry);
+    databaseBtn.addEventListener('click', showDatabase);
+
+    function showDataEntry() {
+      dataEntryView.classList.remove('hidden');
+      databaseView.classList.add('hidden');
+      if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+    }
+    function showDatabase() {
+      dataEntryView.classList.add('hidden');
+      databaseView.classList.remove('hidden');
+      startRealtimeListener();
+    }
+
+    // ---------- UPLOAD SINGLE ----------
+    singleUploadBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!currentUserEmail) return alert('Please log in first.');
+
+      const newDoc = {
+        college: (uploadForm.college.value || '').trim(),
+        branch: (uploadForm.branch.value || '').trim(),
+        cat: (uploadForm.cat.value || '').trim(),
+        round: (uploadForm.round.value || '').trim(),
+        close: Number(uploadForm.close.value) || null,
+        marks: Number(uploadForm.marks.value) || null,
+        createdBy: currentUserEmail,
+        createdAt: Date.now()
+      };
+
+      try {
+        await addDoc(collection(db, 'cutoffs'), newDoc);
+        alert('✅ Single entry uploaded!');
+        uploadForm.reset();
+      } catch (err) {
+        console.error(err);
+        alert('❌ Upload failed: ' + err.message);
+      }
+    });
+
+    // ---------- JSON FILE HANDLING ----------
+    jsonFile.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      jsonInput.value = text;
+    });
+
+    uploadJSONBtn.addEventListener('click', async () => {
+      if (!currentUserEmail) return alert('Please log in first.');
+
+      let jsonData;
+      try { jsonData = JSON.parse(jsonInput.value); }
+      catch (e) { alert('⚠️ Invalid JSON: ' + e.message); return; }
+      if (!Array.isArray(jsonData)) { alert('⚠️ JSON must be an array of objects'); return; }
+
+      let count = 0;
+      for (const item of jsonData) {
+        const docObj = {
+          round: item.round ?? item.Round ?? '',
+          college: item.college ?? item.College ?? '',
+          branch: item.branch ?? item.Branch ?? '',
+          cat: item.cat ?? item.Cat ?? '',
+          close: Number(item.close ?? item.Close ?? null),
+          marks: Number(item.marks ?? item.Marks ?? null),
+          createdBy: currentUserEmail,
+          createdAt: Date.now()
+        };
+        try { await addDoc(collection(db, 'cutoffs'), docObj); count++; }
+        catch (err) { console.error('Upload error', err); }
+      }
+      alert(`✅ Uploaded ${count} records!`);
+      jsonInput.value = ''; jsonFile.value = '';
+    });
+
+    // ---------- REALTIME LISTENER ----------
+    function startRealtimeListener() {
+      if (unsubscribeSnapshot) return;
+      const collRef = collection(db, 'cutoffs');
+      unsubscribeSnapshot = onSnapshot(collRef, snapshot => {
+        allRecords = [];
+        snapshot.forEach(docSnap => {
+          allRecords.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        populateFilters();
+        renderTable();
+      }, err => {
+        console.error('Snapshot error', err);
+        alert('Could not load data: ' + err.message);
+      });
+    }
+
+    // ---------- TABLE RENDER / FILTER / SORT ----------
+    function populateFilters() {
+      const colleges = Array.from(new Set(allRecords.map(r => r.college).filter(Boolean))).sort();
+      const prev = filterCollege.value || '';
+      filterCollege.innerHTML = `<option value="">All</option>` + colleges.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
+      if (colleges.includes(prev)) filterCollege.value = prev;
+    }
+
+    function renderTable() {
+      let rows = allRecords.slice();
+
+      const search = (searchInput.value || '').trim().toLowerCase();
+      if (search) {
+        rows = rows.filter(r =>
+          (r.college && r.college.toLowerCase().includes(search)) ||
+          (r.branch && r.branch.toLowerCase().includes(search)) ||
+          (r.cat && r.cat.toLowerCase().includes(search))
+        );
+      }
+
+      const fc = filterCollege.value;
+      if (fc) rows = rows.filter(r => r.college === fc);
+
+      const fc2 = filterCat.value;
+      if (fc2) rows = rows.filter(r => r.cat === fc2);
+
+      const sBy = sortBy.value;
+      const dir = sortDir.value === 'asc' ? 1 : -1;
+      rows.sort((a,b) => {
+        let va = a[sBy], vb = b[sBy];
+        if (typeof va === 'number' && typeof vb === 'number') return (va - vb) * dir;
+        va = (va === undefined || va === null) ? '' : String(va).toLowerCase();
+        vb = (vb === undefined || vb === null) ? '' : String(vb).toLowerCase();
+        if (va < vb) return -1 * dir;
+        if (va > vb) return 1 * dir;
+        return 0;
+      });
+
+      tableInfo.textContent = `${rows.length} records`;
+      if (rows.length === 0) {
+        dataBody.innerHTML = `<tr><td colspan="7" class="text-gray-400 py-4">No records found</td></tr>`;
+        return;
+      }
+
+      const html = rows.map(r => `
+        <tr data-id="${r.id}">
+          <td>${escapeHTML(r.college)}</td>
+          <td>${escapeHTML(r.branch)}</td>
+          <td>${escapeHTML(r.cat)}</td>
+          <td>${escapeHTML(r.round)}</td>
+          <td>${r.close ?? ''}</td>
+          <td>${r.marks ?? ''}</td>
+          <td>
+            <button class="editBtn px-3 py-1 mr-2 bg-emerald-600 rounded text-xs text-white">Edit</button>
+            <button class="deleteBtn px-3 py-1 bg-red-600 rounded text-xs text-white">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+      dataBody.innerHTML = html;
+
+      document.querySelectorAll('.editBtn').forEach(btn => btn.addEventListener('click', onEditClick));
+      document.querySelectorAll('.deleteBtn').forEach(btn => btn.addEventListener('click', onDeleteClick));
+    }
+
+    // ---------- HELPERS ----------
+    function escapeHTML(str) {
+      if (str === undefined || str === null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // ---------- EDIT / DELETE ----------
+    function onEditClick(e) {
+      const tr = e.target.closest('tr');
+      const id = tr.dataset.id;
+      const rec = allRecords.find(r => r.id === id);
+      if (!rec) { alert('Record not found'); return; }
+      edit_id.value = rec.id;
+      edit_college.value = rec.college || '';
+      edit_branch.value = rec.branch || '';
+      edit_cat.value = rec.cat || '';
+      edit_round.value = rec.round || '';
+      edit_close.value = rec.close ?? '';
+      edit_marks.value = rec.marks ?? '';
+      openEditModal();
+    }
+
+    async function onDeleteClick(e) {
+      const tr = e.target.closest('tr');
+      const id = tr.dataset.id;
+      if (!confirm('Delete this record? This cannot be undone.')) return;
+      try {
+        await deleteDoc(doc(db, 'cutoffs', id));
+        alert('✅ Deleted');
+      } catch (err) {
+        console.error(err);
+        alert('Delete failed: ' + err.message);
+      }
+    }
+
+    function openEditModal() { editModal.classList.remove('hidden'); editModal.style.display = 'flex'; }
+    function closeEditModal() { editModal.classList.add('hidden'); editModal.style.display = 'none'; }
+
+    closeEdit.addEventListener('click', closeEditModal);
+    cancelEdit.addEventListener('click', closeEditModal);
+
+    saveEdit.addEventListener('click', async () => {
+      const id = edit_id.value;
+      if (!id) return;
+      const updated = {
+        college: (edit_college.value || '').trim(),
+        branch: (edit_branch.value || '').trim(),
+        cat: (edit_cat.value || '').trim(),
+        round: (edit_round.value || '').trim(),
+        close: Number(edit_close.value) || null,
+        marks: Number(edit_marks.value) || null,
+        updatedBy: currentUserEmail,
+        updatedAt: Date.now()
+      };
+      try {
+        await updateDoc(doc(db, 'cutoffs', id), updated);
+        alert('✅ Updated');
+        closeEditModal();
+      } catch (err) {
+        console.error(err);
+        alert('Update failed: ' + err.message);
+      }
+    });
+
+    // ---------- SEARCH / FILTER HOOKS ----------
+    [filterCollege, filterCat, sortBy, sortDir, searchInput].forEach(el => {
+      el.addEventListener('change', renderTable);
+      el.addEventListener('input', renderTable);
+    });
+    refreshBtn.addEventListener('click', () => renderTable());
+
+    // ---------- UTILITY: load once if needed ----------
+    async function loadOnce() {
+      const snap = await getDocs(collection(db, 'cutoffs'));
+      allRecords = [];
+      snap.forEach(s => allRecords.push({ id: s.id, ...s.data() }));
+      populateFilters();
+      renderTable();
+    }
+
+    // ---------- INITIAL UX ----------
+    // data entry & database buttons are hidden until login (already set in HTML)
+    // show Data Entry by default when user logs in (handled in login flow)
+    window.addEventListener('load', () => {
+      // nothing to show until login
+    });
+
+  </script>
+</body>
+</html>
