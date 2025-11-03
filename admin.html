@@ -76,17 +76,17 @@
     // Check auth state
     onAuthStateChanged(auth, (user) => {
   if (user && user.email === "abxrnt@gmail.com") {
-    // ✅ Only admin can access the panel
+    // ✅ Only show admin panel to this email
     loginSection.classList.add("hidden");
     adminPanel.classList.remove("hidden");
   } else {
-    // 🚫 Not admin or not logged in
+    // 🚫 Hide admin panel for everyone else
     loginSection.classList.remove("hidden");
     adminPanel.classList.add("hidden");
 
     if (user && user.email !== "abxrnt@gmail.com") {
       alert("❌ Access denied. Only admin can open this panel.");
-      signOut(auth);
+      signOut(auth); // logout unauthorized users
     }
   }
 });
@@ -113,4 +113,5 @@
   </script>
 </body>
 </html>
+
 
