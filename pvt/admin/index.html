@@ -213,7 +213,50 @@
         </table>
       </div>
     </div>
-  </main>
+    <!-- MANAGE ADMINS (visible to logged-in users; actions limited by role) -->
+<section id="manageAdminsSection" class="hidden mt-6 max-w-7xl mx-auto bg-gray-800 rounded-2xl border border-gray-700 p-4">
+  <div class="flex items-center justify-between mb-3">
+    <h3 class="text-lg font-semibold text-emerald-400 flex items-center gap-2">
+      <i class="fa-solid fa-users-gear"></i> Manage Admins
+    </h3>
+    <p id="manageAdminsNote" class="hidden text-amber-400 text-sm">🔒 You have view-only access to this section.</p>
+  </div>
+
+  <!-- Admins table -->
+  <div class="overflow-x-auto mb-3">
+    <table class="w-full">
+      <thead>
+        <tr>
+          <th class="text-xs text-gray-400 p-2">Name</th>
+          <th class="text-xs text-gray-400 p-2">Email</th>
+          <th class="text-xs text-gray-400 p-2">Role</th>
+          <th class="text-xs text-gray-400 p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="adminsBody">
+        <!-- admin rows injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add admin form (hidden for editors) -->
+  <div id="adminActions" class="grid grid-cols-3 gap-3">
+    <input id="newAdminName" type="text" placeholder="Full name" class="p-2 rounded-lg text-sm" />
+    <input id="newAdminEmail" type="email" placeholder="Email" class="p-2 rounded-lg text-sm" />
+    <input id="newAdminPassword" type="password" placeholder="Password" class="p-2 rounded-lg text-sm" />
+
+    <select id="newAdminRole" class="p-2 rounded-lg text-sm">
+      <option value="viewer">viewer</option>
+      <option value="editor">editor</option>
+      <option value="superadmin">superadmin</option>
+    </select>
+
+    <div></div>
+
+    <button id="addAdminBtn" class="px-4 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700">➕ Add Admin</button>
+  </div>
+</section>
+</main>
 
   <!-- EDIT MODAL (hidden) -->
   <div id="editModal" class="modal-backdrop hidden">
@@ -267,6 +310,21 @@
     const db = getFirestore(app);
 
     // ---------- ELEMENTS ----------
+    // ---- Manage Admins elements ----
+const manageAdminsSection = document.getElementById('manageAdminsSection');
+const manageAdminsNote = document.getElementById('manageAdminsNote');
+const adminsBody = document.getElementById('adminsBody');
+const adminActions = document.getElementById('adminActions');
+const newAdminName = document.getElementById('newAdminName');
+const newAdminEmail = document.getElementById('newAdminEmail');
+const newAdminPassword = document.getElementById('newAdminPassword');
+const newAdminRole = document.getElementById('newAdminRole');
+const addAdminBtn = document.getElementById('addAdminBtn');
+
+// ---- Role state ----
+let currentUserRole = null;
+let currentUserName = null;
+
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
@@ -331,18 +389,28 @@
           return;
         }
 
-        // success
-        currentUserEmail = email;
-        userEmail.textContent = currentUserEmail;
-        loginForm.classList.add('hidden');
-        userSection.classList.remove('hidden');
-        dataEntryBtn.classList.remove('hidden');
-        databaseBtn.classList.remove('hidden');
-        dataEntryView.classList.remove('hidden');
-        databaseView.classList.add('hidden');
-        // clear password input for safety
-        passwordInput.value = '';
-        alert('✅ Logged in');
+        // success: read role & name from the matched admin doc
+const adminDoc = snap.docs[0];
+const adminData = adminDoc.data();
+
+currentUserEmail = adminData.email || email;
+currentUserRole = adminData.role || 'viewer';
+currentUserName = adminData.name || (adminData.email || email);
+
+userEmail.textContent = currentUserEmail;
+loginForm.classList.add('hidden');
+userSection.classList.remove('hidden');
+dataEntryBtn.classList.remove('hidden');
+databaseBtn.classList.remove('hidden');
+dataEntryView.classList.remove('hidden');
+databaseView.classList.add('hidden');
+// clear password input for safety
+passwordInput.value = '';
+// show Manage Admins section (visibility controlled by role)
+manageAdminsSection.classList.remove('hidden');
+// apply role restrictions immediately
+applyRolePermissions();
+alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
       } catch (err) {
         console.error(err);
         alert('Login error: ' + err.message);
@@ -641,6 +709,123 @@ exportBtn.addEventListener('click', async () => {
     alert('❌ Export failed: ' + err.message);
   }
 });
+// ---------- ROLE & ADMIN MANAGEMENT ----------
+
+/**
+ * Apply UI restrictions based on currentUserRole
+ */
+function applyRolePermissions() {
+  // default: hide admin actions until we decide
+  if (!currentUserRole) return;
+
+  // Editors can view Manage Admins but cannot change anything
+  if (currentUserRole === 'editor') {
+    adminActions.classList.add('hidden');           // hide add form
+    manageAdminsNote.classList.remove('hidden');    // show read-only note
+    // make export available (optional) - leave as enabled
+  }
+
+  // Viewers: hide admin area entirely (if you want)
+  if (currentUserRole === 'viewer') {
+    adminActions.classList.add('hidden');
+    manageAdminsNote.textContent = '🔒 You have view-only access to this section.';
+    manageAdminsNote.classList.remove('hidden');
+    // Also disable edit/delete on cutoffs table (visual)
+    document.querySelectorAll('.editBtn, .deleteBtn, #singleUploadBtn, #uploadJSONBtn').forEach(el => {
+      el.disabled = true;
+      el.classList.add('opacity-50', 'cursor-not-allowed');
+    });
+  }
+
+  // Superadmin: full control (ensure add form visible)
+  if (currentUserRole === 'superadmin') {
+    adminActions.classList.remove('hidden');
+    manageAdminsNote.classList.add('hidden');
+  }
+
+  // If editors should still be able to access cutoffs editing, do nothing else
+}
+
+/**
+ * Load admins list and render table
+ */
+async function loadAdminsList() {
+  try {
+    const snaps = await getDocs(collection(db, 'admins'));
+    const rows = [];
+    snaps.forEach(s => rows.push({ id: s.id, ...s.data() }));
+    // render
+    adminsBody.innerHTML = rows.map(a => `
+      <tr data-id="${a.id}">
+        <td class="p-2 text-sm">${escapeHTML(a.name || '')}</td>
+        <td class="p-2 text-sm">${escapeHTML(a.email || '')}</td>
+        <td class="p-2 text-sm">${escapeHTML(a.role || '')}</td>
+        <td class="p-2 text-sm">
+          ${currentUserRole === 'superadmin' ? `<button class="editAdminBtn px-2 py-1 mr-2 bg-blue-600 rounded text-xs text-white">Edit</button><button class="deleteAdminBtn px-2 py-1 bg-red-600 rounded text-xs text-white">Delete</button>` : `<span class="text-xs text-gray-400">read-only</span>`}
+        </td>
+      </tr>
+    `).join('');
+    // attach handlers if superadmin
+    if (currentUserRole === 'superadmin') {
+      document.querySelectorAll('.deleteAdminBtn').forEach(btn => btn.addEventListener('click', async (e) => {
+        const tr = e.target.closest('tr');
+        const id = tr.dataset.id;
+        if (!confirm('Delete this admin?')) return;
+        try {
+          await deleteDoc(doc(db, 'admins', id));
+          alert('✅ Admin deleted');
+          loadAdminsList();
+        } catch (err) {
+          console.error(err);
+          alert('Delete failed: ' + err.message);
+        }
+      }));
+
+      // Edit flow can be added later - for now, simple delete + re-add handles role changes
+    }
+  } catch (err) {
+    console.error('Load admins error', err);
+  }
+}
+
+/**
+ * Add admin button handler - only superadmin will have visible button
+ */
+addAdminBtn?.addEventListener('click', async () => {
+  if (currentUserRole !== 'superadmin') {
+    alert('Only superadmins can add admins.');
+    return;
+  }
+  const email = (newAdminEmail.value || '').trim();
+  const password = (newAdminPassword.value || '').trim();
+  const role = (newAdminRole.value || 'viewer');
+  const name = (newAdminName.value || '').trim() || email;
+  if (!email || !password) return alert('Please provide name, email & password.');
+
+  try {
+    // Basic duplicate check
+    const q = query(collection(db, 'admins'), where('email', '==', email));
+    const snap = await getDocs(q);
+    if (!snap.empty) return alert('Admin with this email already exists.');
+
+    await addDoc(collection(db, 'admins'), { email, password, role, name });
+    alert('✅ Admin added');
+    newAdminName.value = ''; newAdminEmail.value = ''; newAdminPassword.value = '';
+    loadAdminsList();
+  } catch (err) {
+    console.error(err);
+    alert('Add admin failed: ' + err.message);
+  }
+});
+
+// When Database view shown, also load admins list
+function showDatabase() {
+  dataEntryView.classList.add('hidden');
+  databaseView.classList.remove('hidden');
+  startRealtimeListener();
+  // load admins for the Manage Admins section
+  loadAdminsList();
+}
 
     // ---------- UTILITY: load once if needed ----------
     async function loadOnce() {
