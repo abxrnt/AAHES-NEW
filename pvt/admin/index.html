@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AAHES | Admin Panel</title>
 
-  <!-- Tailwind CDN -->
+  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Poppins font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Font Awesome Kit (if this throws 403, icons won't load but app still works) -->
+  <!-- Font Awesome (for icons) -->
   <script src="https://kit.fontawesome.com/a2e0ef7f4b.js" crossorigin="anonymous"></script>
 
   <style>
@@ -30,7 +30,6 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
-
     input, textarea, select {
       background-color: #0f172a;
       color: #e2e8f0;
@@ -42,18 +41,13 @@
       box-shadow: 0 0 0 4px rgba(16,185,129,0.08);
       outline: none;
     }
-
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #172033; text-align: left; }
-    thead th { background: #071025; color: var(--accent); position: sticky; top: 0; z-index: 1; }
+    thead th { background: #071025; color: var(--accent); position: sticky; top: 0; }
     tr:hover td { background: rgba(255,255,255,0.01); }
-
     .modal-backdrop { background: rgba(1,6,12,0.6); position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index: 60; }
     .modal-card { width:760px; max-width: calc(100% - 40px); }
-
     .hidden-el { display:none; }
-
-    /* small screens */
     @media (max-width:920px){
       .two-col { flex-direction:column; gap:12px; }
       #uploadForm { grid-template-columns: 1fr; }
@@ -62,33 +56,22 @@
 </head>
 <body>
 
-  <!-- TOP NAV -->
+  <!-- NAV -->
   <header class="w-full bg-gray-900 border-b border-gray-700 py-3 px-6 flex items-center justify-between">
     <div class="flex items-center gap-4">
       <h1 class="text-xl font-bold text-emerald-400">AAHES Admin Panel</h1>
 
-      <!-- Tabs -->
-      <nav class="ml-6 flex items-center gap-2">
-        <button id="tabDataEntry" class="tab-btn px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden" data-tab="dataEntry">
+      <div class="ml-4 flex items-center gap-2">
+        <button id="dataEntryBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
           <i class="fa-solid fa-pen-to-square mr-1"></i> Data Entry
         </button>
-
-        <button id="tabDatabase" class="tab-btn px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden" data-tab="database">
+        <button id="databaseBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
           <i class="fa-solid fa-table mr-1"></i> Database
         </button>
-
-        <!-- Settings dropdown -->
-        <div class="relative">
-          <button id="settingsToggle" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
-            <i class="fa-solid fa-gear mr-1"></i> Settings <i class="fa-solid fa-caret-down ml-2"></i>
-          </button>
-          <div id="settingsMenu" class="hidden absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-50">
-            <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-800 settings-item" data-settings="manageAdmins">Manage Admins</button>
-            <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-800 settings-item" data-settings="changePassword">Change Password</button>
-            <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-800 settings-item" data-settings="appSettings">App Settings</button>
-          </div>
-        </div>
-      </nav>
+        <button id="rolesBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
+          <i class="fa-solid fa-users-gear mr-1"></i> Roles
+        </button>
+      </div>
     </div>
 
     <div class="flex items-center gap-4">
@@ -96,7 +79,9 @@
       <form id="loginForm" class="flex items-center gap-2">
         <input type="email" id="emailInput" placeholder="Email" class="p-2 rounded-lg bg-gray-800 text-sm" required>
         <input type="password" id="passwordInput" placeholder="Password" class="p-2 rounded-lg bg-gray-800 text-sm" required>
-        <button type="submit" id="loginBtn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700 transition">Login</button>
+        <button type="submit" id="loginBtn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700 transition">
+          Login
+        </button>
       </form>
 
       <div id="userSection" class="hidden items-center gap-3">
@@ -108,242 +93,199 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT AREA -->
-  <main class="min-h-[calc(100vh-96px)] px-6 py-6">
-    <div class="max-w-7xl mx-auto">
+  <!-- MAIN: Data Entry -->
+  <main id="dataEntryView" class="min-h-[calc(100vh-96px)] px-6 py-6 hidden">
+    <div class="max-w-6xl mx-auto two-col flex gap-6">
 
-      <!-- TAB PANELS (only one visible at a time) -->
+      <!-- Left: Manual entry -->
+      <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
+        <h3 class="text-lg font-semibold text-emerald-400 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i> Manual Entry
+        </h3>
 
-      <!-- DATA ENTRY PANEL -->
-      <section id="panel-dataEntry" class="tab-panel hidden-el">
-        <div class="max-w-6xl mx-auto two-col flex gap-6">
-          <!-- Manual -->
-          <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
-            <h3 class="text-lg font-semibold text-emerald-400 mb-2 flex items-center gap-2">
-              <i class="fa-solid fa-pen-to-square"></i> Manual Entry
-            </h3>
+        <form id="uploadForm" class="grid grid-cols-2 gap-3 flex-grow">
+          <input type="text" id="college" name="college" placeholder="College (AEC)" class="p-2 rounded-lg text-sm" required>
+          <input type="text" id="branch" name="branch" placeholder="Branch (CSE)" class="p-2 rounded-lg text-sm" required>
+          <input type="text" id="cat" name="cat" placeholder="Category (GEN/OBC...)" class="p-2 rounded-lg text-sm" required>
+          <input type="text" id="round" name="round" placeholder="Round (1)" class="p-2 rounded-lg text-sm" required>
+          <input type="number" id="close" name="close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required>
+          <input type="number" id="marks" name="marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required>
+        </form>
 
-            <form id="uploadForm" class="grid grid-cols-2 gap-3 flex-grow">
-              <input type="text" id="college" name="college" placeholder="College (AEC)" class="p-2 rounded-lg text-sm" required>
-              <input type="text" id="branch" name="branch" placeholder="Branch (CSE)" class="p-2 rounded-lg text-sm" required>
-              <input type="text" id="cat" name="cat" placeholder="Category (GEN/OBC...)" class="p-2 rounded-lg text-sm" required>
-              <input type="text" id="round" name="round" placeholder="Round (1)" class="p-2 rounded-lg text-sm" required>
-              <input type="number" id="close" name="close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required>
-              <input type="number" id="marks" name="marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required>
-            </form>
-
-            <button id="singleUploadBtn" class="mt-4 w-full py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-medium rounded-lg text-sm hover:from-emerald-600 hover:to-green-700 transition">
-              <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Single Entry
-            </button>
-          </section>
-
-          <!-- Bulk -->
-          <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
-            <h3 class="text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2">
-              <i class="fa-solid fa-file-code"></i> Bulk Upload via JSON
-            </h3>
-
-            <textarea id="jsonInput" rows="8" placeholder='Paste JSON array here (e.g. [ { "round":"1", "college":"AEC", ... } ])' class="flex-grow p-2 rounded-lg text-sm mb-3"></textarea>
-
-            <div class="flex items-center gap-3">
-              <input type="file" id="jsonFile" accept=".json" class="bg-gray-900 p-2 rounded-lg border border-gray-600 text-sm w-1/2">
-              <button id="uploadJSONBtn" class="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-lg text-sm hover:from-cyan-600 hover:to-blue-700 transition">
-                <i class="fa-solid fa-database mr-1"></i> Upload JSON Data
-              </button>
-            </div>
-          </section>
-        </div>
+        <button id="singleUploadBtn" class="mt-4 w-full py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-medium rounded-lg text-sm hover:from-emerald-600 hover:to-green-700 transition">
+          <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Single Entry
+        </button>
       </section>
 
-      <!-- DATABASE PANEL -->
-      <section id="panel-database" class="tab-panel hidden-el mt-2">
-        <div class="flex flex-col gap-4">
-          <!-- Controls -->
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-2">
-            <div class="flex items-center gap-3 flex-wrap">
-              <label class="text-xs text-gray-400">Filter College</label>
-              <select id="filterCollege" class="p-2 rounded-lg text-sm min-w-[140px]">
-                <option value="">All</option>
-              </select>
+      <!-- Right: JSON -->
+      <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
+        <h3 class="text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-file-code"></i> Bulk Upload via JSON
+        </h3>
 
-              <label class="text-xs text-gray-400">Filter Category</label>
-              <select id="filterCat" class="p-2 rounded-lg text-sm min-w-[120px]">
-                <option value="">All</option>
-                <option>GEN</option><option>OBC</option><option>SC</option><option>STP</option><option>STH</option>
-              </select>
+        <textarea id="jsonInput" rows="8" placeholder='Paste JSON array here (e.g. [ { "round":"1", "college":"AEC", ... } ])' class="flex-grow p-2 rounded-lg text-sm mb-3"></textarea>
 
-              <label class="text-xs text-gray-400">Sort by</label>
-              <select id="sortBy" class="p-2 rounded-lg text-sm min-w-[140px]">
-                <option value="college">College</option>
-                <option value="branch">Branch</option>
-                <option value="cat">Category</option>
-                <option value="close">Closing Rank</option>
-                <option value="marks">Marks</option>
-              </select>
-
-              <select id="sortDir" class="p-2 rounded-lg text-sm">
-                <option value="asc">Asc</option>
-                <option value="desc">Desc</option>
-              </select>
-
-              <button id="refreshBtn" class="px-3 py-2 bg-gray-700 rounded-lg text-sm hover:bg-gray-600 transition">
-                <i class="fa-solid fa-arrows-rotate"></i> Refresh
-              </button>
-
-              <button id="exportBtn" class="px-3 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700 transition">
-                <i class="fa-solid fa-file-export mr-1"></i> Export Data
-              </button>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <input id="searchInput" placeholder="Search (college/branch/cat)" class="p-2 rounded-lg bg-gray-900 text-sm" />
-              <div id="tableInfo" class="text-sm text-gray-400">0 records</div>
-            </div>
-          </div>
-
-          <!-- Table -->
-          <div class="bg-gray-800 rounded-2xl border border-gray-700 p-2 overflow-auto">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:12%;">College</th>
-                  <th style="width:10%;">Branch</th>
-                  <th style="width:9%;">Category</th>
-                  <th style="width:8%;">Round</th>
-                  <th style="width:12%;">Closing Rank</th>
-                  <th style="width:9%;">Marks</th>
-                  <th style="width:20%;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="dataBody">
-                <tr><td colspan="7" class="text-gray-400 py-4">No records (open Database tab after login)</td></tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="flex items-center gap-3">
+          <input type="file" id="jsonFile" accept=".json" class="bg-gray-900 p-2 rounded-lg border border-gray-600 text-sm w-1/2">
+          <button id="uploadJSONBtn" class="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-lg text-sm hover:from-cyan-600 hover:to-blue-700 transition">
+            <i class="fa-solid fa-database mr-1"></i> Upload JSON Data
+          </button>
         </div>
       </section>
-
-      <!-- SETTINGS PANEL (contains Manage Admins and placeholder settings) -->
-      <section id="panel-settings" class="tab-panel hidden-el mt-2">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Left: Settings navigation -->
-          <div class="bg-gray-800 rounded-2xl border border-gray-700 p-4">
-            <h4 class="text-sm text-emerald-400 mb-2 font-medium">Settings</h4>
-            <div class="flex flex-col gap-1">
-              <button class="settings-nav px-3 py-2 text-sm text-left rounded hover:bg-gray-700" data-section="manageAdminsSectionView">Manage Admins</button>
-              <button class="settings-nav px-3 py-2 text-sm text-left rounded hover:bg-gray-700" data-section="changePasswordView">Change Password</button>
-              <button class="settings-nav px-3 py-2 text-sm text-left rounded hover:bg-gray-700" data-section="appSettingsView">App Settings</button>
-            </div>
-          </div>
-
-          <!-- Right: Content -->
-          <div class="md:col-span-2 space-y-4">
-            <!-- Manage Admins -->
-            <div id="manageAdminsSectionView" class="bg-gray-800 rounded-2xl border border-gray-700 p-4 hidden-el">
-              <div class="flex items-center justify-between mb-3">
-                <h3 class="text-lg font-semibold text-emerald-400 flex items-center gap-2">
-                  <i class="fa-solid fa-users-gear"></i> Manage Admins
-                </h3>
-                <p id="manageAdminsNote" class="hidden text-amber-400 text-sm">🔒 You have view-only access to this section.</p>
-              </div>
-
-              <div class="overflow-x-auto mb-3">
-                <table class="w-full">
-                  <thead>
-                    <tr>
-                      <th class="text-xs text-gray-400 p-2">Name</th>
-                      <th class="text-xs text-gray-400 p-2">Email</th>
-                      <th class="text-xs text-gray-400 p-2">Role</th>
-                      <th class="text-xs text-gray-400 p-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="adminsBody"></tbody>
-                </table>
-              </div>
-
-              <!-- Add admin form (visible only to superadmin) -->
-              <div id="adminActions" class="grid grid-cols-3 gap-3">
-                <input id="newAdminName" type="text" placeholder="Full name" class="p-2 rounded-lg text-sm" />
-                <input id="newAdminEmail" type="email" placeholder="Email" class="p-2 rounded-lg text-sm" />
-                <input id="newAdminPassword" type="password" placeholder="Password" class="p-2 rounded-lg text-sm" />
-                <select id="newAdminRole" class="p-2 rounded-lg text-sm">
-                  <option value="viewer">viewer</option>
-                  <option value="editor">editor</option>
-                  <option value="superadmin">superadmin</option>
-                </select>
-                <div></div>
-                <button id="addAdminBtn" class="px-4 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700">➕ Add Admin</button>
-              </div>
-            </div>
-
-            <!-- Change Password -->
-            <div id="changePasswordView" class="bg-gray-800 rounded-2xl border border-gray-700 p-4 hidden-el">
-              <h3 class="text-lg text-cyan-400 mb-3">Change Password (placeholder)</h3>
-              <p class="text-sm text-gray-300 mb-3">This is a placeholder. If you want a full "change password" flow (with verification), I can add it.</p>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <input id="cpOld" type="password" placeholder="Old password" class="p-2 rounded-lg text-sm" />
-                <input id="cpNew" type="password" placeholder="New password" class="p-2 rounded-lg text-sm" />
-                <input id="cpNew2" type="password" placeholder="Confirm new password" class="p-2 rounded-lg text-sm" />
-                <div></div>
-                <button id="changePasswordBtn" class="px-4 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700">Change Password</button>
-              </div>
-            </div>
-
-            <!-- App Settings -->
-            <div id="appSettingsView" class="bg-gray-800 rounded-2xl border border-gray-700 p-4 hidden-el">
-              <h3 class="text-lg text-emerald-400 mb-3">App Settings (placeholder)</h3>
-              <p class="text-sm text-gray-300">Add app-level settings here (e.g. default sort, CSV import options, etc.).</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- EDIT MODAL -->
-      <div id="editModal" class="modal-backdrop hidden-el" aria-hidden="true">
-        <div class="modal-card bg-gray-900 rounded-2xl p-4">
-          <div class="flex justify-between items-center mb-3">
-            <h4 class="text-lg text-emerald-400">Edit Record</h4>
-            <button id="closeEdit" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-
-          <form id="editForm" class="grid grid-cols-2 gap-3">
-            <input type="text" id="edit_college" placeholder="College" class="p-2 rounded-lg text-sm" required />
-            <input type="text" id="edit_branch" placeholder="Branch" class="p-2 rounded-lg text-sm" required />
-            <input type="text" id="edit_cat" placeholder="Category" class="p-2 rounded-lg text-sm" required />
-            <input type="text" id="edit_round" placeholder="Round" class="p-2 rounded-lg text-sm" required />
-            <input type="number" id="edit_close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required />
-            <input type="number" id="edit_marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required />
-            <input type="hidden" id="edit_id" />
-          </form>
-
-          <div class="mt-3 flex items-center gap-3 justify-end">
-            <button id="saveEdit" class="px-4 py-2 bg-emerald-500 rounded-lg text-sm text-white hover:bg-emerald-600">Save</button>
-            <button id="cancelEdit" class="px-4 py-2 bg-gray-700 rounded-lg text-sm text-white hover:bg-gray-600">Cancel</button>
-          </div>
-        </div>
-      </div>
-
     </div>
   </main>
 
+  <!-- MAIN: Database / Roles in single page (hidden until login) -->
+  <main id="databaseView" class="hidden min-h-[calc(100vh-96px)] px-6 py-6">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Controls -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+        <div class="flex items-center gap-3 flex-wrap">
+          <label class="text-xs text-gray-400">Filter College</label>
+          <select id="filterCollege" class="p-2 rounded-lg text-sm min-w-[140px]">
+            <option value="">All</option>
+          </select>
+
+          <label class="text-xs text-gray-400">Filter Category</label>
+          <select id="filterCat" class="p-2 rounded-lg text-sm min-w-[120px]">
+            <option value="">All</option>
+            <option>GEN</option><option>OBC</option><option>SC</option><option>STP</option><option>STH</option>
+          </select>
+
+          <label class="text-xs text-gray-400">Sort by</label>
+          <select id="sortBy" class="p-2 rounded-lg text-sm min-w-[140px]">
+            <option value="college">College</option>
+            <option value="branch">Branch</option>
+            <option value="cat">Category</option>
+            <option value="close">Closing Rank</option>
+            <option value="marks">Marks</option>
+          </select>
+
+          <select id="sortDir" class="p-2 rounded-lg text-sm">
+            <option value="asc">Asc</option>
+            <option value="desc">Desc</option>
+          </select>
+
+          <button id="refreshBtn" class="px-3 py-2 bg-gray-700 rounded-lg text-sm hover:bg-gray-600 transition">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+          </button>
+
+          <button id="exportBtn" class="px-3 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700 transition">
+            <i class="fa-solid fa-file-export mr-1"></i> Export Data
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <input id="searchInput" placeholder="Search (college/branch/cat)" class="p-2 rounded-lg bg-gray-900 text-sm" />
+          <div id="tableInfo" class="text-sm text-gray-400">0 records</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="bg-gray-800 rounded-2xl border border-gray-700 p-2">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:12%;">College</th>
+              <th style="width:10%;">Branch</th>
+              <th style="width:9%;">Category</th>
+              <th style="width:8%;">Round</th>
+              <th style="width:12%;">Closing Rank</th>
+              <th style="width:9%;">Marks</th>
+              <th style="width:20%;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody">
+            <!-- rows injected here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Manage Admins -->
+      <section id="manageAdminsSection" class="hidden mt-6 max-w-7xl mx-auto bg-gray-800 rounded-2xl border border-gray-700 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold text-emerald-400 flex items-center gap-2">
+            <i class="fa-solid fa-users-gear"></i> Manage Admins
+          </h3>
+          <p id="manageAdminsNote" class="hidden text-amber-400 text-sm">🔒 You have view-only access to this section.</p>
+        </div>
+
+        <div class="overflow-x-auto mb-3">
+          <table class="w-full">
+            <thead>
+              <tr>
+                <th class="text-xs text-gray-400 p-2">Name</th>
+                <th class="text-xs text-gray-400 p-2">Email</th>
+                <th class="text-xs text-gray-400 p-2">Role</th>
+                <th class="text-xs text-gray-400 p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminsBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Add admin form (hidden for editors/viewers) -->
+        <div id="adminActions" class="grid grid-cols-3 gap-3">
+          <input id="newAdminName" type="text" placeholder="Full name" class="p-2 rounded-lg text-sm" />
+          <input id="newAdminEmail" type="email" placeholder="Email" class="p-2 rounded-lg text-sm" />
+          <input id="newAdminPassword" type="password" placeholder="Password" class="p-2 rounded-lg text-sm" />
+          <select id="newAdminRole" class="p-2 rounded-lg text-sm">
+            <option value="viewer">viewer</option>
+            <option value="editor">editor</option>
+            <option value="superadmin">superadmin</option>
+          </select>
+          <div></div>
+          <button id="addAdminBtn" class="px-4 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700">➕ Add Admin</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- EDIT MODAL -->
+  <div id="editModal" class="modal-backdrop hidden-el">
+    <div class="modal-card bg-gray-900 rounded-2xl p-4">
+      <div class="flex justify-between items-center mb-3">
+        <h4 class="text-lg text-emerald-400">Edit Record</h4>
+        <button id="closeEdit" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="editForm" class="grid grid-cols-2 gap-3">
+        <input type="text" id="edit_college" placeholder="College" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_branch" placeholder="Branch" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_cat" placeholder="Category" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_round" placeholder="Round" class="p-2 rounded-lg text-sm" required />
+        <input type="number" id="edit_close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required />
+        <input type="number" id="edit_marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required />
+        <input type="hidden" id="edit_id" />
+      </form>
+
+      <div class="mt-3 flex items-center gap-3 justify-end">
+        <button id="saveEdit" class="px-4 py-2 bg-emerald-500 rounded-lg text-sm text-white hover:bg-emerald-600">Save</button>
+        <button id="cancelEdit" class="px-4 py-2 bg-gray-700 rounded-lg text-sm text-white hover:bg-gray-600">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
   <footer class="py-3 text-center text-gray-400 text-xs">
     © 2025 AAHES Admin Panel
   </footer>
 
   <!-- FIREBASE + APP LOGIC -->
   <script type="module">
-    /************************************************************************
-     * Firebase modular SDK imports
-     ************************************************************************/
+    // -------------------------------
+    // Firebase imports (modular)
+    // -------------------------------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import {
       getFirestore, collection, addDoc, getDocs, onSnapshot,
       doc, updateDoc, deleteDoc, query, where
     } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    /************************************************************************
-     * Firebase config: (user supplied)
-     ************************************************************************/
+    // -------------------------------
+    // Firebase config (user provided)
+    // -------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
       authDomain: "aahes-cee-cutoffs.firebaseapp.com",
@@ -357,37 +299,30 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /************************************************************************
-     * ELEMENTS and STATE
-     ************************************************************************/
-    // top-level
+    // -------------------------------
+    // Elements
+    // -------------------------------
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
+
     const userSection = document.getElementById('userSection');
     const userEmail = document.getElementById('userEmail');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // tabs and settings
-    const tabDataEntry = document.getElementById('tabDataEntry');
-    const tabDatabase = document.getElementById('tabDatabase');
-    const settingsToggle = document.getElementById('settingsToggle');
-    const settingsMenu = document.getElementById('settingsMenu');
-    const settingsItems = document.querySelectorAll('.settings-item');
+    const dataEntryBtn = document.getElementById('dataEntryBtn');
+    const databaseBtn = document.getElementById('databaseBtn');
+    const rolesBtn = document.getElementById('rolesBtn');
 
-    // panels
-    const panelDataEntry = document.getElementById('panel-dataEntry');
-    const panelDatabase = document.getElementById('panel-database');
-    const panelSettings = document.getElementById('panel-settings');
+    const dataEntryView = document.getElementById('dataEntryView');
+    const databaseView = document.getElementById('databaseView');
 
-    // data entry controls
     const uploadForm = document.getElementById('uploadForm');
     const singleUploadBtn = document.getElementById('singleUploadBtn');
     const jsonInput = document.getElementById('jsonInput');
     const jsonFile = document.getElementById('jsonFile');
     const uploadJSONBtn = document.getElementById('uploadJSONBtn');
 
-    // database controls
     const dataBody = document.getElementById('dataBody');
     const filterCollege = document.getElementById('filterCollege');
     const filterCat = document.getElementById('filterCat');
@@ -396,9 +331,7 @@
     const refreshBtn = document.getElementById('refreshBtn');
     const searchInput = document.getElementById('searchInput');
     const tableInfo = document.getElementById('tableInfo');
-    const exportBtn = document.getElementById('exportBtn');
 
-    // edit modal
     const editModal = document.getElementById('editModal');
     const editForm = document.getElementById('editForm');
     const edit_id = document.getElementById('edit_id');
@@ -412,8 +345,8 @@
     const cancelEdit = document.getElementById('cancelEdit');
     const closeEdit = document.getElementById('closeEdit');
 
-    // admin management
-    const manageAdminsSectionView = document.getElementById('manageAdminsSectionView');
+    // Admins UI
+    const manageAdminsSection = document.getElementById('manageAdminsSection');
     const manageAdminsNote = document.getElementById('manageAdminsNote');
     const adminsBody = document.getElementById('adminsBody');
     const adminActions = document.getElementById('adminActions');
@@ -423,202 +356,128 @@
     const newAdminRole = document.getElementById('newAdminRole');
     const addAdminBtn = document.getElementById('addAdminBtn');
 
-    // settings subviews
-    const settingsNavBtns = document.querySelectorAll('.settings-nav');
-    const changePasswordView = document.getElementById('changePasswordView');
-    const appSettingsView = document.getElementById('appSettingsView');
+    const exportBtn = document.getElementById('exportBtn');
 
-    // state
+    // -------------------------------
+    // State
+    // -------------------------------
+    let allRecords = []; // array of cutoffs
+    let unsubscribeSnapshot = null;
     let currentUserEmail = null;
-    let currentUserRole = null; // 'viewer' | 'editor' | 'superadmin'
+    let currentUserRole = null;
     let currentUserName = null;
 
-    let allRecords = [];
-    let unsubscribeSnapshot = null;
-
-    /************************************************************************
-     * Small utility helpers
-     ************************************************************************/
+    // -------------------------------
+    // Helpers
+    // -------------------------------
     function escapeHTML(str) {
       if (str === undefined || str === null) return '';
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    function show(el) { el?.classList.remove('hidden-el'); }
-    function hide(el) { el?.classList.add('hidden-el'); }
+    function showElement(el){ el.classList.remove('hidden'); }
+    function hideElement(el){ if(!el.classList.contains('hidden')) el.classList.add('hidden'); }
 
-    function setActiveTabButton(tabBtn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ring-2','ring-emerald-400'));
-      if (tabBtn) tabBtn.classList.add('ring-2','ring-emerald-400');
-    }
-
-    /************************************************************************
-     * Tab switching (single page, no reload)
-     ************************************************************************/
-    function switchToTab(tabName) {
-      // hide all panels
-      hide(panelDataEntry);
-      hide(panelDatabase);
-      hide(panelSettings);
-
-      switch(tabName) {
-        case 'dataEntry':
-          show(panelDataEntry);
-          setActiveTabButton(tabDataEntry);
-          break;
-        case 'database':
-          show(panelDatabase);
-          setActiveTabButton(tabDatabase);
-          // start realtime listener once
-          startRealtimeListener();
-          // load admin list (so Manage Admins is current)
-          loadAdminsList();
-          break;
-        case 'settings':
-          show(panelSettings);
-          setActiveTabButton(null);
-          break;
-      }
-    }
-
-    // Tab button bindings (these buttons are initially hidden until login)
-    tabDataEntry?.addEventListener('click', () => switchToTab('dataEntry'));
-    tabDatabase?.addEventListener('click', () => switchToTab('database'));
-    // Settings button opens settings panel and toggles menu for quick items
-    settingsToggle?.addEventListener('click', (ev) => {
-      const open = settingsMenu.classList.contains('hidden');
-      if (open) settingsMenu.classList.remove('hidden');
-      else settingsMenu.classList.add('hidden');
-    });
-    // settings menu items
-    settingsItems.forEach(btn => btn.addEventListener('click', (e) => {
-      const what = e.currentTarget.getAttribute('data-settings');
-      // hide menu
-      settingsMenu.classList.add('hidden');
-      // switch to settings and open the chosen subview
-      switchToTab('settings');
-      if (what === 'manageAdmins') showSettingsSubview('manageAdminsSectionView');
-      else if (what === 'changePassword') showSettingsSubview('changePasswordView');
-      else if (what === 'appSettings') showSettingsSubview('appSettingsView');
-    }));
-
-    // left-side settings nav (inside settings panel)
-    settingsNavBtns.forEach(btn => btn.addEventListener('click', (e) => {
-      const target = e.currentTarget.getAttribute('data-section');
-      showSettingsSubview(target);
-    }));
-
-    function showSettingsSubview(id) {
-      // hide all settings subviews then show the target
-      [manageAdminsSectionView, changePasswordView, appSettingsView].forEach(el => hide(el));
-      const el = document.getElementById(id);
-      if (el) show(el);
-      // ensure settings panel visible
-      switchToTab('settings');
-    }
-
-    /************************************************************************
-     * LOGIN / LOGOUT (simple Firestore-based email/password stored in 'admins')
-     *
-     * Note: Storing passwords in Firestore in plain text is NOT secure.
-     *       You should use Firebase Authentication or hashed passwords
-     *       for production. This code follows your current DB layout.
-     ************************************************************************/
+    // -------------------------------
+    // LOGIN (Firestore-based)
+    // - Emails stored lowercased for consistent matching
+    // -------------------------------
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const rawEmail = (emailInput.value || '').trim();
+      const email = (emailInput.value || '').trim().toLowerCase();
       const password = (passwordInput.value || '').trim();
-      if (!rawEmail || !password) { alert('Enter email & password'); return; }
-      const email = rawEmail.toLowerCase();
+      if (!email || !password) { alert('Enter email & password'); return; }
 
       try {
         const q = query(collection(db, 'admins'), where('email', '==', email), where('password', '==', password));
         const snap = await getDocs(q);
         if (snap.empty) { alert('Invalid credentials or admin not found.'); return; }
 
-        const docSnap = snap.docs[0];
-        const adminData = docSnap.data();
+        const adminDoc = snap.docs[0];
+        const adminData = adminDoc.data();
 
         currentUserEmail = (adminData.email || email).toLowerCase();
         currentUserRole = adminData.role || 'viewer';
         currentUserName = adminData.name || currentUserEmail;
 
-        // update UI
+        // UI updates
         userEmail.textContent = `${currentUserName} (${currentUserRole})`;
         loginForm.classList.add('hidden');
         userSection.classList.remove('hidden');
 
-        // show nav buttons
-        tabDataEntry.classList.remove('hidden-el');
-        tabDatabase.classList.remove('hidden-el');
-        settingsToggle.classList.remove('hidden-el');
+        // show main nav buttons
+        dataEntryBtn.classList.remove('hidden');
+        databaseBtn.classList.remove('hidden');
+        rolesBtn.classList.remove('hidden');
 
-        // show data entry by default
-        switchToTab('dataEntry');
+        // show Data Entry by default
+        showDataEntry();
 
-        // show manage admins in settings (visibility of add/delete controlled by role)
-        showSettingsSubview('manageAdminsSectionView');
-        manageAdminsSectionView.classList.remove('hidden-el');
+        // show Manage Admins area (its internal permissions will hide actions if needed)
+        manageAdminsSection.classList.remove('hidden');
 
-        // apply UI based on role
+        // apply role-based UI changes
         applyRolePermissions();
 
-        // friendly notice
+        // Start loading data only when Database tab opened (realtime listener is lazy)
         alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
-        // clear password input
+        // clear password field
         passwordInput.value = '';
       } catch (err) {
-        console.error('Login error', err);
-        alert('Login error: ' + (err?.message || err));
+        console.error(err);
+        alert('Login error: ' + err.message);
       }
     });
 
     logoutBtn.addEventListener('click', () => {
-      // clear state, stop realtime, reset UI
+      // clear state and reload to simplify cleanup
       currentUserEmail = null;
       currentUserRole = null;
       currentUserName = null;
       if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
-      // reload page state - simple way to clear UI and re-hide nav
       window.location.reload();
     });
 
-    /************************************************************************
-     * ROLE-BASED UI
-     ************************************************************************/
-    function applyRolePermissions() {
-      if (!currentUserRole) return;
-      // default: hide add-admin, disable upload for viewers
-      if (currentUserRole === 'viewer') {
-        // disable upload controls and edit/delete actions (applied when rendering table)
-        singleUploadBtn.disabled = true;
-        uploadJSONBtn.disabled = true;
-        addAdminBtn.disabled = true;
-        adminActions.classList.add('hidden');
-        manageAdminsNote.classList.remove('hidden');
-      } else if (currentUserRole === 'editor') {
-        // editors can upload/edit/delete cutoffs but cannot manage admins
-        singleUploadBtn.disabled = false;
-        uploadJSONBtn.disabled = false;
-        addAdminBtn.disabled = true;
-        adminActions.classList.add('hidden');
-        manageAdminsNote.classList.remove('hidden');
-      } else if (currentUserRole === 'superadmin') {
-        // full access
-        singleUploadBtn.disabled = false;
-        uploadJSONBtn.disabled = false;
-        addAdminBtn.disabled = false;
-        adminActions.classList.remove('hidden');
-        manageAdminsNote.classList.add('hidden');
-      }
+    // -------------------------------
+    // View toggles
+    // -------------------------------
+    dataEntryBtn.addEventListener('click', showDataEntry);
+    databaseBtn.addEventListener('click', showDatabase);
+    rolesBtn.addEventListener('click', showRoles);
+
+    function showDataEntry() {
+      showElement(dataEntryView);
+      hideElement(databaseView);
+      hideElement(manageAdminsSection);
     }
 
-    /************************************************************************
-     * UPLOAD: single & JSON
-     ************************************************************************/
+    function showDatabase() {
+      hideElement(dataEntryView);
+      showElement(databaseView);
+      // Manage Admins is a section inside databaseView; show it depending on role
+      if (currentUserRole) showElement(manageAdminsSection);
+      // start realtime listener
+      startRealtimeListener();
+      // load admins for listing (so roles view shows current admins)
+      loadAdminsList();
+    }
+
+    function showRoles() {
+      hideElement(dataEntryView);
+      showElement(databaseView);
+      if (currentUserRole) showElement(manageAdminsSection);
+      // show the admins area; also load admins
+      loadAdminsList();
+    }
+
+    // -------------------------------
+    // Upload single entry
+    // -------------------------------
     singleUploadBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       if (!currentUserEmail) return alert('Please log in first.');
+
+      // role check: viewers cannot upload
       if (currentUserRole === 'viewer') return alert('Unauthorized: viewer cannot add records.');
 
       const docObj = {
@@ -639,11 +498,14 @@
         alert('✅ Single entry uploaded!');
         uploadForm.reset();
       } catch (err) {
-        console.error('Upload failed', err);
+        console.error(err);
         alert('❌ Upload failed: ' + err.message);
       }
     });
 
+    // -------------------------------
+    // Bulk JSON upload
+    // -------------------------------
     jsonFile.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -679,9 +541,9 @@
       jsonInput.value = ''; jsonFile.value = '';
     });
 
-    /************************************************************************
-     * REALTIME listener (started only when Database tab opened)
-     ************************************************************************/
+    // -------------------------------
+    // Realtime listener for cutoffs
+    // -------------------------------
     function startRealtimeListener() {
       if (unsubscribeSnapshot) return;
       const collRef = collection(db, 'cutoffs');
@@ -698,9 +560,9 @@
       });
     }
 
-    /************************************************************************
-     * TABLE rendering + filtering + sorting + search
-     ************************************************************************/
+    // -------------------------------
+    // Table: filters, sorting, rendering
+    // -------------------------------
     function populateFilters() {
       const colleges = Array.from(new Set(allRecords.map(r => r.college).filter(Boolean))).sort();
       const prev = filterCollege.value || '';
@@ -764,28 +626,27 @@
       document.querySelectorAll('.editBtn').forEach(btn => btn.addEventListener('click', onEditClick));
       document.querySelectorAll('.deleteBtn').forEach(btn => btn.addEventListener('click', onDeleteClick));
 
-      // apply role-based disabling
+      // apply role-based disabling (if viewer/editor)
       if (currentUserRole === 'viewer') {
-        document.querySelectorAll('.editBtn, .deleteBtn').forEach(el => {
+        document.querySelectorAll('.editBtn, .deleteBtn, #singleUploadBtn, #uploadJSONBtn').forEach(el => {
           el.disabled = true;
           el.classList.add('opacity-50', 'cursor-not-allowed');
+        });
+      } else if (currentUserRole === 'editor') {
+        // editors can edit and add but cannot manage admins (handled separately)
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+          // you said editors can edit/delete data earlier — but earlier you also said editors can delete; preserve that.
+          // If you want to disallow delete for editors, change logic here.
         });
       }
     }
 
-    // hook filters/sort/search
-    [filterCollege, filterCat, sortBy, sortDir, searchInput].forEach(el => {
-      el.addEventListener('change', renderTable);
-      el.addEventListener('input', renderTable);
-    });
-    refreshBtn.addEventListener('click', renderTable);
-
-    /************************************************************************
-     * EDIT / DELETE functionality
-     ************************************************************************/
+    // -------------------------------
+    // Edit / Delete handlers
+    // -------------------------------
     function onEditClick(e) {
       const tr = e.target.closest('tr');
-      const id = tr?.dataset?.id;
+      const id = tr.dataset.id;
       const rec = allRecords.find(r => r.id === id);
       if (!rec) { alert('Record not found'); return; }
       edit_id.value = rec.id;
@@ -801,8 +662,7 @@
     async function onDeleteClick(e) {
       if (currentUserRole === 'viewer') return alert('Unauthorized: viewer cannot delete.');
       const tr = e.target.closest('tr');
-      const id = tr?.dataset?.id;
-      if (!id) return;
+      const id = tr.dataset.id;
       if (!confirm('Delete this record? This cannot be undone.')) return;
       try {
         await deleteDoc(doc(db, 'cutoffs', id));
@@ -813,8 +673,9 @@
       }
     }
 
-    function openEditModal() { editModal.classList.remove('hidden-el'); editModal.style.display = 'flex'; editModal.setAttribute('aria-hidden','false'); }
-    function closeEditModal() { editModal.classList.add('hidden-el'); editModal.style.display = 'none'; editModal.setAttribute('aria-hidden','true'); }
+    function openEditModal() { editModal.classList.remove('hidden-el'); editModal.style.display = 'flex'; }
+    function closeEditModal() { editModal.classList.add('hidden-el'); editModal.style.display = 'none'; }
+
     closeEdit.addEventListener('click', closeEditModal);
     cancelEdit.addEventListener('click', closeEditModal);
 
@@ -842,9 +703,18 @@
       }
     });
 
-    /************************************************************************
-     * EXPORT (password-protected check against admins collection)
-     ************************************************************************/
+    // -------------------------------
+    // Search / filter hooks
+    // -------------------------------
+    [filterCollege, filterCat, sortBy, sortDir, searchInput].forEach(el => {
+      el.addEventListener('change', renderTable);
+      el.addEventListener('input', renderTable);
+    });
+    refreshBtn.addEventListener('click', () => renderTable());
+
+    // -------------------------------
+    // EXPORT: requires password confirmation from admins collection
+    // -------------------------------
     exportBtn.addEventListener('click', async () => {
       if (!currentUserEmail) return alert('Please log in first.');
       const enteredPassword = prompt('Enter your admin password to export data:');
@@ -855,10 +725,12 @@
         const snap = await getDocs(q);
         if (snap.empty) { alert('❌ Incorrect password.'); return; }
 
+        // fetch all cutoffs
         const cutoffSnap = await getDocs(collection(db, 'cutoffs'));
         const allData = [];
         cutoffSnap.forEach(d => allData.push({ id: d.id, ...d.data() }));
 
+        // create and download JSON
         const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -876,9 +748,9 @@
       }
     });
 
-    /************************************************************************
-     * ADMIN MANAGEMENT: list, add, delete
-     ************************************************************************/
+    // -------------------------------
+    // Admin management (list, add, delete)
+    // -------------------------------
     async function loadAdminsList() {
       try {
         const snaps = await getDocs(collection(db, 'admins'));
@@ -907,24 +779,22 @@
       `).join('');
 
       if (currentUserRole === 'superadmin') {
-        document.querySelectorAll('.deleteAdminBtn').forEach(btn => {
-          btn.addEventListener('click', async (ev) => {
-            const id = ev.currentTarget.getAttribute('data-id');
-            if (!confirm('Delete this admin?')) return;
-            try {
-              await deleteDoc(doc(db, 'admins', id));
-              alert('✅ Admin deleted');
-              loadAdminsList();
-            } catch (err) {
-              console.error(err);
-              alert('Delete failed: ' + err.message);
-            }
-          });
-        });
+        document.querySelectorAll('.deleteAdminBtn').forEach(btn => btn.addEventListener('click', async (ev) => {
+          const id = btn.getAttribute('data-id');
+          if (!confirm('Delete this admin?')) return;
+          try {
+            await deleteDoc(doc(db, 'admins', id));
+            alert('✅ Admin deleted');
+            loadAdminsList();
+          } catch (err) {
+            console.error(err);
+            alert('Delete failed: ' + err.message);
+          }
+        }));
       }
     }
 
-    // add admin
+    // Add admin (only superadmin)
     addAdminBtn.addEventListener('click', async () => {
       if (currentUserRole !== 'superadmin') return alert('Only superadmins can add admins.');
       const name = (newAdminName.value || '').trim();
@@ -935,6 +805,7 @@
       if (!name || !email || !password) return alert('Please provide name, email & password.');
 
       try {
+        // Prevent duplicate email
         const q = query(collection(db, 'admins'), where('email', '==', email));
         const snap = await getDocs(q);
         if (!snap.empty) return alert('Admin with this email already exists.');
@@ -949,29 +820,76 @@
       }
     });
 
-    /************************************************************************
-     * Small: change password placeholder
-     ************************************************************************/
-    document.getElementById('changePasswordBtn')?.addEventListener('click', async () => {
-      // placeholder: verify old password, then update admins collection entry
-      alert('Change password is a placeholder in this demo. Tell me if you want a full flow (with verification).');
-    });
+    // -------------------------------
+    // Role-based UI adjustments
+    // -------------------------------
+    function applyRolePermissions() {
+      // By default assume minimal access
+      if (!currentUserRole) {
+        hideElement(dataEntryBtn); hideElement(databaseBtn); hideElement(rolesBtn);
+        hideElement(manageAdminsSection);
+        return;
+      }
 
-    /************************************************************************
-     * Initial UI: everything hidden until login
-     ************************************************************************/
+      // viewers: can view database, cannot add/edit/delete or manage admins
+      if (currentUserRole === 'viewer') {
+        // show top nav buttons
+        dataEntryBtn.classList.remove('hidden');
+        databaseBtn.classList.remove('hidden');
+        rolesBtn.classList.remove('hidden');
+
+        // hide upload controls
+        singleUploadBtn.disabled = true;
+        uploadJSONBtn.disabled = true;
+
+        // admin add form hidden
+        adminActions.classList.add('hidden');
+        manageAdminsNote.classList.remove('hidden');
+      }
+
+      // editors: can add/edit/delete cutoffs, but cannot change admins
+      if (currentUserRole === 'editor') {
+        singleUploadBtn.disabled = false;
+        uploadJSONBtn.disabled = false;
+
+        adminActions.classList.add('hidden'); // cannot add admins
+        manageAdminsNote.classList.remove('hidden'); // read-only note
+      }
+
+      // superadmin: full access
+      if (currentUserRole === 'superadmin') {
+        singleUploadBtn.disabled = false;
+        uploadJSONBtn.disabled = false;
+        adminActions.classList.remove('hidden');
+        manageAdminsNote.classList.add('hidden');
+      }
+    }
+
+    // -------------------------------
+    // Utility: initial load (not auto-starting realtime)
+    // -------------------------------
+    async function loadOnce() {
+      try {
+        const snap = await getDocs(collection(db, 'cutoffs'));
+        allRecords = [];
+        snap.forEach(s => allRecords.push({ id: s.id, ...s.data() }));
+        populateFilters();
+        renderTable();
+      } catch (err) {
+        console.error('Load once error', err);
+      }
+    }
+
+    // -------------------------------
+    // Initial UI: everything hidden until login
+    // -------------------------------
     window.addEventListener('load', () => {
-      // hide top nav buttons until login (we used hidden-el classes)
-      tabDataEntry.classList.add('hidden-el');
-      tabDatabase.classList.add('hidden-el');
-      settingsToggle.classList.add('hidden-el');
-
-      // hide panels
-      hide(panelDataEntry);
-      hide(panelDatabase);
-      hide(panelSettings);
-
-      // don't start realtime until Database clicked
+      // hide main sections until logged in
+      hideElement(dataEntryView);
+      hideElement(databaseView);
+      hideElement(manageAdminsSection);
+      // nav buttons hidden until login
+      // dataEntryBtn/databaseBtn/rolesBtn already hidden by default in HTML
     });
 
   </script>
