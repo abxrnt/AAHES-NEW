@@ -4,27 +4,32 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AAHES | Admin Panel</title>
+
+  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Poppins font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome (for icons) -->
   <script src="https://kit.fontawesome.com/a2e0ef7f4b.js" crossorigin="anonymous"></script>
 
   <style>
-    :root {
-      --panel-bg: #0f172a;
-      --card-bg: #111827;
-      --muted: #94a3b8;
-      --accent: #10b981;
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --muted:#94a3b8;
+      --accent:#10b981;
     }
-    html,body { height: 100%; }
-    body {
+    html,body { height:100%; }
+    body{
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f172a, #000);
+      background: linear-gradient(135deg, var(--bg), #000);
       color: #e5e7eb;
-      margin: 0;
+      margin:0;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
-
     input, textarea, select {
       background-color: #0f172a;
       color: #e2e8f0;
@@ -36,34 +41,15 @@
       box-shadow: 0 0 0 4px rgba(16,185,129,0.08);
       outline: none;
     }
-
     table { width: 100%; border-collapse: collapse; }
-    th, td {
-      padding: 8px 10px;
-      font-size: 13px;
-      border-bottom: 1px solid #172033;
-      text-align: left;
-    }
-    thead th {
-      background: #071025;
-      color: var(--accent);
-      position: sticky; top: 0;
-    }
+    th, td { padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #172033; text-align: left; }
+    thead th { background: #071025; color: var(--accent); position: sticky; top: 0; }
     tr:hover td { background: rgba(255,255,255,0.01); }
-
-    .modal-backdrop {
-      background: rgba(1,6,12,0.6);
-      position: fixed;
-      inset: 0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index: 60;
-    }
-    .modal-card { width: 760px; max-width: calc(100% - 40px); }
-
-    @media (max-width: 920px) {
-      .two-col { flex-direction: column; gap: 12px; }
+    .modal-backdrop { background: rgba(1,6,12,0.6); position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index: 60; }
+    .modal-card { width:760px; max-width: calc(100% - 40px); }
+    .hidden-el { display:none; }
+    @media (max-width:920px){
+      .two-col { flex-direction:column; gap:12px; }
       #uploadForm { grid-template-columns: 1fr; }
     }
   </style>
@@ -81,6 +67,9 @@
         </button>
         <button id="databaseBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
           <i class="fa-solid fa-table mr-1"></i> Database
+        </button>
+        <button id="rolesBtn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
+          <i class="fa-solid fa-users-gear mr-1"></i> Roles
         </button>
       </div>
     </div>
@@ -104,11 +93,11 @@
     </div>
   </header>
 
-  <!-- MAIN -->
+  <!-- MAIN: Data Entry -->
   <main id="dataEntryView" class="min-h-[calc(100vh-96px)] px-6 py-6 hidden">
     <div class="max-w-6xl mx-auto two-col flex gap-6">
 
-      <!-- Left panel: Manual -->
+      <!-- Left: Manual entry -->
       <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
         <h3 class="text-lg font-semibold text-emerald-400 mb-2 flex items-center gap-2">
           <i class="fa-solid fa-pen-to-square"></i> Manual Entry
@@ -128,7 +117,7 @@
         </button>
       </section>
 
-      <!-- Right panel: JSON -->
+      <!-- Right: JSON -->
       <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
         <h3 class="text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2">
           <i class="fa-solid fa-file-code"></i> Bulk Upload via JSON
@@ -143,15 +132,14 @@
           </button>
         </div>
       </section>
-
     </div>
   </main>
 
-  <!-- DATABASE VIEW (hidden initially) -->
+  <!-- MAIN: Database / Roles in single page (hidden until login) -->
   <main id="databaseView" class="hidden min-h-[calc(100vh-96px)] px-6 py-6">
     <div class="max-w-7xl mx-auto">
 
-      <!-- Controls: filters + sort + refresh -->
+      <!-- Controls -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
         <div class="flex items-center gap-3 flex-wrap">
           <label class="text-xs text-gray-400">Filter College</label>
@@ -182,9 +170,10 @@
           <button id="refreshBtn" class="px-3 py-2 bg-gray-700 rounded-lg text-sm hover:bg-gray-600 transition">
             <i class="fa-solid fa-arrows-rotate"></i> Refresh
           </button>
+
           <button id="exportBtn" class="px-3 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700 transition">
-  <i class="fa-solid fa-file-export mr-1"></i> Export Data
-</button>
+            <i class="fa-solid fa-file-export mr-1"></i> Export Data
+          </button>
         </div>
 
         <div class="flex items-center gap-3">
@@ -212,55 +201,50 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Manage Admins -->
+      <section id="manageAdminsSection" class="hidden mt-6 max-w-7xl mx-auto bg-gray-800 rounded-2xl border border-gray-700 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold text-emerald-400 flex items-center gap-2">
+            <i class="fa-solid fa-users-gear"></i> Manage Admins
+          </h3>
+          <p id="manageAdminsNote" class="hidden text-amber-400 text-sm">🔒 You have view-only access to this section.</p>
+        </div>
+
+        <div class="overflow-x-auto mb-3">
+          <table class="w-full">
+            <thead>
+              <tr>
+                <th class="text-xs text-gray-400 p-2">Name</th>
+                <th class="text-xs text-gray-400 p-2">Email</th>
+                <th class="text-xs text-gray-400 p-2">Role</th>
+                <th class="text-xs text-gray-400 p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminsBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Add admin form (hidden for editors/viewers) -->
+        <div id="adminActions" class="grid grid-cols-3 gap-3">
+          <input id="newAdminName" type="text" placeholder="Full name" class="p-2 rounded-lg text-sm" />
+          <input id="newAdminEmail" type="email" placeholder="Email" class="p-2 rounded-lg text-sm" />
+          <input id="newAdminPassword" type="password" placeholder="Password" class="p-2 rounded-lg text-sm" />
+          <select id="newAdminRole" class="p-2 rounded-lg text-sm">
+            <option value="viewer">viewer</option>
+            <option value="editor">editor</option>
+            <option value="superadmin">superadmin</option>
+          </select>
+          <div></div>
+          <button id="addAdminBtn" class="px-4 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700">➕ Add Admin</button>
+        </div>
+      </section>
     </div>
-    <!-- MANAGE ADMINS (visible to logged-in users; actions limited by role) -->
-<section id="manageAdminsSection" class="hidden mt-6 max-w-7xl mx-auto bg-gray-800 rounded-2xl border border-gray-700 p-4">
-  <div class="flex items-center justify-between mb-3">
-    <h3 class="text-lg font-semibold text-emerald-400 flex items-center gap-2">
-      <i class="fa-solid fa-users-gear"></i> Manage Admins
-    </h3>
-    <p id="manageAdminsNote" class="hidden text-amber-400 text-sm">🔒 You have view-only access to this section.</p>
-  </div>
+  </main>
 
-  <!-- Admins table -->
-  <div class="overflow-x-auto mb-3">
-    <table class="w-full">
-      <thead>
-        <tr>
-          <th class="text-xs text-gray-400 p-2">Name</th>
-          <th class="text-xs text-gray-400 p-2">Email</th>
-          <th class="text-xs text-gray-400 p-2">Role</th>
-          <th class="text-xs text-gray-400 p-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="adminsBody">
-        <!-- admin rows injected here -->
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Add admin form (hidden for editors) -->
-  <div id="adminActions" class="grid grid-cols-3 gap-3">
-    <input id="newAdminName" type="text" placeholder="Full name" class="p-2 rounded-lg text-sm" />
-    <input id="newAdminEmail" type="email" placeholder="Email" class="p-2 rounded-lg text-sm" />
-    <input id="newAdminPassword" type="password" placeholder="Password" class="p-2 rounded-lg text-sm" />
-
-    <select id="newAdminRole" class="p-2 rounded-lg text-sm">
-      <option value="viewer">viewer</option>
-      <option value="editor">editor</option>
-      <option value="superadmin">superadmin</option>
-    </select>
-
-    <div></div>
-
-    <button id="addAdminBtn" class="px-4 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700">➕ Add Admin</button>
-  </div>
-</section>
-</main>
-
-  <!-- EDIT MODAL (hidden) -->
-  <div id="editModal" class="modal-backdrop hidden">
-    <div class="modal-card bg-gray-900 rounded-2xl p-4 modal-card">
+  <!-- EDIT MODAL -->
+  <div id="editModal" class="modal-backdrop hidden-el">
+    <div class="modal-card bg-gray-900 rounded-2xl p-4">
       <div class="flex justify-between items-center mb-3">
         <h4 class="text-lg text-emerald-400">Edit Record</h4>
         <button id="closeEdit" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
@@ -290,18 +274,24 @@
 
   <!-- FIREBASE + APP LOGIC -->
   <script type="module">
+    // -------------------------------
+    // Firebase imports (modular)
+    // -------------------------------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import {
       getFirestore, collection, addDoc, getDocs, onSnapshot,
       doc, updateDoc, deleteDoc, query, where
     } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // ---------- CONFIG ----------
+    // -------------------------------
+    // Firebase config (user provided)
+    // -------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
       authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+      databaseURL: "https://aahes-cee-cutoffs-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "aahes-cee-cutoffs",
-      storageBucket: "aahes-cee-cutoffs.appspot.com",
+      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
       messagingSenderId: "706066626405",
       appId: "1:706066626405:web:0d254ab82beb288108938c"
     };
@@ -309,32 +299,21 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ---------- ELEMENTS ----------
-    // ---- Manage Admins elements ----
-const manageAdminsSection = document.getElementById('manageAdminsSection');
-const manageAdminsNote = document.getElementById('manageAdminsNote');
-const adminsBody = document.getElementById('adminsBody');
-const adminActions = document.getElementById('adminActions');
-const newAdminName = document.getElementById('newAdminName');
-const newAdminEmail = document.getElementById('newAdminEmail');
-const newAdminPassword = document.getElementById('newAdminPassword');
-const newAdminRole = document.getElementById('newAdminRole');
-const addAdminBtn = document.getElementById('addAdminBtn');
-
-// ---- Role state ----
-let currentUserRole = null;
-let currentUserName = null;
-
+    // -------------------------------
+    // Elements
+    // -------------------------------
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
+
     const userSection = document.getElementById('userSection');
     const userEmail = document.getElementById('userEmail');
+    const logoutBtn = document.getElementById('logoutBtn');
 
     const dataEntryBtn = document.getElementById('dataEntryBtn');
     const databaseBtn = document.getElementById('databaseBtn');
+    const rolesBtn = document.getElementById('rolesBtn');
+
     const dataEntryView = document.getElementById('dataEntryView');
     const databaseView = document.getElementById('databaseView');
 
@@ -366,51 +345,84 @@ let currentUserName = null;
     const cancelEdit = document.getElementById('cancelEdit');
     const closeEdit = document.getElementById('closeEdit');
 
-    // ---------- STATE ----------
-    let allRecords = []; // { id, data... }
+    // Admins UI
+    const manageAdminsSection = document.getElementById('manageAdminsSection');
+    const manageAdminsNote = document.getElementById('manageAdminsNote');
+    const adminsBody = document.getElementById('adminsBody');
+    const adminActions = document.getElementById('adminActions');
+    const newAdminName = document.getElementById('newAdminName');
+    const newAdminEmail = document.getElementById('newAdminEmail');
+    const newAdminPassword = document.getElementById('newAdminPassword');
+    const newAdminRole = document.getElementById('newAdminRole');
+    const addAdminBtn = document.getElementById('addAdminBtn');
+
+    const exportBtn = document.getElementById('exportBtn');
+
+    // -------------------------------
+    // State
+    // -------------------------------
+    let allRecords = []; // array of cutoffs
     let unsubscribeSnapshot = null;
     let currentUserEmail = null;
+    let currentUserRole = null;
+    let currentUserName = null;
 
-    // ---------- LOGIN (Firestore-based) ----------
+    // -------------------------------
+    // Helpers
+    // -------------------------------
+    function escapeHTML(str) {
+      if (str === undefined || str === null) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function showElement(el){ el.classList.remove('hidden'); }
+    function hideElement(el){ if(!el.classList.contains('hidden')) el.classList.add('hidden'); }
+
+    // -------------------------------
+    // LOGIN (Firestore-based)
+    // - Emails stored lowercased for consistent matching
+    // -------------------------------
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = (emailInput.value || '').trim();
+      const email = (emailInput.value || '').trim().toLowerCase();
       const password = (passwordInput.value || '').trim();
-
       if (!email || !password) { alert('Enter email & password'); return; }
 
       try {
-        // query admins collection for matching email & password
         const q = query(collection(db, 'admins'), where('email', '==', email), where('password', '==', password));
         const snap = await getDocs(q);
+        if (snap.empty) { alert('Invalid credentials or admin not found.'); return; }
 
-        if (snap.empty) {
-          alert('Invalid credentials or admin not found.');
-          return;
-        }
+        const adminDoc = snap.docs[0];
+        const adminData = adminDoc.data();
 
-        // success: read role & name from the matched admin doc
-const adminDoc = snap.docs[0];
-const adminData = adminDoc.data();
+        currentUserEmail = (adminData.email || email).toLowerCase();
+        currentUserRole = adminData.role || 'viewer';
+        currentUserName = adminData.name || currentUserEmail;
 
-currentUserEmail = adminData.email || email;
-currentUserRole = adminData.role || 'viewer';
-currentUserName = adminData.name || (adminData.email || email);
+        // UI updates
+        userEmail.textContent = `${currentUserName} (${currentUserRole})`;
+        loginForm.classList.add('hidden');
+        userSection.classList.remove('hidden');
 
-userEmail.textContent = currentUserEmail;
-loginForm.classList.add('hidden');
-userSection.classList.remove('hidden');
-dataEntryBtn.classList.remove('hidden');
-databaseBtn.classList.remove('hidden');
-dataEntryView.classList.remove('hidden');
-databaseView.classList.add('hidden');
-// clear password input for safety
-passwordInput.value = '';
-// show Manage Admins section (visibility controlled by role)
-manageAdminsSection.classList.remove('hidden');
-// apply role restrictions immediately
-applyRolePermissions();
-alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
+        // show main nav buttons
+        dataEntryBtn.classList.remove('hidden');
+        databaseBtn.classList.remove('hidden');
+        rolesBtn.classList.remove('hidden');
+
+        // show Data Entry by default
+        showDataEntry();
+
+        // show Manage Admins area (its internal permissions will hide actions if needed)
+        manageAdminsSection.classList.remove('hidden');
+
+        // apply role-based UI changes
+        applyRolePermissions();
+
+        // Start loading data only when Database tab opened (realtime listener is lazy)
+        alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
+        // clear password field
+        passwordInput.value = '';
       } catch (err) {
         console.error(err);
         alert('Login error: ' + err.message);
@@ -418,39 +430,57 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
     });
 
     logoutBtn.addEventListener('click', () => {
+      // clear state and reload to simplify cleanup
       currentUserEmail = null;
-      userEmail.textContent = '';
-      userSection.classList.add('hidden');
-      loginForm.classList.remove('hidden');
-      dataEntryBtn.classList.add('hidden');
-      databaseBtn.classList.add('hidden');
-      dataEntryView.classList.add('hidden');
-      databaseView.classList.add('hidden');
-      // stop realtime listener if any
+      currentUserRole = null;
+      currentUserName = null;
       if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+      window.location.reload();
     });
 
-    // ---------- VIEW TOGGLE ----------
+    // -------------------------------
+    // View toggles
+    // -------------------------------
     dataEntryBtn.addEventListener('click', showDataEntry);
     databaseBtn.addEventListener('click', showDatabase);
+    rolesBtn.addEventListener('click', showRoles);
 
     function showDataEntry() {
-      dataEntryView.classList.remove('hidden');
-      databaseView.classList.add('hidden');
-      if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
-    }
-    function showDatabase() {
-      dataEntryView.classList.add('hidden');
-      databaseView.classList.remove('hidden');
-      startRealtimeListener();
+      showElement(dataEntryView);
+      hideElement(databaseView);
+      hideElement(manageAdminsSection);
     }
 
-    // ---------- UPLOAD SINGLE ----------
+    function showDatabase() {
+      hideElement(dataEntryView);
+      showElement(databaseView);
+      // Manage Admins is a section inside databaseView; show it depending on role
+      if (currentUserRole) showElement(manageAdminsSection);
+      // start realtime listener
+      startRealtimeListener();
+      // load admins for listing (so roles view shows current admins)
+      loadAdminsList();
+    }
+
+    function showRoles() {
+      hideElement(dataEntryView);
+      showElement(databaseView);
+      if (currentUserRole) showElement(manageAdminsSection);
+      // show the admins area; also load admins
+      loadAdminsList();
+    }
+
+    // -------------------------------
+    // Upload single entry
+    // -------------------------------
     singleUploadBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       if (!currentUserEmail) return alert('Please log in first.');
 
-      const newDoc = {
+      // role check: viewers cannot upload
+      if (currentUserRole === 'viewer') return alert('Unauthorized: viewer cannot add records.');
+
+      const docObj = {
         college: (uploadForm.college.value || '').trim(),
         branch: (uploadForm.branch.value || '').trim(),
         cat: (uploadForm.cat.value || '').trim(),
@@ -461,8 +491,10 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
         createdAt: Date.now()
       };
 
+      if (!docObj.college || !docObj.branch) return alert('Enter college & branch');
+
       try {
-        await addDoc(collection(db, 'cutoffs'), newDoc);
+        await addDoc(collection(db, 'cutoffs'), docObj);
         alert('✅ Single entry uploaded!');
         uploadForm.reset();
       } catch (err) {
@@ -471,7 +503,9 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
       }
     });
 
-    // ---------- JSON FILE HANDLING ----------
+    // -------------------------------
+    // Bulk JSON upload
+    // -------------------------------
     jsonFile.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -481,6 +515,7 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
 
     uploadJSONBtn.addEventListener('click', async () => {
       if (!currentUserEmail) return alert('Please log in first.');
+      if (currentUserRole === 'viewer') return alert('Unauthorized: viewer cannot add records.');
 
       let jsonData;
       try { jsonData = JSON.parse(jsonInput.value); }
@@ -506,7 +541,9 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
       jsonInput.value = ''; jsonFile.value = '';
     });
 
-    // ---------- REALTIME LISTENER ----------
+    // -------------------------------
+    // Realtime listener for cutoffs
+    // -------------------------------
     function startRealtimeListener() {
       if (unsubscribeSnapshot) return;
       const collRef = collection(db, 'cutoffs');
@@ -523,7 +560,9 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
       });
     }
 
-    // ---------- TABLE RENDER / FILTER / SORT ----------
+    // -------------------------------
+    // Table: filters, sorting, rendering
+    // -------------------------------
     function populateFilters() {
       const colleges = Array.from(new Set(allRecords.map(r => r.college).filter(Boolean))).sort();
       const prev = filterCollege.value || '';
@@ -583,20 +622,28 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
       `).join('');
       dataBody.innerHTML = html;
 
+      // attach handlers
       document.querySelectorAll('.editBtn').forEach(btn => btn.addEventListener('click', onEditClick));
       document.querySelectorAll('.deleteBtn').forEach(btn => btn.addEventListener('click', onDeleteClick));
+
+      // apply role-based disabling (if viewer/editor)
+      if (currentUserRole === 'viewer') {
+        document.querySelectorAll('.editBtn, .deleteBtn, #singleUploadBtn, #uploadJSONBtn').forEach(el => {
+          el.disabled = true;
+          el.classList.add('opacity-50', 'cursor-not-allowed');
+        });
+      } else if (currentUserRole === 'editor') {
+        // editors can edit and add but cannot manage admins (handled separately)
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+          // you said editors can edit/delete data earlier — but earlier you also said editors can delete; preserve that.
+          // If you want to disallow delete for editors, change logic here.
+        });
+      }
     }
 
-    // ---------- HELPERS ----------
-    function escapeHTML(str) {
-      if (str === undefined || str === null) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
-    // ---------- EDIT / DELETE ----------
+    // -------------------------------
+    // Edit / Delete handlers
+    // -------------------------------
     function onEditClick(e) {
       const tr = e.target.closest('tr');
       const id = tr.dataset.id;
@@ -613,6 +660,7 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
     }
 
     async function onDeleteClick(e) {
+      if (currentUserRole === 'viewer') return alert('Unauthorized: viewer cannot delete.');
       const tr = e.target.closest('tr');
       const id = tr.dataset.id;
       if (!confirm('Delete this record? This cannot be undone.')) return;
@@ -625,8 +673,8 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
       }
     }
 
-    function openEditModal() { editModal.classList.remove('hidden'); editModal.style.display = 'flex'; }
-    function closeEditModal() { editModal.classList.add('hidden'); editModal.style.display = 'none'; }
+    function openEditModal() { editModal.classList.remove('hidden-el'); editModal.style.display = 'flex'; }
+    function closeEditModal() { editModal.classList.add('hidden-el'); editModal.style.display = 'none'; }
 
     closeEdit.addEventListener('click', closeEditModal);
     cancelEdit.addEventListener('click', closeEditModal);
@@ -634,6 +682,7 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
     saveEdit.addEventListener('click', async () => {
       const id = edit_id.value;
       if (!id) return;
+      if (currentUserRole === 'viewer') return alert('Unauthorized: viewer cannot edit.');
       const updated = {
         college: (edit_college.value || '').trim(),
         branch: (edit_branch.value || '').trim(),
@@ -654,193 +703,193 @@ alert(`✅ Logged in as ${currentUserName} (${currentUserRole})`);
       }
     });
 
-    // ---------- SEARCH / FILTER HOOKS ----------
+    // -------------------------------
+    // Search / filter hooks
+    // -------------------------------
     [filterCollege, filterCat, sortBy, sortDir, searchInput].forEach(el => {
       el.addEventListener('change', renderTable);
       el.addEventListener('input', renderTable);
     });
     refreshBtn.addEventListener('click', () => renderTable());
-    // ---------- EXPORT DATA ----------
-const exportBtn = document.getElementById('exportBtn');
 
-exportBtn.addEventListener('click', async () => {
-  if (!currentUserEmail) {
-    alert('Please log in first.');
-    return;
-  }
+    // -------------------------------
+    // EXPORT: requires password confirmation from admins collection
+    // -------------------------------
+    exportBtn.addEventListener('click', async () => {
+      if (!currentUserEmail) return alert('Please log in first.');
+      const enteredPassword = prompt('Enter your admin password to export data:');
+      if (!enteredPassword) return;
 
-  // Prompt user for password confirmation
-  const enteredPassword = prompt('Enter your admin password to export data:');
-  if (!enteredPassword) return;
+      try {
+        const q = query(collection(db, 'admins'), where('email', '==', currentUserEmail.toLowerCase()), where('password', '==', enteredPassword));
+        const snap = await getDocs(q);
+        if (snap.empty) { alert('❌ Incorrect password.'); return; }
 
-  try {
-    // Verify password from admins collection
-    const q = query(collection(db, 'admins'),
-      where('email', '==', currentUserEmail),
-      where('password', '==', enteredPassword)
-    );
-    const snap = await getDocs(q);
+        // fetch all cutoffs
+        const cutoffSnap = await getDocs(collection(db, 'cutoffs'));
+        const allData = [];
+        cutoffSnap.forEach(d => allData.push({ id: d.id, ...d.data() }));
 
-    if (snap.empty) {
-      alert('❌ Incorrect password.');
-      return;
-    }
+        // create and download JSON
+        const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cutoffs_export_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
 
-    // Fetch all cutoff records
-    const cutoffSnap = await getDocs(collection(db, 'cutoffs'));
-    const allData = [];
-    cutoffSnap.forEach(doc => allData.push({ id: doc.id, ...doc.data() }));
-
-    // Convert to JSON and trigger download
-    const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `cutoffs_export_${new Date().toISOString().slice(0,10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    alert(`✅ Exported ${allData.length} records successfully!`);
-
-  } catch (err) {
-    console.error(err);
-    alert('❌ Export failed: ' + err.message);
-  }
-});
-// ---------- ROLE & ADMIN MANAGEMENT ----------
-
-/**
- * Apply UI restrictions based on currentUserRole
- */
-function applyRolePermissions() {
-  // default: hide admin actions until we decide
-  if (!currentUserRole) return;
-
-  // Editors can view Manage Admins but cannot change anything
-  if (currentUserRole === 'editor') {
-    adminActions.classList.add('hidden');           // hide add form
-    manageAdminsNote.classList.remove('hidden');    // show read-only note
-    // make export available (optional) - leave as enabled
-  }
-
-  // Viewers: hide admin area entirely (if you want)
-  if (currentUserRole === 'viewer') {
-    adminActions.classList.add('hidden');
-    manageAdminsNote.textContent = '🔒 You have view-only access to this section.';
-    manageAdminsNote.classList.remove('hidden');
-    // Also disable edit/delete on cutoffs table (visual)
-    document.querySelectorAll('.editBtn, .deleteBtn, #singleUploadBtn, #uploadJSONBtn').forEach(el => {
-      el.disabled = true;
-      el.classList.add('opacity-50', 'cursor-not-allowed');
+        alert(`✅ Exported ${allData.length} records successfully!`);
+      } catch (err) {
+        console.error(err);
+        alert('❌ Export failed: ' + err.message);
+      }
     });
-  }
 
-  // Superadmin: full control (ensure add form visible)
-  if (currentUserRole === 'superadmin') {
-    adminActions.classList.remove('hidden');
-    manageAdminsNote.classList.add('hidden');
-  }
-
-  // If editors should still be able to access cutoffs editing, do nothing else
-}
-
-/**
- * Load admins list and render table
- */
-async function loadAdminsList() {
-  try {
-    const snaps = await getDocs(collection(db, 'admins'));
-    const rows = [];
-    snaps.forEach(s => rows.push({ id: s.id, ...s.data() }));
-    // render
-    adminsBody.innerHTML = rows.map(a => `
-      <tr data-id="${a.id}">
-        <td class="p-2 text-sm">${escapeHTML(a.name || '')}</td>
-        <td class="p-2 text-sm">${escapeHTML(a.email || '')}</td>
-        <td class="p-2 text-sm">${escapeHTML(a.role || '')}</td>
-        <td class="p-2 text-sm">
-          ${currentUserRole === 'superadmin' ? `<button class="editAdminBtn px-2 py-1 mr-2 bg-blue-600 rounded text-xs text-white">Edit</button><button class="deleteAdminBtn px-2 py-1 bg-red-600 rounded text-xs text-white">Delete</button>` : `<span class="text-xs text-gray-400">read-only</span>`}
-        </td>
-      </tr>
-    `).join('');
-    // attach handlers if superadmin
-    if (currentUserRole === 'superadmin') {
-      document.querySelectorAll('.deleteAdminBtn').forEach(btn => btn.addEventListener('click', async (e) => {
-        const tr = e.target.closest('tr');
-        const id = tr.dataset.id;
-        if (!confirm('Delete this admin?')) return;
-        try {
-          await deleteDoc(doc(db, 'admins', id));
-          alert('✅ Admin deleted');
-          loadAdminsList();
-        } catch (err) {
-          console.error(err);
-          alert('Delete failed: ' + err.message);
-        }
-      }));
-
-      // Edit flow can be added later - for now, simple delete + re-add handles role changes
+    // -------------------------------
+    // Admin management (list, add, delete)
+    // -------------------------------
+    async function loadAdminsList() {
+      try {
+        const snaps = await getDocs(collection(db, 'admins'));
+        const rows = [];
+        snaps.forEach(s => rows.push({ id: s.id, ...s.data() }));
+        renderAdmins(rows);
+      } catch (err) {
+        console.error('Load admins error', err);
+      }
     }
-  } catch (err) {
-    console.error('Load admins error', err);
-  }
-}
 
-/**
- * Add admin button handler - only superadmin will have visible button
- */
-addAdminBtn?.addEventListener('click', async () => {
-  if (currentUserRole !== 'superadmin') {
-    alert('Only superadmins can add admins.');
-    return;
-  }
-  const email = (newAdminEmail.value || '').trim();
-  const password = (newAdminPassword.value || '').trim();
-  const role = (newAdminRole.value || 'viewer');
-  const name = (newAdminName.value || '').trim() || email;
-  if (!email || !password) return alert('Please provide name, email & password.');
+    function renderAdmins(list) {
+      if (!Array.isArray(list) || list.length === 0) {
+        adminsBody.innerHTML = `<tr><td colspan="4" class="text-gray-400 py-3">No admins found</td></tr>`;
+        return;
+      }
+      adminsBody.innerHTML = list.map(a => `
+        <tr data-id="${a.id}">
+          <td class="p-2 text-sm">${escapeHTML(a.name || '')}</td>
+          <td class="p-2 text-sm">${escapeHTML((a.email || '').toLowerCase())}</td>
+          <td class="p-2 text-sm">${escapeHTML(a.role || '')}</td>
+          <td class="p-2 text-sm">
+            ${currentUserRole === 'superadmin' ? `<button class="deleteAdminBtn px-2 py-1 bg-red-600 text-xs text-white rounded" data-id="${a.id}">Delete</button>` : `<span class="text-xs text-gray-400">read-only</span>`}
+          </td>
+        </tr>
+      `).join('');
 
-  try {
-    // Basic duplicate check
-    const q = query(collection(db, 'admins'), where('email', '==', email));
-    const snap = await getDocs(q);
-    if (!snap.empty) return alert('Admin with this email already exists.');
+      if (currentUserRole === 'superadmin') {
+        document.querySelectorAll('.deleteAdminBtn').forEach(btn => btn.addEventListener('click', async (ev) => {
+          const id = btn.getAttribute('data-id');
+          if (!confirm('Delete this admin?')) return;
+          try {
+            await deleteDoc(doc(db, 'admins', id));
+            alert('✅ Admin deleted');
+            loadAdminsList();
+          } catch (err) {
+            console.error(err);
+            alert('Delete failed: ' + err.message);
+          }
+        }));
+      }
+    }
 
-    await addDoc(collection(db, 'admins'), { email, password, role, name });
-    alert('✅ Admin added');
-    newAdminName.value = ''; newAdminEmail.value = ''; newAdminPassword.value = '';
-    loadAdminsList();
-  } catch (err) {
-    console.error(err);
-    alert('Add admin failed: ' + err.message);
-  }
-});
+    // Add admin (only superadmin)
+    addAdminBtn.addEventListener('click', async () => {
+      if (currentUserRole !== 'superadmin') return alert('Only superadmins can add admins.');
+      const name = (newAdminName.value || '').trim();
+      const email = (newAdminEmail.value || '').trim().toLowerCase();
+      const password = (newAdminPassword.value || '').trim();
+      const role = (newAdminRole.value || 'viewer');
 
-// When Database view shown, also load admins list
-function showDatabase() {
-  dataEntryView.classList.add('hidden');
-  databaseView.classList.remove('hidden');
-  startRealtimeListener();
-  // load admins for the Manage Admins section
-  loadAdminsList();
-}
+      if (!name || !email || !password) return alert('Please provide name, email & password.');
 
-    // ---------- UTILITY: load once if needed ----------
+      try {
+        // Prevent duplicate email
+        const q = query(collection(db, 'admins'), where('email', '==', email));
+        const snap = await getDocs(q);
+        if (!snap.empty) return alert('Admin with this email already exists.');
+
+        await addDoc(collection(db, 'admins'), { name, email, password, role });
+        alert('✅ Admin added');
+        newAdminName.value = ''; newAdminEmail.value = ''; newAdminPassword.value = '';
+        loadAdminsList();
+      } catch (err) {
+        console.error(err);
+        alert('Add admin failed: ' + err.message);
+      }
+    });
+
+    // -------------------------------
+    // Role-based UI adjustments
+    // -------------------------------
+    function applyRolePermissions() {
+      // By default assume minimal access
+      if (!currentUserRole) {
+        hideElement(dataEntryBtn); hideElement(databaseBtn); hideElement(rolesBtn);
+        hideElement(manageAdminsSection);
+        return;
+      }
+
+      // viewers: can view database, cannot add/edit/delete or manage admins
+      if (currentUserRole === 'viewer') {
+        // show top nav buttons
+        dataEntryBtn.classList.remove('hidden');
+        databaseBtn.classList.remove('hidden');
+        rolesBtn.classList.remove('hidden');
+
+        // hide upload controls
+        singleUploadBtn.disabled = true;
+        uploadJSONBtn.disabled = true;
+
+        // admin add form hidden
+        adminActions.classList.add('hidden');
+        manageAdminsNote.classList.remove('hidden');
+      }
+
+      // editors: can add/edit/delete cutoffs, but cannot change admins
+      if (currentUserRole === 'editor') {
+        singleUploadBtn.disabled = false;
+        uploadJSONBtn.disabled = false;
+
+        adminActions.classList.add('hidden'); // cannot add admins
+        manageAdminsNote.classList.remove('hidden'); // read-only note
+      }
+
+      // superadmin: full access
+      if (currentUserRole === 'superadmin') {
+        singleUploadBtn.disabled = false;
+        uploadJSONBtn.disabled = false;
+        adminActions.classList.remove('hidden');
+        manageAdminsNote.classList.add('hidden');
+      }
+    }
+
+    // -------------------------------
+    // Utility: initial load (not auto-starting realtime)
+    // -------------------------------
     async function loadOnce() {
-      const snap = await getDocs(collection(db, 'cutoffs'));
-      allRecords = [];
-      snap.forEach(s => allRecords.push({ id: s.id, ...s.data() }));
-      populateFilters();
-      renderTable();
+      try {
+        const snap = await getDocs(collection(db, 'cutoffs'));
+        allRecords = [];
+        snap.forEach(s => allRecords.push({ id: s.id, ...s.data() }));
+        populateFilters();
+        renderTable();
+      } catch (err) {
+        console.error('Load once error', err);
+      }
     }
 
-    // ---------- INITIAL UX ----------
-    // data entry & database buttons are hidden until login (already set in HTML)
-    // show Data Entry by default when user logs in (handled in login flow)
+    // -------------------------------
+    // Initial UI: everything hidden until login
+    // -------------------------------
     window.addEventListener('load', () => {
-      // nothing to show until login
+      // hide main sections until logged in
+      hideElement(dataEntryView);
+      hideElement(databaseView);
+      hideElement(manageAdminsSection);
+      // nav buttons hidden until login
+      // dataEntryBtn/databaseBtn/rolesBtn already hidden by default in HTML
     });
 
   </script>
