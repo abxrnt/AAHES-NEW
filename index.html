@@ -1,325 +1,773 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AAHES | CEE Guide</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AAHES — All Assam Helpdesk for Engineering Students</title>
+
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@800&family=Bebas+Neue&display=swap" rel="stylesheet">
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.jpeg" type="image/png">
+
+  <meta name="description" content="AAHES — All Assam Helpdesk for Engineering Students. Official CEE updates, cutoffs, PYQs and counselling resources." />
+
+  <!-- === Page styles (paste all your CSS here) === -->
   <style>
+    :root{
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --muted: #6b7280;
+      --glass-border: rgba(6,95,70,0.06);
+    }
+
+    html,body { height:100%; }
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg, #f0fdfa 0%, #e6f7ff 100%);
-      color: #1f2937;
-      overflow-x: hidden;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#f7fff8 0%, #ffffff 100%);
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      color: #0f172a;
+      -webkit-font-feature-settings: "ss01" on;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
-
-    nav {
-      background: linear-gradient(to right, #064e3b, #047857, #10b981);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
-    .nav-link {
-      position: relative;
-      padding: 0.5rem 1rem;
-      transition: color 0.3s ease;
-    }
+    /* NAV / UI */
+    header { backdrop-filter: blur(8px); }
+    .nav-link { position: relative; padding-bottom: 6px; }
     .nav-link::after {
-      content: '';
+      content: "";
       position: absolute;
-      bottom: -3px;
       left: 0;
+      bottom: 0;
       width: 0%;
       height: 2px;
-      background: white;
-      transition: all 0.3s ease;
+      background: linear-gradient(90deg,var(--accent), var(--accent-dark));
+      transition: width .28s ease;
     }
-    .nav-link:hover::after,
-    .nav-link.active::after { width: 100%; }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
 
+    /* glass cards */
     .glass {
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(16,185,129,0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .glass:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(16,185,129,0.3);
+      background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.8));
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 30px rgba(16,185,129,0.04);
     }
 
-    .btn-green {
-      background: linear-gradient(90deg, #22c55e, #16a34a);
-      color: white;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    .btn-green:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(34,197,94,0.5);
-    }
+    /* reveal / animations */
+    .reveal { opacity: 0; transform: translateY(18px); transition: all 600ms cubic-bezier(.2,.9,.3,1); }
+    .reveal.show { opacity: 1; transform: translateY(0); }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(16px) } to { opacity:1; transform: translateY(0) } }
+    .fade-up { animation: fadeUp .6s ease both; }
 
-    footer {
-      background: #f1fdf7;
-      border-top: 1px solid #d1fae5;
-    }
+    /* marquee */
+    @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+    .marquee { display:flex; gap:1rem; animation: marquee 28s linear infinite; will-change: transform; }
 
-    /* ROUTE VISIBILITY */
-    .route { display: none; }
-    .route.active { display: block; animation: fadeUp 0.6s ease-out forwards; }
+    /* small UI niceties */
+    :focus { outline: 3px solid rgba(16,185,129,0.12); outline-offset: 3px; }
+    .hover-lift { transition: transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s; }
+    .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(16,185,129,0.08); }
+
+    /* responsive tweaks */
+    @media (max-width:640px) { .desktop-only { display:none; } }
+
+    /* cutoffs table styling */
+    .cutoff-card { border-radius: 14px; padding: 1.1rem; }
+    .chip { background: rgba(16,185,129,0.08); color: #065f46; padding: .22rem .6rem; border-radius: 999px; font-weight:600; font-size:0.85rem; display:inline-flex; align-items:center; gap:.4rem; }
+
+    /* modal */
+    .modal { transition: opacity .18s ease; }
+
+    /* small scrollbar clean up for modal content */
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
   </style>
 </head>
 
-<body class="flex flex-col min-h-screen">
-  <!-- Navbar -->
-  <nav class="navbar text-white flex items-center justify-between px-4 md:px-10 py-2 sticky top-0 z-50 shadow-lg rounded-b-xl">
-    <div class="flex items-center gap-2">
-      <img src="logo.jpeg" alt="logo" class="w-8 h-8 rounded-full border-2 border-gray-500 shadow-md" />
-      <h1 class="text-2xl font-bold" style="font-family: 'Bebas Neue', sans-serif;">AAHES - CEE Guide</h1>
+<body class="text-gray-800 min-h-screen flex flex-col">
+
+  <!-- =========================
+       HEADER + NAVBAR
+       ========================= -->
+  <header class="fixed w-full top-0 left-0 z-50">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-gray-200 rounded-b-xl shadow-sm">
+      <div class="flex items-center gap-3">
+        <img src="logo.jpeg" alt="AAHES Logo" class="w-11 h-11 rounded-full object-cover border border-gray-100 shadow-sm">
+        <div class="leading-none">
+          <a href="#/" id="brand" class="text-2xl font-extrabold text-green-700" style="font-family: 'Playfair Display', serif">AAHES</a>
+          <div class="text-xs text-gray-500 -mt-0.5">All Assam Helpdesk for Engineering Students</div>
+        </div>
+      </div>
+
+      <ul id="navLinks" class="hidden md:flex items-center gap-4 text-sm font-medium">
+        <li><a href="#/" class="nav-link px-3 py-1 rounded-md" data-route>Home</a></li>
+        <li><a href="#/cutoffs" class="nav-link px-3 py-1 rounded-md" data-route>Cutoffs</a></li>
+        <li><a href="#/features" class="nav-link px-3 py-1 rounded-md" data-route>Features</a></li>
+        <li><a href="#/syllabus" class="nav-link px-3 py-1 rounded-md" data-route>Syllabus</a></li>
+        <li><a href="#/contact" class="nav-link px-3 py-1 rounded-md" data-route>Contact</a></li>
+      </ul>
+
+      <div class="flex items-center gap-3">
+        <a href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN" target="_blank" class="desktop-only inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-green-600 text-green-700 hover:bg-green-600 hover:text-white transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+          Join WhatsApp
+        </a>
+
+        <!-- Mobile toggler -->
+        <button id="mobileToggle" class="md:hidden p-2 rounded focus:outline-none" aria-label="Open menu">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-200 shadow-lg">
+      <div class="px-4 py-4 space-y-2">
+        <a href="#/" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Home</a>
+        <a href="#/cutoffs" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Cutoffs</a>
+        <a href="#/features" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Features</a>
+        <a href="#/syllabus" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Syllabus</a>
+        <a href="#/contact" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Contact</a>
+      </div>
     </div>
+  </header>
 
-    <button id="menuBtn" class="md:hidden text-white text-2xl">☰</button>
+  <!-- =========================
+       MAIN (ROUTES)
+       ========================= -->
+  <main class="pt-28 flex-1">
 
-    <ul id="navLinks" class="hidden md:flex gap-3 text-sm items-center ml-auto">
-      <li><a href="#/" class="nav-link active">Home</a></li>
-      <li><a href="#/about" class="nav-link">About Us</a></li>
-      <li><a href="#/cutoffs" class="nav-link">Cutoffs</a></li>
-      <li><a href="#/syllabus" class="nav-link">Syllabus</a></li>
-      <li><a href="#/contact" class="nav-link">Contact</a></li>
-    </ul>
-  </nav>
+    <!-- Home -->
+    <section id="route-home" class="route active max-w-7xl mx-auto px-4 md:px-8 pb-12" aria-labelledby="homeTitle">
+      <div class="grid md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-7">
+          <div class="inline-flex items-center gap-3 bg-green-50/70 text-green-800 rounded-full px-4 py-2 text-sm font-semibold shadow-sm mb-4 reveal" data-reveal>
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse inline-block"></span>
+            V3.7 — Updated & improved
+          </div>
 
-  <!-- MOBILE MENU -->
-  <ul id="mobileMenu" class="md:hidden hidden bg-emerald-900 text-white text-center py-2">
-    <li><a href="#/" class="block py-2 nav-link">Home</a></li>
-    <li><a href="#/about" class="block py-2 nav-link">About Us</a></li>
-    <li><a href="#/cutoffs" class="block py-2 nav-link">Cutoffs</a></li>
-    <li><a href="#/syllabus" class="block py-2 nav-link">Syllabus</a></li>
-    <li><a href="#/contact" class="block py-2 nav-link">Contact</a></li>
-  </ul>
+          <h1 id="homeTitle" class="text-4xl md:text-5xl font-extrabold leading-tight text-emerald-900 mb-4 reveal" data-reveal style="font-family: 'Playfair Display', serif;">
+            AAHES — Trusted guidance for Assam's engineering aspirants
+          </h1>
 
-  <!-- ROUTES -->
-  <main class="flex-grow">
+          <p class="text-gray-700 text-lg max-w-2xl mb-6 reveal" data-reveal>
+            We consolidate official CEE updates, historical cutoffs, curated PYQs and practical counselling advice — everything you need to make an informed admission decision.
+          </p>
 
-    <!-- HOME -->
-    <section id="route-home" class="route active max-w-7xl mx-auto px-4 md:px-8 py-16">
-      <h2 class="text-4xl font-bold text-emerald-700 mb-4">Welcome to AAHES - CEE Guide</h2>
-      <p class="text-gray-700 mb-6 max-w-3xl">Your comprehensive platform for Assam CEE resources — explore college cutoffs, exam syllabus, preparation guides, and admission updates, all in one place.</p>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="glass p-6 rounded-2xl">
-          <h3 class="text-xl font-bold text-emerald-700 mb-2">Accurate Cutoffs</h3>
-          <p>View reliable and official CEE cutoff data from ASTU’s verified sources.</p>
+          <div class="flex flex-wrap gap-3 reveal" data-reveal>
+            <a href="#/cutoffs" class="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-700 text-white px-5 py-3 rounded-lg shadow hover:scale-[1.02] transition hover-lift">
+              Explore cutoffs
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+
+            <button id="openDownloadsTop" class="inline-flex items-center gap-2 border border-gray-200 px-4 py-3 rounded-lg bg-white hover:shadow transition hover-lift">
+              Downloads
+            </button>
+
+            <a href="#/contact" class="inline-flex items-center gap-2 px-4 py-3 rounded-lg border border-green-600 text-green-700 hover:bg-green-600 hover:text-white transition">
+              Contact
+            </a>
+          </div>
         </div>
-        <div class="glass p-6 rounded-2xl">
-          <h3 class="text-xl font-bold text-emerald-700 mb-2">Study Resources</h3>
-          <p>Find detailed syllabus, previous year papers, and expert preparation tips.</p>
+
+        <div class="md:col-span-5 reveal" data-reveal>
+          <div class="glass rounded-3xl p-6 md:p-8 relative overflow-hidden hover-lift">
+            <div class="absolute -right-16 -top-16 w-44 h-44 bg-gradient-to-tr from-green-200 to-transparent opacity-30 rounded-full blur-2xl"></div>
+
+            <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" alt="campus" class="w-full h-44 object-cover rounded-xl border border-green-100 shadow-sm mb-4">
+
+            <h3 class="text-xl font-bold text-emerald-800">Find your best-fit college faster</h3>
+            <p class="text-sm text-gray-600 mt-2">Use historical trends and verified notices to shortlist colleges and branches that match your rank and goals.</p>
+
+            <ul class="text-sm text-gray-700 mt-4 space-y-2">
+              <li class="flex items-start gap-2"><span class="text-green-600 mt-1">•</span> Cutoff analytics & trends</li>
+              <li class="flex items-start gap-2"><span class="text-green-600 mt-1">•</span> Official circulars & PYQs</li>
+              <li class="flex items-start gap-2"><span class="text-green-600 mt-1">•</span> Counselling checklists</li>
+            </ul>
+
+            <div class="mt-4 flex gap-2">
+              <a href="#/cutoffs" class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-emerald-700 text-white rounded-lg">See Cutoffs</a>
+              <a href="#/syllabus" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-200 rounded-lg">Syllabus</a>
+            </div>
+          </div>
         </div>
-        <div class="glass p-6 rounded-2xl">
-          <h3 class="text-xl font-bold text-emerald-700 mb-2">Stay Updated</h3>
-          <p>Track the latest announcements, notifications, and round-wise updates.</p>
+      </div>
+
+      <!-- Marquee (campus slider) -->
+      <div class="mt-8 glass rounded-xl overflow-hidden p-3">
+        <div class="flex items-center justify-between mb-3 px-2">
+          <h4 class="text-lg font-semibold text-emerald-800">Campus highlights</h4>
+          <div class="text-sm text-gray-500">Featured colleges</div>
+        </div>
+        <div class="overflow-hidden">
+          <div class="marquee no-scrollbar">
+            <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" alt="aec" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg" alt="jec" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg" alt="gec" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://www.bvec.ac.in/images/slide/1534516181.jpg" alt="bvec" class="w-40 h-28 object-cover rounded-lg border">
+            <!-- duplicates for seamless loop -->
+            <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" alt="aec2" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg" alt="jec2" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg" alt="gec2" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://www.bvec.ac.in/images/slide/1534516181.jpg" alt="bvec2" class="w-40 h-28 object-cover rounded-lg border">
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ABOUT -->
-    <section id="route-about" class="route max-w-7xl mx-auto px-4 md:px-8 py-20">
-      <h2 class="text-3xl font-bold text-emerald-800 mb-4">About AAHES</h2>
-      <p class="text-gray-600 max-w-3xl">AAHES (Assam Academic Hub for Engineering Students) is a student-led initiative dedicated to providing transparent, data-backed insights into the Common Entrance Examination (CEE). We aim to empower aspirants through authentic resources and tools.</p>
+    <!-- =========================
+         CUTOFFS PAGE
+         ========================= -->
+    <section id="route-cutoffs" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="cutoffTitle" tabindex="-1">
+      <div class="max-w-5xl mx-auto">
+        <h2 id="cutoffTitle" class="text-4xl font-bold text-emerald-800 text-center mb-2">CEE Cutoff Ranks & Marks</h2>
+        <p class="text-gray-600 text-center mb-8">This serves as an approximate reference for the upcoming CEE examinations. Data is compiled from official sources and verified reports.</p>
+
+        <!-- Filter Form -->
+        <form id="filterForm" class="bg-white/70 backdrop-blur-lg border border-emerald-200 shadow-lg rounded-2xl p-6 grid gap-4 md:grid-cols-4">
+          <div class="flex flex-col">
+            <label class="text-gray-800 mb-1 font-semibold">College</label>
+            <select id="collegeSelect" class="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-400 outline-none">
+              <option value="">Select College</option>
+              <option value="AEC">AEC</option>
+              <option value="JEC">JEC</option>
+              <option value="JIST">JIST</option>
+              <option value="BBEC">BBEC</option>
+              <option value="GEC">GEC</option>
+              <option value="BVEC">BVEC</option>
+              <option value="DEC">DEC</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-800 mb-1 font-semibold">Branch</label>
+            <select id="branchSelect" class="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-400 outline-none">
+              <option value="">Select Branch</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-800 mb-1 font-semibold">Category</label>
+            <select id="categorySelect" class="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-400 outline-none">
+              <option value="">Select Category</option>
+              <option value="GEN">GEN</option>
+              <option value="OBC">OBC/MOBC</option>
+              <option value="SC">SC</option>
+              <option value="STP">STP</option>
+              <option value="STH">STH</option>
+            </select>
+          </div>
+
+          <div class="flex items-end">
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg w-full transition-all duration-300 hover:scale-105 shadow-md">Submit</button>
+          </div>
+        </form>
+
+        <!-- Results -->
+        <div id="result" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"></div>
+
+        <!-- A helpful note and fallback area -->
+        <div id="cutoffNote" class="mt-6 text-sm text-gray-600">
+          If you don't see results: ensure your firebase rules allow reads, or that the "cutoffs" collection exists in Firestore. The demo includes a small simulated dataset fallback.
+        </div>
+      </div>
     </section>
 
-    <!-- CUTOFFS -->
-    <section id="route-cutoffs" class="route max-w-7xl mx-auto px-4 md:px-8 py-20">
-      <h2 class="text-3xl font-bold text-emerald-800 mb-4">CEE Cutoff Ranks & Marks</h2>
-      <p class="text-gray-600 mb-10">Select filters to view round-wise cutoff ranks and marks from official ASTU data.</p>
+    <!-- Features page (placeholder) -->
+    <section id="route-features" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="featuresTitle" tabindex="-1">
+      <h2 id="featuresTitle" class="text-3xl font-bold text-emerald-800 mb-4">Features</h2>
+      <p class="text-gray-600">Cutoff analytics, Rank predictor, PYQs, and more — content coming soon.</p>
+    </section>
 
-      <!-- Filter -->
-      <form id="filterForm" class="glass p-4 rounded-2xl w-full max-w-4xl grid gap-2 md:grid-cols-4 mb-12">
+    <!-- Syllabus page (placeholder) -->
+    <section id="route-syllabus" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="syllabusTitle" tabindex="-1">
+      <h2 id="syllabusTitle" class="text-3xl font-bold text-emerald-800 mb-4">Syllabus</h2>
+      <p class="text-gray-600">ASTU / College syllabi and quick links will be added here.</p>
+    </section>
+
+    <!-- Contact -->
+    <section id="route-contact" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="contactTitle" tabindex="-1">
+      <h2 id="contactTitle" class="text-3xl font-bold text-emerald-800 mb-4">Contact</h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
         <div>
-          <label class="text-gray-800 mb-1 font-semibold">College</label>
-          <select id="college" class="p-3 rounded-lg text-gray-800 w-full">
-            <option value="">Select College</option>
-            <option value="AEC">AEC</option>
-            <option value="JEC">JEC</option>
-            <option value="JIST">JIST</option>
-            <option value="BBEC">BBEC</option>
-            <option value="GEC">GEC</option>
-            <option value="BVEC">BVEC</option>
-            <option value="DEC">DEC</option>
-          </select>
+          <p class="text-gray-700 mb-3"><strong>Email:</strong> <a href="mailto:helpline.aahes@gmail.com" class="underline text-green-700">helpline.aahes@gmail.com</a></p>
+          <p class="text-gray-700 mb-3"><strong>Phone:</strong> +91 xxxxx xxxxx</p>
+          <p class="text-gray-700"><strong>Address:</strong> Assam, India</p>
         </div>
 
-        <div>
-          <label class="text-gray-800 mb-1 font-semibold">Branch</label>
-          <select id="branch" class="p-3 rounded-lg text-gray-800 w-full">
-            <option value="">Select Branch</option>
-          </select>
-        </div>
+        <form id="contactFormMain" class="space-y-3 bg-white p-6 rounded-xl border">
+          <div>
+            <label class="text-sm font-medium text-gray-700">Name</label>
+            <input required name="name" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="Your name">
+          </div>
 
-        <div>
-          <label class="text-gray-800 mb-1 font-semibold">Category</label>
-          <select id="category" class="p-3 rounded-lg text-gray-800 w-full">
-            <option value="">Select Category</option>
-            <option value="GEN">GEN</option>
-            <option value="OBC">OBC/MOBC</option>
-            <option value="SC">SC</option>
-            <option value="STP">STP</option>
-            <option value="STH">STH</option>
-          </select>
-        </div>
+          <div>
+            <label class="text-sm font-medium text-gray-700">Email</label>
+            <input required name="email" type="email" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="you@example.com">
+          </div>
 
-        <button type="submit" class="btn-green px-6 py-3 rounded-lg font-semibold w-full md:w-auto">Submit</button>
-      </form>
+          <div>
+            <label class="text-sm font-medium text-gray-700">Message</label>
+            <textarea required name="message" rows="4" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="How can we help?"></textarea>
+          </div>
 
-      <div id="result" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"></div>
+          <div class="flex items-center gap-3">
+            <button type="submit" class="bg-emerald-700 text-white px-4 py-2 rounded-lg">Send message</button>
+            <button type="reset" class="text-gray-600 px-3 py-2 rounded-lg border">Reset</button>
+            <div id="contactStatusMain" class="text-sm text-gray-600 ml-auto"></div>
+          </div>
+        </form>
+      </div>
     </section>
 
-    <!-- SYLLABUS -->
-    <section id="route-syllabus" class="route max-w-7xl mx-auto px-4 md:px-8 py-20">
-      <h2 class="text-3xl font-bold text-emerald-800 mb-4">CEE Syllabus</h2>
-      <p class="text-gray-600">Detailed subject-wise syllabus will be updated here soon.</p>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="route-contact" class="route max-w-7xl mx-auto px-4 md:px-8 py-20">
-      <h2 class="text-3xl font-bold text-emerald-800 mb-4">Contact Us</h2>
-      <p class="text-gray-600 mb-6">For queries, suggestions, or collaborations, reach out to the AAHES team.</p>
-      <form class="glass p-6 rounded-2xl max-w-lg">
-        <input type="text" placeholder="Your Name" class="w-full mb-3 p-3 rounded-lg border" />
-        <input type="email" placeholder="Email" class="w-full mb-3 p-3 rounded-lg border" />
-        <textarea placeholder="Message" rows="4" class="w-full p-3 rounded-lg border"></textarea>
-        <button class="btn-green px-6 py-2 mt-4 rounded-lg">Send Message</button>
-      </form>
-    </section>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="text-center py-8 mt-auto">
-    <div class="max-w-4xl mx-auto">
-      <p class="font-semibold text-gray-800">Designed & Developed by</p>
-      <p class="text-gray-600 mb-3">Abishrant Shandilya (UI/UX & Frontend) <br> Abhilesh Sharma (Database Administrator)</p>
-      <p class="text-gray-500">© 2025 AAHES | All Rights Reserved</p>
+  <!-- ====== Footer ====== -->
+  <footer class="bg-gray-900 text-gray-300 py-10 mt-16">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-wide">AAHES</h2>
+          <p class="text-sm mt-2 text-gray-400 max-w-md">
+            Empowering Assam’s engineering aspirants with authentic updates, data-driven insights, and resources — all in one trusted platform.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-12 text-sm">
+          <div class="group">
+            <p class="text-white font-semibold flex items-center gap-2">Abishrant Shandilya</p>
+            <p class="text-gray-400 group-hover:text-gray-300 transition">UI/UX & Frontend Developer</p>
+            <div class="flex items-center gap-3 mt-2">
+              <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="LinkedIn">LinkedIn</a>
+              <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="GitHub">GitHub</a>
+              <a href="mailto:abishrant@gmail.com" class="text-gray-400 hover:text-emerald-400 transition">Email</a>
+            </div>
+          </div>
+
+          <div class="group">
+            <p class="text-white font-semibold flex items-center gap-2">Abhilesh Sharma</p>
+            <p class="text-gray-400 group-hover:text-gray-300 transition">Database Administrator</p>
+            <div class="flex items-center gap-3 mt-2">
+              <a href="#" class="text-gray-400 hover:text-emerald-400 transition">LinkedIn</a>
+              <a href="#" class="text-gray-400 hover:text-emerald-400 transition">GitHub</a>
+              <a href="mailto:abhilesh@gmail.com" class="text-gray-400 hover:text-emerald-400 transition">Email</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
+        © 2025 AAHES. All rights reserved.
+      </div>
     </div>
   </footer>
 
-  <!-- JS -->
+  <!-- DOWNLOADS MODAL (used on multiple pages) -->
+  <div id="downloadsModal" class="fixed inset-0 z-60 hidden items-center justify-center bg-black/40 p-4 modal">
+    <div class="bg-white rounded-xl w-full max-w-2xl p-6 relative">
+      <button id="closeDownloads" class="absolute right-4 top-4 text-gray-500 hover:text-gray-800 text-2xl" aria-label="Close">&times;</button>
+      <h4 class="text-xl font-semibold mb-2">Downloads</h4>
+      <div id="modalContent" class="space-y-4 max-h-72 overflow-auto no-scrollbar"></div>
+    </div>
+  </div>
+
+  <!-- =========================
+       SCRIPTS (app logic + firebase)
+       ========================= -->
+
+  <!-- NOTE:
+       - If you want to keep this file static and not include firebase, the Firestore code gracefully falls back to a small demo dataset.
+       - To enable real Firestore reads, keep the firebaseConfig below (or replace with env) and ensure Firestore rules permit reading.
+  -->
   <script type="module">
-    // Firebase Imports
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    /*******************************
+     * App: Simple SPA + Cutoffs
+     *******************************/
 
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
-      authDomain: "aahes-cee-cutoffs.firebaseapp.com",
-      projectId: "aahes-cee-cutoffs",
-      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
-      messagingSenderId: "706066626405",
-      appId: "1:706066626405:web:0d254ab82beb288108938c"
+    // --- ROUTING & NAV ---
+    const routes = {
+      '/': 'route-home',
+      '/cutoffs': 'route-cutoffs',
+      '/features': 'route-features',
+      '/syllabus': 'route-syllabus',
+      '/contact': 'route-contact'
     };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
 
-    // SPA ROUTER
-    const routes = document.querySelectorAll(".route");
-    const navLinks = document.querySelectorAll(".nav-link");
+    const navLinks = document.querySelectorAll('[data-route]');
+    const routeEls = document.querySelectorAll('.route');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileToggle = document.getElementById('mobileToggle');
 
-    function showRoute() {
-      const hash = location.hash || "#/";
-      routes.forEach(r => r.classList.remove("active"));
-      navLinks.forEach(l => l.classList.remove("active"));
+    mobileToggle?.addEventListener('click', () => {
+      if (mobileMenu) mobileMenu.classList.toggle('hidden');
+    });
 
-      const target = document.querySelector(`#route-${hash.replace("#/", "") || "home"}`);
-      const link = document.querySelector(`a[href="${hash}"]`);
-      if (target) target.classList.add("active");
-      if (link) link.classList.add("active");
+    function getPathFromHash() {
+      const hash = location.hash.replace('#', '') || '/';
+      return hash.startsWith('/') ? hash : '/';
     }
 
-    window.addEventListener("hashchange", showRoute);
-    window.addEventListener("load", showRoute);
-
-    // MOBILE MENU
-    const menuBtn = document.getElementById("menuBtn");
-    const mobileMenu = document.getElementById("mobileMenu");
-    menuBtn.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
-    mobileMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileMenu.classList.add("hidden")));
-
-    // FIREBASE CUTOFFS
-    let cutoffData = [];
-    async function loadCutoffs() {
-      const querySnapshot = await getDocs(collection(db, "cutoffs"));
-      cutoffData = querySnapshot.docs.map(doc => doc.data());
-      console.log("✅ Loaded cutoffs:", cutoffData);
+    function setActiveNav(path) {
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href') || '';
+        const route = (href.split('#')[1] || '/') ;
+        if (route === path) {
+          link.classList.add('active', 'text-emerald-800');
+        } else {
+          link.classList.remove('active', 'text-emerald-800');
+        }
+      });
     }
-    await loadCutoffs();
 
-    const form = document.getElementById("filterForm");
-    const result = document.getElementById("result");
+    function showRoute(path, push=false) {
+      const id = routes[path] || 'route-home';
+      routeEls.forEach(el => {
+        if (el.id === id) el.classList.add('active');
+        else el.classList.remove('active');
+      });
+      setActiveNav(path);
+      if (push) location.hash = path;
+      if (mobileMenu && !mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
 
-    document.getElementById("college").addEventListener("change", e => {
-      const selectedCollege = e.target.value;
-      const branchSelect = document.getElementById("branch");
-      branchSelect.innerHTML = `<option value="">Select Branch</option>`;
-      if (!selectedCollege) return;
+      // run reveal logic when switching
+      runReveals();
 
-      const availableBranches = [...new Set(
-        cutoffData.filter(d => d.college === selectedCollege).map(d => d.branch)
-      )];
-      availableBranches.forEach(branch => {
-        const opt = document.createElement("option");
-        opt.value = branch;
-        opt.textContent = branch;
-        branchSelect.appendChild(opt);
+      // accessibility: focus main heading of active route
+      setTimeout(() => {
+        const container = document.getElementById(id);
+        if (!container) return;
+        const h = container.querySelector('h1,h2,h3');
+        if (h && typeof h.focus === 'function') h.focus({preventScroll:true});
+      }, 80);
+    }
+
+    window.addEventListener('hashchange', () => {
+      const path = getPathFromHash();
+      showRoute(path, false);
+    });
+
+    window.addEventListener('load', () => {
+      const path = getPathFromHash();
+      showRoute(path, false);
+      runReveals();
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href') || '#/';
+        const path = (href.split('#')[1] || '/');
+        showRoute(path, true);
       });
     });
 
-    form.addEventListener("submit", e => {
+    // --- reveal-on-scroll ---
+    function runReveals() {
+      document.querySelectorAll('[data-reveal]').forEach(el => el.classList.remove('show'));
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) e.target.classList.add('show');
+        });
+      }, {threshold: 0.12});
+      document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+    }
+
+    // simple count-up
+    function animateCount(el, target=0, duration=1500) {
+      let start = 0;
+      const step = Math.max(1, Math.floor(target/(duration/16)));
+      const id = setInterval(() => {
+        start += step;
+        if (start >= target) {
+          el.textContent = target.toLocaleString();
+          clearInterval(id);
+        } else {
+          el.textContent = Math.floor(start).toLocaleString();
+        }
+      }, 16);
+    }
+
+    document.querySelectorAll('.count-num').forEach(node => {
+      const t = parseInt(node.dataset.target || '0', 10);
+      animateCount(node, t, 1800);
+    });
+
+    // --- Downloads modal (shared) ---
+    const pages = [
+      [
+        { title: "CEE 2025 Answer Key (ASTU)", desc: "Official answer key released by ASTU.", link: "https://drive.google.com/file/d/1inBKliONQDKxvUH8CEtw5aJ190DW-Ix3/view?usp=drive_link", date: "Oct 25, 2025" },
+        { title: "CEE 2025 Question Paper", desc: "Complete question paper PDF.", link: "https://drive.google.com/file/d/1ZDbY5LsJzo50xvinUQ5EXKRXHg8eZejH/view?usp=drive_link", date: "Oct 20, 2025" },
+        { title: "Important Circular - Oct 2025", desc: "Official circular for candidates.", link: "#", date: "Oct 15, 2025" }
+      ],
+      [
+        { title: "Counselling Guidelines 2025", desc: "Step-by-step counselling instructions.", link: "#", date: "Sep 10, 2025" },
+        { title: "B.Tech Syllabus (1st & 2nd Sem)", desc: "Official ASTU syllabus PDF.", link: "#", date: "Apr 2025" }
+      ]
+    ];
+    let currentPage = 0;
+    const listEl = document.getElementById('download-list');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const pageIndicator = document.getElementById('pageIndicator');
+    const modal = document.getElementById('downloadsModal');
+    const openDownloadsTop = document.getElementById('openDownloadsTop');
+    const openDownloadsBtn = document.getElementById('openDownloads');
+    const closeDownloadsBtn = document.getElementById('closeDownloads');
+    const modalContent = document.getElementById('modalContent');
+
+    function renderDownloads() {
+      if (!listEl) return;
+      listEl.innerHTML = '';
+      const items = pages[currentPage] || [];
+      items.forEach(it => {
+        const div = document.createElement('div');
+        div.className = "glass p-4 rounded-xl flex flex-col sm:flex-row gap-4 items-start hover-lift transition";
+        div.innerHTML = `
+          <div class="flex-1">
+            <div class="font-semibold text-emerald-800">${it.title}</div>
+            <div class="text-sm text-gray-600 mt-1">${it.desc}</div>
+            <div class="text-xs text-gray-500 mt-1">${it.date}</div>
+          </div>
+          <a href="${it.link}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 text-white rounded-lg">Download</a>
+        `;
+        listEl.appendChild(div);
+      });
+      if (pageIndicator) pageIndicator.textContent = `Page ${currentPage+1} of ${pages.length}`;
+      if (prevBtn) prevBtn.disabled = currentPage === 0;
+      if (nextBtn) nextBtn.disabled = currentPage === pages.length-1;
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 0) { currentPage--; renderDownloads(); } });
+    if (nextBtn) nextBtn.addEventListener('click', () => { if (currentPage < pages.length-1) { currentPage++; renderDownloads(); } });
+
+    openDownloadsTop?.addEventListener('click', () => {
+      showDownloadsModal();
+    });
+    openDownloadsBtn?.addEventListener('click', () => {
+      showDownloadsModal();
+    });
+
+    function showDownloadsModal() {
+      if (!modal) return;
+      modalContent.innerHTML = pages.flat().map(it => `
+        <div class="p-3 border-b last:border-b-0">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="font-semibold text-emerald-800">${it.title}</div>
+              <div class="text-sm text-gray-600">${it.desc}</div>
+              <div class="text-xs text-gray-500 mt-1">${it.date}</div>
+            </div>
+            <a href="${it.link}" target="_blank" class="ml-4 inline-flex items-center gap-2 px-3 py-2 bg-emerald-700 text-white rounded-md">Download</a>
+          </div>
+        </div>
+      `).join('');
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+    }
+
+    closeDownloadsBtn?.addEventListener('click', () => { modal.classList.add('hidden'); modal.classList.remove('flex'); });
+    modal?.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); } });
+
+    window.addEventListener('load', renderDownloads);
+
+    // --- Contact demo ---
+    const contactFormMain = document.getElementById('contactFormMain');
+    const contactStatusMain = document.getElementById('contactStatusMain');
+    contactFormMain?.addEventListener('submit', (e) => {
       e.preventDefault();
-      const college = document.getElementById("college").value;
-      const branch = document.getElementById("branch").value;
-      const cat = document.getElementById("category").value;
+      contactStatusMain.textContent = 'Sending…';
+      setTimeout(() => {
+        contactStatusMain.textContent = "Thanks — message sent! We'll reply soon.";
+        contactFormMain.reset();
+        setTimeout(()=> contactStatusMain.textContent = '', 4000);
+      }, 900);
+    });
 
-      if (!college || !branch || !cat) {
-        result.innerHTML = `<p class='col-span-3 text-red-500 font-semibold'>⚠️ Please fill all fields.</p>`;
-        return;
+    // --- small accessibility tweaks ---
+    document.querySelectorAll('details').forEach(d => {
+      d.addEventListener('toggle', () => { if (d.open) d.scrollIntoView({behavior:'smooth', block:'center'}); });
+    });
+
+    // show reveals initially if already in viewport
+    document.querySelectorAll('[data-reveal]').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.85) el.classList.add('show');
+    });
+
+    /**********************************************************************
+     * CUTOFFS: Firestore loader + in-memory fallback + UI rendering
+     *
+     * Where to paste CSS and JS for cutoffs?
+     *   - CSS: already included above (the .glass, .fade-up styles)
+     *   - JS: THIS SCRIPT block (we're placing everything inside this module)
+     *
+     * Behavior:
+     *   1. Try to load from Firestore if available.
+     *   2. If Firestore fails or is not configured, fall back to demo dataset.
+     *
+     **********************************************************************/
+    // demo fallback data (structure expected in Firestore):
+    // { college: 'AEC', branch: 'CSE', cat: 'GEN', round: '1', close: 512, marks: 145 }
+    const demoCutoffs = [
+      { college: "AEC", branch: "CSE", cat: "GEN", round: "1", close: 512, marks: 145 },
+      { college: "AEC", branch: "CSE", cat: "GEN", round: "2", close: 620, marks: 138 },
+      { college: "AEC", branch: "EEE", cat: "GEN", round: "1", close: 840, marks: 120 },
+      { college: "JEC", branch: "CSE", cat: "GEN", round: "1", close: 1100, marks: 95 },
+      { college: "BBEC", branch: "ME", cat: "GEN", round: "1", close: 1500, marks: 70 },
+      { college: "GEC", branch: "CSE", cat: "OBC", round: "1", close: 650, marks: 132 },
+      // add more demo items as needed
+    ];
+
+    // state
+    let cutoffData = []; // will be overwritten by Firestore if available
+
+    // Attempt to load Firestore data. If anything fails, fall back to demo.
+    async function tryLoadFromFirestore() {
+      try {
+        // Lazy import firebase packages
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js');
+        const { getFirestore, collection, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js');
+
+        // <-- Replace with your actual firebase config if needed -->
+        const firebaseConfig = {
+          apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+          authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+          projectId: "aahes-cee-cutoffs",
+          storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+          messagingSenderId: "706066626405",
+          appId: "1:706066626405:web:0d254ab82beb288108938c"
+        };
+
+        // Initialize
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const qSnap = await getDocs(collection(db, "cutoffs"));
+        const docs = qSnap.docs.map(d => d.data());
+        if (!docs || docs.length === 0) {
+          console.warn('Firestore returned no documents — falling back to demo data.');
+          cutoffData = demoCutoffs;
+          return;
+        }
+
+        cutoffData = docs;
+        console.log('✅ Loaded cutoffs from Firestore:', cutoffData);
+      } catch (err) {
+        console.warn('Could not load Firestore (falling back to demo). Error:', err);
+        cutoffData = demoCutoffs;
       }
+    }
 
-      const availableRounds = ["1", "2", "3"].filter(r =>
-        cutoffData.some(d => d.college === college && d.branch === branch && d.cat === cat && d.round === r)
-      );
+    // call loader (don't block UI)
+    (async () => {
+      await tryLoadFromFirestore();
+      // After load, enable cutoffs UI interactions
+      initCutoffUI();
+    })();
 
-      if (availableRounds.length === 0) {
-        result.innerHTML = `<div class='text-center text-gray-600 mt-8'>
-          No data found for ${college} - ${branch} (${cat})
-        </div>`;
-        return;
-      }
+    function initCutoffUI() {
+      const collegeSel = document.getElementById('collegeSelect');
+      const branchSel = document.getElementById('branchSelect');
+      const catSel = document.getElementById('categorySelect');
+      const filterForm = document.getElementById('filterForm');
+      const result = document.getElementById('result');
 
-      let html = "";
-      availableRounds.forEach(round => {
-        const match = cutoffData.find(d =>
-          d.college === college && d.branch === branch && d.cat === cat && d.round === round
-        );
-        html += `
-          <div class="glass p-6 rounded-2xl shadow-lg fade-up">
-            <h3 class="text-2xl font-bold text-emerald-700 mb-2">Round ${round}</h3>
-            <p><strong>College:</strong> ${match.college}</p>
-            <p><strong>Branch:</strong> ${match.branch}</p>
-            <p><strong>Category:</strong> ${match.cat}</p>
-            <p class="text-3xl font-extrabold text-emerald-800 mb-1">Closing Rank: ${match.close}</p>
-            <p class="text-2xl font-bold text-emerald-700 mt-2">Marks: ${match.marks}</p>
-          </div>`;
+      // populate branch when college changes
+      collegeSel?.addEventListener('change', (e) => {
+        const selectedCollege = e.target.value;
+        branchSel.innerHTML = `<option value="">Select Branch</option>`;
+        if (!selectedCollege) return;
+        const availableBranches = [...new Set(
+          cutoffData.filter(d => d.college === selectedCollege).map(d => d.branch)
+        )].sort();
+        if (availableBranches.length === 0) {
+          // if Firestore loaded but college not present, optionally show all branches from demo
+          const fallbackBranches = [...new Set(cutoffData.map(d => d.branch))].sort();
+          fallbackBranches.forEach(b => {
+            const opt = document.createElement('option');
+            opt.value = b; opt.textContent = b; branchSel.appendChild(opt);
+          });
+          return;
+        }
+        availableBranches.forEach(branch => {
+          const opt = document.createElement('option');
+          opt.value = branch; opt.textContent = branch; branchSel.appendChild(opt);
+        });
       });
 
-      result.innerHTML = html;
-      document.querySelectorAll(".fade-up").forEach((el, i) => el.style.animationDelay = `${i * 0.1}s`);
-    });
+      // handle form submit
+      filterForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const college = (collegeSel?.value || '').trim();
+        const branch = (branchSel?.value || '').trim();
+        const cat = (catSel?.value || '').trim();
+
+        if (!college || !branch || !cat) {
+          result.innerHTML = `<p class="col-span-3 text-red-500 font-semibold text-center">⚠️ Please fill all fields.</p>`;
+          return;
+        }
+
+        // find all rounds where this combination exists
+        const rounds = [...new Set(cutoffData.filter(d => d.college === college && d.branch === branch && d.cat === cat).map(d => d.round))].sort();
+        if (!rounds || rounds.length === 0) {
+          result.innerHTML = `<div class="text-center text-gray-600 mt-8">
+            No data found for <strong>${college} - ${branch}</strong> (<span class="font-semibold">${cat}</span>)
+          </div>`;
+          return;
+        }
+
+        // sort rounds numerically if possible
+        const sortedRounds = rounds.sort((a,b) => {
+          const na = Number(a), nb = Number(b);
+          if (!isNaN(na) && !isNaN(nb)) return na - nb;
+          return String(a).localeCompare(String(b));
+        });
+
+        // build HTML
+        let html = '';
+        sortedRounds.forEach((r, idx) => {
+          // pick the record for this round. If multiple records exist pick first.
+          const match = cutoffData.find(d => d.college === college && d.branch === branch && d.cat === cat && d.round === r);
+          if (!match) return;
+          html += `
+            <div class="glass cutoff-card p-6 rounded-2xl shadow-lg fade-up">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="text-sm text-gray-500">Round ${r}</div>
+                  <h3 class="text-2xl font-bold text-emerald-700">${match.college} — ${match.branch}</h3>
+                  <div class="mt-2 text-sm text-gray-600">Category: <span class="font-medium">${match.cat}</span></div>
+                </div>
+
+                <div class="text-right">
+                  <div class="text-xs text-gray-500">Closing Rank</div>
+                  <div class="text-3xl font-extrabold text-emerald-800">${match.close ?? '—'}</div>
+                  <div class="text-sm text-gray-700 mt-2">Marks: <span class="font-bold">${match.marks ?? '—'}</span></div>
+                </div>
+              </div>
+
+              <!-- optional meta row -->
+              <div class="mt-4 flex items-center justify-between">
+                <div class="text-xs text-gray-500">Source: ${match.source ?? 'Official circular / compiled reports'}</div>
+                <div class="text-xs text-gray-500">Updated: ${match.updated ?? '—'}</div>
+              </div>
+            </div>
+          `;
+        });
+
+        result.innerHTML = html;
+        // add small stagger animation delay
+        document.querySelectorAll('.fade-up').forEach((el,i) => el.style.animationDelay = `${i*0.06}s`);
+      });
+    }
+
+    // If you want to programmatically push a prefilled filter state (e.g., open via link),
+    // you can add a function here that sets selects and triggers submit.
+
   </script>
+
+  <!-- End module -->
 </body>
 </html>
