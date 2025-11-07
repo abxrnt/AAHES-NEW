@@ -897,9 +897,109 @@
       if (rect.top < window.innerHeight * 0.85) el.classList.add('show');
     });
 
+
+
+
+
+
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+      authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+      projectId: "aahes-cee-cutoffs",
+      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+      messagingSenderId: "706066626405",
+      appId: "1:706066626405:web:0d254ab82beb288108938c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let cutoffData = [];
+
+    async function loadCutoffs() {
+      const querySnapshot = await getDocs(collection(db, "cutoffs"));
+      cutoffData = querySnapshot.docs.map(doc => doc.data());
+      console.log("✅ Loaded cutoffs:", cutoffData);
+    }
+
+    await loadCutoffs();
+
+    const form = document.getElementById("filterForm");
+    const result = document.getElementById("result");
+
+    document.getElementById("college").addEventListener("change", (e) => {
+      const selectedCollege = e.target.value;
+      const branchSelect = document.getElementById("branch");
+      branchSelect.innerHTML = `<option value="">Select Branch</option>`;
+
+      if (!selectedCollege) return;
+
+      const availableBranches = [...new Set(
+        cutoffData.filter(d => d.college === selectedCollege).map(d => d.branch)
+      )];
+
+      availableBranches.forEach(branch => {
+        const opt = document.createElement("option");
+        opt.value = branch;
+        opt.textContent = branch;
+        branchSelect.appendChild(opt);
+      });
+    });
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const college = document.getElementById("college").value;
+      const branch = document.getElementById("branch").value;
+      const cat = document.getElementById("category").value;
+
+      if (!college || !branch || !cat) {
+        result.innerHTML = `<p class="col-span-3 text-red-500 font-semibold">⚠️ Please fill all fields.</p>`;
+        return;
+      }
+
+      const availableRounds = ["1", "2", "3"].filter(r =>
+        cutoffData.some(d => d.college === college && d.branch === branch && d.cat === cat && d.round === r)
+      );
+
+      if (availableRounds.length === 0) {
+        result.innerHTML = `<div class="text-center text-gray-600 mt-8">
+          No data found for ${college} - ${branch} (${cat})
+        </div>`;
+        return;
+      }
+
+      let html = "";
+      availableRounds.forEach(round => {
+        const match = cutoffData.find(d =>
+          d.college === college && d.branch === branch && d.cat === cat && d.round === round
+        );
+
+        html += `
+          <div class="glass p-6 rounded-2xl shadow-lg fade-up">
+            <h3 class="text-2xl font-bold text-green-700 mb-2">Round ${round}</h3>
+            <p><strong>College:</strong> ${match.college}</p>
+            <p><strong>Branch:</strong> ${match.branch}</p>
+            <p><strong>Category:</strong> ${match.cat}</p>
+            <p class="text-3xl font-extrabold text-green-800 mb-1">Closing Rank: ${match.close}</p>
+            <p class="text-2xl font-bold text-green-700 mt-2">Marks: ${match.marks}</p>
+          </div>
+        `;
+      });
+
+      result.innerHTML = html;
+      document.querySelectorAll(".fade-up").forEach((el, i) => {
+        el.style.animationDelay = `${i * 0.1}s`;
+      });
+    });
+
   </script>
 </body>
 </html>
+
 
 
 
