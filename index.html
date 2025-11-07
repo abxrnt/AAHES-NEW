@@ -3,426 +3,503 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AAHES • CEE Guide — Assam Admission Helpdesk</title>
+  <title>AAHES | CEE Guide — Assam's Engineering Admissions Hub</title>
 
   <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Playfair+Display:ital,wght@1,800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Playfair+Display:ital,wght@1,800&family=Bebas+Neue&family=Pacifico&family=Noto+Sans+Bengali:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Favicon -->
+  <!-- Favicon (replace with your own) -->
   <link rel="icon" type="image/png" href="favicon.jpeg">
 
+  <meta name="description" content="AAHES — All Assam Helpdesk for Engineering Students. Official CEE updates, cutoffs, PYQs and counselling resources to help you pick the right college." />
+
   <style>
+    /* Global */
     :root{
-      --accent: #16a34a; /* emerald-600 */
-      --accent-2: #059669; /* emerald-700 */
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --muted: #6b7280;
+      --glass: rgba(255,255,255,0.6);
     }
 
-    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#f7fff8 0%, #ffffff 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-    /* small utility for hidden-scroll containers */
+    /* Fade-up reveal class used by JS IntersectionObserver */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: all 600ms cubic-bezier(.2,.9,.3,1);
+    }
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Tiny utility for non-scroll bar on horizontal scrollers */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* subtle glass card */
-    .glass {
-      background: rgba(255,255,255,0.6);
-      backdrop-filter: blur(6px);
+    /* Mobile nav transitions for hamburger */
+    .hamburger-line { transition: transform 300ms ease, opacity 300ms ease; }
+
+    /* marquee style for campus slider */
+    @keyframes slideLoop {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .loop-scroll {
+      display:flex;
+      gap:1rem;
+      animation: slideLoop 28s linear infinite;
+      will-change: transform;
     }
 
-    /* fade-up reveal */
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px);} to { opacity:1; transform:none; } }
-    .reveal { opacity:0; animation: fadeUp 0.7s ease-out forwards; }
+    /* count-up style */
+    .count-num { font-variant-numeric: tabular-nums; }
 
-    /* blinking dot */
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .blink-dot { width:10px; height:10px; border-radius:9999px; display:inline-block; animation:blink 1s infinite; }
+    /* thin focus */
+    :focus { outline: 3px solid rgba(16,185,129,0.12); outline-offset: 2px; }
 
-    /* continuous horizontal marquee */
-    @keyframes loopX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .marquee { display:flex; gap:1.25rem; align-items:center; }
-    .marquee-inner { display:flex; gap:1.25rem; width:200%; animation: loopX 28s linear infinite; }
-
-    /* mobile menu animation */
-    #mobileMenu { transform-origin: top right; transition: transform .28s ease, opacity .28s ease; }
-
-    /* Back to top */
-    .back-to-top { position: fixed; right: 1rem; bottom: 1.25rem; z-index: 60; }
-
-    /* Accessibility focus */
-    .ring-focus:focus { outline: none; box-shadow: 0 0 0 4px rgba(16,185,129,0.15); border-radius: 0.5rem; }
-
-    /* card hover lift */
-    .lift:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(2,6,23,0.12); }
+    /* subtle cards */
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.78));
+      border: 1px solid rgba(6,95,70,0.06);
+      box-shadow: 0 6px 20px rgba(16,185,129,0.04);
+    }
   </style>
 </head>
-<body class="bg-gradient-to-b from-emerald-50 to-white text-gray-800 antialiased">
+<body class="text-gray-800">
 
   <!-- NAVBAR -->
-  <header class="w-full fixed top-0 left-0 z-50">
-    <nav class="max-w-7xl mx-auto flex items-center gap-4 justify-between px-4 md:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm rounded-b-2xl">
+  <header class="fixed inset-x-0 top-0 z-50">
+    <nav class="max-w-7xl mx-auto flex items-center gap-4 justify-between px-4 md:px-8 py-3 bg-white/70 backdrop-blur-md border-b border-gray-200 rounded-b-xl shadow-sm">
+      <!-- left -->
       <div class="flex items-center gap-3">
-        <img src="logo.jpeg" alt="AAHES logo" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 shadow-sm">
+        <img src="logo.jpeg" alt="AAHES logo" class="w-11 h-11 rounded-full object-cover border border-gray-200 shadow-sm">
         <div>
-          <a href="#" class="text-2xl font-extrabold tracking-tight text-emerald-700" style="font-family:'Playfair Display', serif;">AAHES</a>
-          <div class="text-xs text-gray-500 -mt-0.5">CEE Guide • Assam Admission Helpdesk</div>
+          <a href="#" class="flex items-baseline gap-2">
+            <span class="text-2xl font-extrabold text-green-700" style="font-family: 'Bebas Neue', sans-serif">AAHES</span>
+            <span class="text-xs text-gray-500 ml-1">CEE Guide</span>
+          </a>
+          <div class="text-xs text-gray-500 -mt-1">All Assam Helpdesk for Engineering Students</div>
         </div>
       </div>
 
-      <!-- Desktop links -->
-      <ul class="hidden md:flex items-center gap-2 text-sm font-medium">
-        <li><a class="px-3 py-2 rounded-md nav-link ring-focus" href="#home">Home</a></li>
-        <li><a class="px-3 py-2 rounded-md nav-link ring-focus" href="#notifications">Updates</a></li>
-        <li class="relative" id="collegeMenu">
-          <button class="px-3 py-2 rounded-md nav-link flex items-center gap-2 ring-focus" aria-expanded="false" aria-haspopup="true" onclick="toggleCollegeMenu()">
-            CEE Resources
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      <!-- center links (desktop) -->
+      <ul class="hidden md:flex items-center gap-1 text-sm font-medium">
+        <li><a href="#home" class="px-3 py-2 nav-link rounded-md hover:text-green-700 transition">Home</a></li>
+        <li class="relative" id="ceeDropdown">
+          <button id="ceeBtn" class="px-3 py-2 rounded-md hover:text-green-700 transition flex items-center gap-2">
+            CEE Aspirant
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform transition-transform" id="ceeArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div id="collegeDropdown" class="hidden absolute right-0 top-11 w-56 bg-white border rounded-xl shadow-lg p-3">
-            <a class="block px-3 py-2 rounded hover:bg-emerald-50" href="syllabus.html">Syllabus</a>
-            <a class="block px-3 py-2 rounded hover:bg-emerald-50" href="cutoffs.html">Cutoffs</a>
-            <a class="block px-3 py-2 rounded hover:bg-emerald-50" href="pyq.html">Previous Year Papers</a>
-            <a class="block px-3 py-2 rounded hover:bg-emerald-50" href="placements.html">Placements</a>
-          </div>
+          <ul id="ceeMenu" class="absolute left-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border p-2 hidden">
+            <li><a href="syllabus.html" class="block px-3 py-2 rounded hover:bg-gray-50">Syllabus</a></li>
+            <li><a href="cutoffs.html" class="block px-3 py-2 rounded hover:bg-gray-50">Cutoffs</a></li>
+            <li><a href="pyq.html" class="block px-3 py-2 rounded hover:bg-gray-50">Previous Year Papers</a></li>
+            <li><a href="placements.html" class="block px-3 py-2 rounded hover:bg-gray-50">Placements & Campus</a></li>
+          </ul>
         </li>
-        <li><a class="px-3 py-2 rounded-md nav-link ring-focus" href="#features">Features</a></li>
-        <li><a class="px-3 py-2 rounded-md nav-link ring-focus" href="#contact">Contact</a></li>
+        <li><a href="#features" class="px-3 py-2 nav-link rounded-md hover:text-green-700 transition">Features</a></li>
+        <li><a href="#downloads" class="px-3 py-2 nav-link rounded-md hover:text-green-700 transition">Resources</a></li>
+        <li><a href="#contact" class="px-3 py-2 nav-link rounded-md hover:text-green-700 transition">Contact</a></li>
       </ul>
 
-      <!-- Action / Mobile -->
+      <!-- right -->
       <div class="flex items-center gap-3">
-        <a href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN" target="_blank" class="hidden md:inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-full text-sm shadow hover:brightness-95 transition">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="whatsapp" class="w-4 h-4"> Join WhatsApp
+        <a href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN" target="_blank" class="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-green-600 text-green-700 hover:bg-green-600 hover:text-white transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+          Join Whatsapp
         </a>
 
-        <!-- Mobile menu button -->
-        <button id="menuBtn" class="md:hidden p-2 rounded-md bg-white border ring-focus" aria-label="Open menu" aria-expanded="false">
-          <svg id="menuIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        <!-- mobile hamburger -->
+        <button id="mobileBtn" class="md:hidden p-2 rounded focus:outline-none" aria-expanded="false" aria-controls="mobileMenu" title="Open menu">
+          <svg class="hamburger w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path class="hamburger-line" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-
       </div>
     </nav>
 
-    <!-- Mobile menu panel -->
-    <div id="mobileMenu" class="md:hidden bg-white/95 border-t border-gray-100 shadow-lg w-full hidden">
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="md:hidden bg-white border-t border-gray-200 shadow-lg hidden">
       <div class="px-4 py-4 space-y-2">
-        <a href="#home" class="block px-3 py-2 rounded-md hover:bg-emerald-50">Home</a>
-        <a href="#notifications" class="block px-3 py-2 rounded-md hover:bg-emerald-50">Updates</a>
-        <a href="syllabus.html" class="block px-3 py-2 rounded-md hover:bg-emerald-50">Syllabus</a>
-        <a href="cutoffs.html" class="block px-3 py-2 rounded-md hover:bg-emerald-50">Cutoffs</a>
-        <a href="pyq.html" class="block px-3 py-2 rounded-md hover:bg-emerald-50">PYQs</a>
-        <a href="#features" class="block px-3 py-2 rounded-md hover:bg-emerald-50">Features</a>
-        <a href="#contact" class="block px-3 py-2 rounded-md hover:bg-emerald-50">Contact</a>
-        <div class="pt-2 border-t border-gray-100">
-          <a href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-emerald-600 text-white">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="whatsapp" class="w-4 h-4"> Join Whatsapp
-          </a>
+        <a href="#home" class="block px-3 py-2 rounded hover:bg-gray-50">Home</a>
+        <button class="w-full text-left px-3 py-2 rounded flex justify-between items-center" id="mobileCeeBtn">CEE Aspirant
+          <svg class="w-4 h-4 transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="mobileCee" class="pl-3 hidden">
+          <a href="syllabus.html" class="block px-3 py-2 rounded hover:bg-gray-50">Syllabus</a>
+          <a href="cutoffs.html" class="block px-3 py-2 rounded hover:bg-gray-50">Cutoffs</a>
+          <a href="pyq.html" class="block px-3 py-2 rounded hover:bg-gray-50">PYQs</a>
         </div>
+        <a href="#features" class="block px-3 py-2 rounded hover:bg-gray-50">Features</a>
+        <a href="#downloads" class="block px-3 py-2 rounded hover:bg-gray-50">Resources</a>
+        <a href="#contact" class="block px-3 py-2 rounded hover:bg-gray-50">Contact</a>
       </div>
     </div>
   </header>
 
+  <!-- MAIN -->
   <main class="pt-28">
 
-    <!-- HERO (split layout) -->
-    <section id="home" class="max-w-7xl mx-auto px-4 md:px-8 py-14 lg:py-20">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        <!-- Left: text -->
-        <div class="lg:col-span-6 space-y-6 reveal" style="animation-delay:.08s;">
-          <div class="inline-flex items-center gap-3 bg-emerald-100/60 px-3 py-2 rounded-full text-emerald-700 font-semibold shadow-sm">
-            <span class="blink-dot bg-emerald-600"></span>
-            v3.8 — Updated
+    <!-- HERO (SPLIT LAYOUT) -->
+    <section id="home" class="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20">
+      <div class="grid md:grid-cols-12 gap-8 items-center">
+        <!-- Left: content -->
+        <div class="md:col-span-7 space-y-6 reveal" data-reveal>
+          <div class="inline-flex items-center gap-3 bg-green-50/60 text-green-800 rounded-full px-4 py-2 text-sm font-semibold shadow-sm">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse inline-block"></span>
+            V3.7 — Updated & improved
           </div>
 
-          <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900" style="line-height:1.02;">
-            AAHES — Assam Admission & Higher Education Support
+          <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-emerald-900" style="font-family: 'Playfair Display', serif;">
+            AAHES — Trusted guidance for Assam's engineering aspirants
           </h1>
 
-          <p class="text-md text-gray-700 max-w-2xl leading-relaxed">
-            Reliable guidance for CEE aspirants across Assam — curated cutoffs, previous year papers, campus insights, and step-by-step admission help so you can plan with confidence.
+          <p class="text-gray-700 text-lg max-w-2xl">
+            We connect students with reliable CEE updates, historical cutoffs, proven preparation resources and hands-on counselling — helping you plan confidently for college admissions.
           </p>
 
-          <div class="flex flex-wrap gap-3 items-center">
-            <a href="#features" class="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-emerald-600 text-white font-semibold shadow hover:brightness-95 transition">
-              Explore Tools & Resources
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="#features" class="inline-flex items-center gap-3 bg-green-600 text-white px-5 py-3 rounded-lg shadow hover:scale-[1.02] transition">
+              Explore features
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
-            <a href="#notifications" class="px-4 py-3 rounded-full border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition">
-              Latest Updates
+
+            <a href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN" target="_blank" class="inline-flex items-center gap-2 border border-green-600 text-green-700 px-4 py-2 rounded-lg hover:bg-green-600 hover:text-white transition">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="whatsapp" class="w-5">
+              Join Whatsapp
             </a>
-          </div>
 
-          <div class="mt-4 flex gap-4 items-center">
-            <div class="bg-white p-3 rounded-xl shadow flex items-center gap-3">
-              <span class="text-emerald-600 font-bold text-2xl" id="connectedCount">3,208</span>
-              <div class="text-sm text-gray-600">students connected</div>
-            </div>
-
-            <div class="bg-white glass px-4 py-3 rounded-xl shadow text-sm">
-              <strong class="text-emerald-700">Need help?</strong>
-              <div class="text-gray-600">Join our community or mail <a class="underline text-emerald-600" href="mailto:helpline.aahes@gmail.com">helpline.aahes@gmail.com</a></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: visual cards / illustration -->
-        <div class="lg:col-span-6 relative reveal" style="animation-delay:.12s;">
-          <div class="absolute -left-6 -top-10 w-52 h-36 bg-gradient-to-tr from-emerald-200 to-emerald-100 rounded-2xl blur-xl opacity-70 transform rotate-6"></div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div class="p-5 rounded-2xl bg-white shadow lift border border-gray-100">
-              <h4 class="text-sm font-semibold text-emerald-700 mb-1">Cutoff Explorer</h4>
-              <p class="text-gray-600 text-sm">Interactive analysis of branch-wise closing ranks across Assam colleges (BBEC, GEC, AEC, etc.).</p>
-              <div class="mt-3">
-                <a href="cutoffs.html" class="text-emerald-600 text-sm font-medium hover:underline">Open Cutoffs →</a>
-              </div>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-white shadow lift border border-gray-100">
-              <h4 class="text-sm font-semibold text-emerald-700 mb-1">Previous Year Papers</h4>
-              <p class="text-gray-600 text-sm">Download and solve official PYQs to familiarise yourself with the exam pattern.</p>
-              <div class="mt-3">
-                <a href="pyq.html" class="text-emerald-600 text-sm font-medium hover:underline">View PYQs →</a>
-              </div>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-white shadow lift border border-gray-100">
-              <h4 class="text-sm font-semibold text-emerald-700 mb-1">Rank Predictor</h4>
-              <p class="text-gray-600 text-sm">Estimate admission chances based on rank and category with trend-backed suggestions.</p>
-              <div class="mt-3">
-                <a href="#" class="text-emerald-600 text-sm font-medium hover:underline">Try Predictor →</a>
-              </div>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-white shadow lift border border-gray-100">
-              <h4 class="text-sm font-semibold text-emerald-700 mb-1">Campus & Placements</h4>
-              <p class="text-gray-600 text-sm">Real student reviews, placement statistics and campus snapshots to help choose the right college.</p>
-              <div class="mt-3">
-                <a href="placements.html" class="text-emerald-600 text-sm font-medium hover:underline">Explore →</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- MARQUEE / Campus slider -->
-    <section class="py-6">
-      <div class="max-w-7xl mx-auto px-4 md:px-8">
-        <div class="rounded-xl overflow-hidden border border-gray-100 bg-white shadow-sm p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-semibold text-emerald-700">Campus Highlights</h3>
-            <div class="text-sm text-gray-500">Institutions around Assam</div>
-          </div>
-
-          <div class="overflow-hidden">
-            <div class="marquee no-scrollbar">
-              <div class="marquee-inner">
-                <!-- duplicate set for seamless loop -->
-                <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="AEC">
-                <img src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="JEC">
-                <img src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="GEC">
-                <img src="https://www.bvec.ac.in/images/slide/1534516181.jpg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="BVEC">
-                <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="AEC">
-                <img src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="JEC">
-                <img src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="GEC">
-                <img src="https://www.bvec.ac.in/images/slide/1534516181.jpg" class="w-48 h-28 object-cover rounded-lg shadow-sm border" alt="BVEC">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NOTIFICATIONS (cards) -->
-    <section id="notifications" class="py-12">
-      <div class="max-w-7xl mx-auto px-4 md:px-8">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-2xl font-bold text-emerald-700">Latest Notifications</h3>
-          <a href="https://astu.ac.in/?page_id=36332" target="_blank" class="text-sm text-emerald-600 hover:underline">Official ASTU notices</a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- item -->
-          <article class="bg-white rounded-2xl p-5 shadow hover:shadow-md transition lift">
-            <div class="flex items-start gap-3">
-              <div class="w-3 h-3 mt-1 rounded-full bg-emerald-600"></div>
-              <div>
-                <a href="https://astu.ac.in/?page_id=36332" target="_blank" class="text-lg font-semibold text-emerald-800 hover:underline">CEE 2025 — ASTU: Official Releases & Updates</a>
-                <div class="text-sm text-gray-500 mt-1">Published: October 25, 2025</div>
-                <p class="text-gray-600 mt-3 text-sm">All aspirants should review the official circular for schedules, admit card instructions, and important dates.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="bg-white rounded-2xl p-5 shadow hover:shadow-md transition lift">
-            <div class="flex items-start gap-3">
-              <div class="w-3 h-3 mt-1 rounded-full bg-emerald-600"></div>
-              <div>
-                <a href="https://astu.ac.in/?page_id=36329" class="text-lg font-semibold text-emerald-800 hover:underline">Combined Entrance Examination (CEE) — 2025 Overview</a>
-                <div class="text-sm text-gray-500 mt-1">Published: Feb 1, 2025</div>
-                <p class="text-gray-600 mt-3 text-sm">Key instructions for registration, exam day protocols and document requirements for counselling.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="bg-white rounded-2xl p-5 shadow hover:shadow-md transition lift">
-            <div class="flex items-start gap-3">
-              <div class="w-3 h-3 mt-1 rounded-full bg-emerald-600"></div>
-              <div>
-                <a href="https://www.aec.ac.in/" class="text-lg font-semibold text-emerald-800 hover:underline">Assam Engineering College — Official Site</a>
-                <div class="text-sm text-gray-500 mt-1">Published: Jan 17, 2025</div>
-                <p class="text-gray-600 mt-3 text-sm">Campus information, admission links and department pages for engineering programs.</p>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURES GRID -->
-    <section id="features" class="py-14 bg-emerald-50">
-      <div class="max-w-7xl mx-auto px-4 md:px-8">
-        <div class="text-center mb-10">
-          <h3 class="text-3xl font-bold text-emerald-700">Platform Highlights</h3>
-          <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Everything you need to navigate the CEE admission process — data, tools and clear step-by-step guidance.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-white rounded-2xl p-6 shadow lift border border-gray-100">
-            <div class="flex items-center justify-between">
-              <h4 class="text-lg font-semibold text-emerald-700">Cutoff Analysis</h4>
-              <div class="text-sm text-gray-400">Data-driven</div>
-            </div>
-            <p class="text-gray-600 mt-3">Branch-wise closing ranks, year-over-year comparison and visual trend charts to make subject choices simple.</p>
-            <div class="mt-4">
-              <a href="cutoffs.html" class="text-emerald-600 hover:underline font-medium">Open Analyzer →</a>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-6 shadow lift border border-gray-100">
-            <div class="flex items-center justify-between">
-              <h4 class="text-lg font-semibold text-emerald-700">Previous Year Papers</h4>
-              <div class="text-sm text-gray-400">Practice</div>
-            </div>
-            <p class="text-gray-600 mt-3">Download curated PYQs and model solutions to practice with confidence before the exam.</p>
-            <div class="mt-4">
-              <a href="pyq.html" class="text-emerald-600 hover:underline font-medium">Access PYQs →</a>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-6 shadow lift border border-gray-100">
-            <div class="flex items-center justify-between">
-              <h4 class="text-lg font-semibold text-emerald-700">Counselling Guide</h4>
-              <div class="text-sm text-gray-400">Step-by-step</div>
-            </div>
-            <p class="text-gray-600 mt-3">Clear instructions for seat allotment, document verification and choice filling during counselling.</p>
-            <div class="mt-4">
-              <a href="#" class="text-emerald-600 hover:underline font-medium">Learn More →</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Downloads / Pagination like original -->
-    <section class="py-12">
-      <div class="max-w-6xl mx-auto px-4 md:px-8">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold text-emerald-700">Downloads & Resources</h3>
-          <div class="text-sm text-gray-500" id="pageIndicator">Page 1 of 2</div>
-        </div>
-
-        <div id="download-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-
-        <div class="mt-6 flex items-center justify-between">
-          <div class="text-sm text-gray-600">Find official answer keys, circulars and important PDFs here.</div>
-          <div class="flex gap-3">
-            <button id="prevPage" class="px-4 py-2 rounded-lg bg-white border text-gray-700 disabled:opacity-60">Prev</button>
-            <button id="nextPage" class="px-4 py-2 rounded-lg bg-emerald-600 text-white">Next</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ / Accordion -->
-    <section class="py-12 bg-white">
-      <div class="max-w-5xl mx-auto px-4 md:px-8">
-        <h3 class="text-2xl font-bold text-emerald-700 mb-4">FAQs</h3>
-        <p class="text-gray-600 mb-6">Answers to common queries about the CEE process and our platform.</p>
-
-        <div class="space-y-3" id="faqList">
-          <div class="border rounded-xl overflow-hidden">
-            <button class="w-full text-left px-5 py-3 flex justify-between items-center faq-btn">
-              <span class="font-semibold">How do I check last year's cutoffs?</span>
-              <svg class="w-5 h-5 transition transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06-.02L10 10.91l3.71-3.72a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.25a.75.75 0 01-.02-1.04z" clip-rule="evenodd"/></svg>
+            <button id="openDownloads" class="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition">
+              <svg class="w-4 h-4 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M8 7l4 4 4-4"/></svg>
+              Downloads
             </button>
-            <div class="px-5 py-3 text-gray-600 hidden faq-body">Visit the Cutoffs page where we host downloadable sheets and interactive charts showing branch-wise closing ranks for each year.</div>
           </div>
 
-          <div class="border rounded-xl overflow-hidden">
-            <button class="w-full text-left px-5 py-3 flex justify-between items-center faq-btn">
-              <span class="font-semibold">Can I download previous year question papers?</span>
-              <svg class="w-5 h-5 transition transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06-.02L10 10.91l3.71-3.72a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.25a.75.75 0 01-.02-1.04z" clip-rule="evenodd"/></svg>
-            </button>
-            <div class="px-5 py-3 text-gray-600 hidden faq-body">Yes — our PYQ section contains PDFs of previous question papers and answer keys where available.</div>
-          </div>
+          <!-- quick stats -->
+          <div class="flex gap-4 flex-wrap mt-3">
+            <div class="card px-4 py-3 rounded-lg flex items-center gap-4">
+              <div class="text-green-600 text-2xl font-bold count-num" data-target="3208">0</div>
+              <div class="text-sm text-gray-600">Students connected</div>
+            </div>
 
-          <div class="border rounded-xl overflow-hidden">
-            <button class="w-full text-left px-5 py-3 flex justify-between items-center faq-btn">
-              <span class="font-semibold">How accurate is the Rank Predictor?</span>
-              <svg class="w-5 h-5 transition transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06-.02L10 10.91l3.71-3.72a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.25a.75.75 0 01-.02-1.04z" clip-rule="evenodd"/></svg>
-            </button>
-            <div class="px-5 py-3 text-gray-600 hidden faq-body">The predictor uses historical cutoffs and trend lines to estimate likelihoods — use it as guidance, not as a guarantee.</div>
-          </div>
+            <div class="card px-4 py-3 rounded-lg flex items-center gap-4">
+              <div class="text-green-600 text-2xl font-bold">75+</div>
+              <div class="text-sm text-gray-600">College & branch records</div>
+            </div>
 
+            <div class="card px-4 py-3 rounded-lg flex items-center gap-4">
+              <div class="text-green-600 text-2xl font-bold">100%</div>
+              <div class="text-sm text-gray-600">Free resources</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: illustrative card -->
+        <div class="md:col-span-5 reveal" data-reveal>
+          <div class="card rounded-3xl p-6 md:p-8 relative overflow-hidden">
+            <!-- decorative -->
+            <div class="absolute -right-20 -top-20 w-56 h-56 bg-gradient-to-tr from-green-200 to-transparent opacity-30 rounded-full blur-2xl"></div>
+
+            <div class="flex flex-col gap-4">
+              <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" alt="campus" class="w-full h-40 object-cover rounded-xl border border-green-100 shadow-sm">
+
+              <h3 class="text-xl font-bold text-emerald-800">Get the right college — faster</h3>
+              <p class="text-sm text-gray-600">
+                Predict likely colleges from your rank, compare branch-wise trends, and access verified notices from ASTU and partner institutions.
+              </p>
+
+              <ul class="text-sm text-gray-700 space-y-2 mt-2">
+                <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-600 mt-1" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg> Historical cutoffs & analytics</li>
+                <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-600 mt-1" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg> Official circulars & PYQs</li>
+                <li class="flex items-start gap-2"><svg class="w-4 h-4 text-green-600 mt-1" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg> Counselling tips & checklists</li>
+              </ul>
+
+              <div class="mt-3 flex gap-2">
+                <a href="cutoffs.html" class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-emerald-700 text-white rounded-lg">See Cutoffs</a>
+                <a href="pyq.html" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-200 rounded-lg">Open PYQs</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="py-14 bg-emerald-50">
-      <div class="max-w-5xl mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="space-y-4">
-          <h3 class="text-2xl font-bold text-emerald-700">Get in touch</h3>
-          <p class="text-gray-600">For assistance, partnership or data updates, reach out and our team will respond promptly.</p>
+    <!-- CAMPUS MARQUEE / IMAGE SCROLLER -->
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-6">
+      <div class="card rounded-xl overflow-hidden p-3">
+        <div class="flex items-center justify-between mb-3 px-2">
+          <h4 class="text-lg font-semibold text-emerald-800">Spotlight: Campus Galleries</h4>
+          <div class="text-sm text-gray-500">Slide to view featured colleges</div>
+        </div>
 
-          <ul class="text-gray-700 space-y-2">
-            <li><strong>Email:</strong> <a href="mailto:helpline.aahes@gmail.com" class="text-emerald-700 hover:underline">helpline.aahes@gmail.com</a></li>
-            <li><strong>WhatsApp:</strong> <a href="tel:+91-9876543210" class="text-emerald-700 hover:underline">+91 xxxx xxx xxx</a></li>
+        <div class="overflow-hidden">
+          <div class="loop-scroll">
+            <!-- Repeat images to make seamless loop -->
+            <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://www.bvec.ac.in/images/slide/1534516181.jpg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+
+            <!-- duplicates -->
+            <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+            <img src="https://www.bvec.ac.in/images/slide/1534516181.jpg" alt="" class="w-40 h-28 object-cover rounded-lg border">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTIFICATIONS (horizontal cards with dates) -->
+    <section id="notifications" class="max-w-7xl mx-auto px-4 md:px-8 py-8 reveal" data-reveal>
+      <h3 class="text-2xl font-bold text-emerald-800 mb-4">Latest Notifications</h3>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-5 rounded-xl">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <a href="https://astu.ac.in/?page_id=36332" target="_blank" class="font-semibold text-emerald-800 hover:underline">ASTU — CEE 2025: Official Notices</a>
+              <p class="text-sm text-gray-600 mt-1">Published on: Oct 25, 2025</p>
+              <p class="mt-2 text-gray-700 text-sm">All circulars, exam schedules and official candidate instructions from ASTU consolidated here.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-5 rounded-xl">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <a href="#" class="font-semibold text-emerald-800 hover:underline">Combined Entrance Examination — 2025</a>
+              <p class="text-sm text-gray-600 mt-1">Published on: Feb 1, 2025</p>
+              <p class="mt-2 text-gray-700 text-sm">Key details and application updates for candidates preparing for this year's CEE.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-5 rounded-xl">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <a href="https://www.aec.ac.in/" class="font-semibold text-emerald-800 hover:underline">Assam Engineering College — Campus News</a>
+              <p class="text-sm text-gray-600 mt-1">Published on: Jan 17, 2025</p>
+              <p class="mt-2 text-gray-700 text-sm">Campus events, placement updates and department announcements from AEC.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES (expanded) -->
+    <section id="features" class="max-w-7xl mx-auto px-4 md:px-8 py-12 reveal" data-reveal>
+      <h3 class="text-3xl font-extrabold text-emerald-800 mb-6">What we offer</h3>
+      <p class="text-gray-700 mb-8">A compact toolkit tailored for CEE aspirants — accurate cutoffs, detailed PYQs, counselling tips, and campus insights.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <article class="card p-6 rounded-xl hover:shadow-lg transition">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg">Cutoff Analytics</h4>
+              <p class="text-sm text-gray-600">Branch-wise closing ranks, year-over-year trends, and percentile maps to help you shortlist colleges.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="card p-6 rounded-xl hover:shadow-lg transition">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg">Rank Predictor</h4>
+              <p class="text-sm text-gray-600">Estimate likely college matches for your rank using historical distributions and simple heuristics.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="card p-6 rounded-xl hover:shadow-lg transition">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg">Previous Year Questions</h4>
+              <p class="text-sm text-gray-600">Curated PYQs from across Assam colleges to help you practice efficiently.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- More features -->
+        <article class="card p-6 rounded-xl hover:shadow-lg transition">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg">Counselling Guides</h4>
+              <p class="text-sm text-gray-600">Practical checklists and common strategies for the counselling process.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="card p-6 rounded-xl hover:shadow-lg transition">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg">Placement Insights</h4>
+              <p class="text-sm text-gray-600">Overview of placement statistics to help pick a college with the right outcomes.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="card p-6 rounded-xl hover:shadow-lg transition">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-700" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg">Campus Tours</h4>
+              <p class="text-sm text-gray-600">Student-sourced snapshots and campus highlights for better on-ground understanding.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Downloads / Resources (with pagination) -->
+    <section id="downloads" class="max-w-7xl mx-auto px-4 md:px-8 py-12 reveal" data-reveal>
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold text-emerald-800">Downloads & Resources</h3>
+        <div class="text-sm text-gray-600">Verified documents & official links</div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="col-span-2">
+          <div id="download-list" class="space-y-4">
+            <!-- dynamic content populated by JS -->
+          </div>
+
+          <div class="flex items-center gap-3 mt-4">
+            <button id="prevPage" class="px-3 py-2 rounded bg-white border disabled:opacity-50" disabled>Prev</button>
+            <button id="nextPage" class="px-3 py-2 rounded bg-white border">Next</button>
+            <div id="pageIndicator" class="ml-auto text-sm text-gray-600">Page 1 of 1</div>
+          </div>
+        </div>
+
+        <aside class="card p-5 rounded-xl">
+          <h4 class="font-semibold text-lg mb-2">Quick links</h4>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li><a href="#" class="hover:underline">Counselling Guidelines 2025</a></li>
+            <li><a href="#" class="hover:underline">ASTU Syllabus</a></li>
+            <li><a href="#" class="hover:underline">Rank Predictor</a></li>
+            <li><a href="#" class="hover:underline">Contact Counsellors</a></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-12 reveal" data-reveal>
+      <h3 class="text-3xl font-bold text-emerald-800 mb-4">Success stories</h3>
+      <p class="text-gray-700 mb-6">Hear from students who used AAHES to make more confident admission choices.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-6 rounded-xl">
+          <p class="text-gray-700 mb-4">"AAHES helped me understand realistic cutoffs and pick a college that matched my goals. Counselling tips were practical and easy to follow."</p>
+          <div class="text-sm text-gray-600">— Riya, CEE 2024</div>
+        </div>
+
+        <div class="card p-6 rounded-xl">
+          <p class="text-gray-700 mb-4">"The PYQ collection and analytics saved me time. I knew what to focus on and how to practice effectively."</p>
+          <div class="text-sm text-gray-600">— Arup, CEE 2023</div>
+        </div>
+
+        <div class="card p-6 rounded-xl">
+          <p class="text-gray-700 mb-4">"Real campus photos and placement insights helped me decide on my branch and college with confidence."</p>
+          <div class="text-sm text-gray-600">— Jaya, CEE 2022</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ accordion -->
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-12 reveal" data-reveal>
+      <h3 class="text-2xl font-bold text-emerald-800 mb-4">Frequently asked questions</h3>
+
+      <div class="space-y-3">
+        <details class="card p-4 rounded-lg">
+          <summary class="font-semibold cursor-pointer">How do I use the rank predictor?</summary>
+          <div class="mt-2 text-gray-700 text-sm">Enter your expected rank, select categories if applicable, and review the predicted matches derived from historical closing ranks.</div>
+        </details>
+
+        <details class="card p-4 rounded-lg">
+          <summary class="font-semibold cursor-pointer">Where do you source cutoff data?</summary>
+          <div class="mt-2 text-gray-700 text-sm">We aggregate published cutoffs from state university notices, college circulars, and verified student submissions — and flag the source for each entry.</div>
+        </details>
+
+        <details class="card p-4 rounded-lg">
+          <summary class="font-semibold cursor-pointer">Can I contribute PYQs or campus photos?</summary>
+          <div class="mt-2 text-gray-700 text-sm">Yes — use our contact form to submit resources. We review contributions before publishing to maintain accuracy.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="max-w-7xl mx-auto px-4 md:px-8 py-12 reveal" data-reveal>
+      <div class="grid md:grid-cols-2 gap-8 items-start">
+        <div>
+          <h3 class="text-2xl font-bold text-emerald-800 mb-2">Get in touch</h3>
+          <p class="text-gray-700 mb-4">Questions, feedback or data contributions — we'd love to hear from you.</p>
+
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li><strong>Email:</strong> <a href="mailto:helpline.aahes@gmail.com" class="underline text-green-700">helpline.aahes@gmail.com</a></li>
+            <li><strong>Phone:</strong> <a href="tel:+919876543210" class="underline text-green-700">+91 xxxx xxx xxx</a></li>
             <li><strong>Address:</strong> Assam, India</li>
           </ul>
-
-          <div class="mt-4">
-            <a href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 text-white">Join WhatsApp Group</a>
-          </div>
         </div>
 
-        <form id="contactForm" class="bg-white rounded-2xl p-6 shadow space-y-4" onsubmit="submitContact(event)">
+        <form id="contactForm" class="space-y-3 bg-white p-6 rounded-xl border">
           <div>
-            <label class="block text-sm font-medium text-gray-700">Name</label>
-            <input required name="name" class="mt-1 block w-full rounded-lg border-gray-200 shadow-sm px-4 py-2 focus:ring focus:ring-emerald-200" placeholder="Your name">
+            <label class="text-sm font-medium text-gray-700">Name</label>
+            <input required name="name" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="Your name">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Email</label>
-            <input required type="email" name="email" class="mt-1 block w-full rounded-lg border-gray-200 shadow-sm px-4 py-2 focus:ring focus:ring-emerald-200" placeholder="you@example.com">
+            <label class="text-sm font-medium text-gray-700">Email</label>
+            <input required name="email" type="email" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="you@example.com">
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Message</label>
-            <textarea required name="message" rows="4" class="mt-1 block w-full rounded-lg border-gray-200 shadow-sm px-4 py-2 focus:ring focus:ring-emerald-200" placeholder="How can we help?"></textarea>
+            <label class="text-sm font-medium text-gray-700">Message</label>
+            <textarea required name="message" rows="4" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="How can we help?"></textarea>
           </div>
 
-          <div class="flex justify-end">
-            <button type="submit" class="px-5 py-2 rounded-lg bg-emerald-600 text-white font-semibold">Send Message</button>
+          <div class="flex items-center gap-3">
+            <button type="submit" class="bg-emerald-700 text-white px-4 py-2 rounded-lg">Send message</button>
+            <button type="reset" class="text-gray-600 px-3 py-2 rounded-lg border">Reset</button>
+            <div id="contactStatus" class="text-sm text-gray-600 ml-auto"></div>
           </div>
-          <div id="contactResult" class="text-sm text-gray-600 hidden"></div>
         </form>
       </div>
     </section>
@@ -430,195 +507,242 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-gray-900 text-gray-200 mt-12">
-    <div class="max-w-7xl mx-auto px-4 md:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+  <footer class="mt-12 bg-emerald-800 text-white">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-10 grid md:grid-cols-3 gap-8">
       <div>
-        <h4 class="text-emerald-400 font-bold text-lg">AAHES</h4>
-        <p class="text-sm text-gray-300 mt-2">Assam Admission & Higher Education Support — empowering engineering aspirants with transparent resources, timely updates and community help.</p>
+        <h4 class="font-bold text-lg">AAHES</h4>
+        <p class="text-sm text-emerald-100 mt-2">Empowering Assam's students with accurate, timely and free guidance for engineering admissions.</p>
+        <p class="text-xs text-emerald-200 mt-4">Developed by Abishrant Shandilya & AAHES Team</p>
       </div>
 
       <div>
-        <h5 class="font-semibold">Resources</h5>
-        <ul class="mt-3 space-y-2 text-sm">
-          <li><a href="cutoffs.html" class="hover:underline">Cutoff Explorer</a></li>
-          <li><a href="pyq.html" class="hover:underline">Previous Year Papers</a></li>
-          <li><a href="#" class="hover:underline">Rank Predictor</a></li>
+        <h4 class="font-semibold">Quick Links</h4>
+        <ul class="mt-3 text-sm space-y-2">
+          <li><a href="#features" class="hover:underline">Features</a></li>
+          <li><a href="#downloads" class="hover:underline">Resources</a></li>
+          <li><a href="#contact" class="hover:underline">Contact</a></li>
         </ul>
       </div>
 
       <div>
-        <h5 class="font-semibold">Support</h5>
-        <ul class="mt-3 space-y-2 text-sm">
-          <li><a href="#" class="hover:underline">Help Center</a></li>
-          <li><a href="#" class="hover:underline">FAQs</a></li>
-          <li><a href="#" class="hover:underline">Privacy & Terms</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h5 class="font-semibold">Team</h5>
-        <p class="mt-3 text-sm">Abishrant Shandilya — Frontend Developer<br>Abhilesh Sharma — Database Administrator</p>
-        <div class="mt-4 flex gap-3">
-          <a href="#" class="text-emerald-400 hover:text-white" aria-label="LinkedIn"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V24h-4zM8.5 8h3.8v2.2h.1c.5-.9 1.7-1.8 3.6-1.8 3.8 0 4.5 2.5 4.5 5.7V24h-4v-8.1c0-2-.1-4.5-2.9-4.5-2.9 0-3.3 2.3-3.3 4.4V24h-4z"/></svg></a>
-        </div>
+        <h4 class="font-semibold">Subscribe</h4>
+        <p class="text-sm mt-2 text-emerald-100">Get notified when we publish important updates and cutoffs.</p>
+        <form id="subscribeForm" class="mt-3 flex gap-2">
+          <input type="email" required placeholder="Your email" class="px-3 py-2 rounded-md w-full text-gray-800" />
+          <button class="bg-white text-emerald-800 px-3 py-2 rounded-md">Subscribe</button>
+        </form>
       </div>
     </div>
 
-    <div class="border-t border-gray-800 text-center py-4 text-sm text-gray-400">© 2025 AAHES — All rights reserved</div>
+    <div class="border-t border-emerald-700/30 text-center py-4 text-sm text-emerald-200">
+      &copy; 2025 AAHES. All rights reserved.
+    </div>
   </footer>
 
-  <!-- BACK TO TOP -->
-  <button id="backToTop" class="back-to-top hidden bg-emerald-600 p-3 rounded-full text-white shadow-lg" aria-label="Back to top">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
-  </button>
+  <!-- DOWNLOADS MODAL (hidden) -->
+  <div id="downloadsModal" class="fixed inset-0 z-60 hidden items-center justify-center bg-black/40 p-4">
+    <div class="bg-white rounded-xl w-full max-w-2xl p-6 relative">
+      <button id="closeDownloads" class="absolute right-4 top-4 text-gray-500 hover:text-gray-700">&times;</button>
+      <h4 class="text-xl font-semibold mb-4">Downloads</h4>
+      <div id="modalContent" class="space-y-4 max-h-72 overflow-auto">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </div>
 
   <!-- SCRIPTS -->
   <script>
-    // --- Mobile menu toggle ---
-    const menuBtn = document.getElementById('menuBtn');
+    /* ========= Mobile menu logic ========= */
+    const mobileBtn = document.getElementById('mobileBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn.addEventListener('click', () => {
-      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
-      menuBtn.setAttribute('aria-expanded', !expanded);
-      mobileMenu.classList.toggle('hidden');
+    const mobileCeeBtn = document.getElementById('mobileCeeBtn');
+    const mobileCee = document.getElementById('mobileCee');
+
+    mobileBtn.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden');
+      mobileBtn.setAttribute('aria-expanded', String(!open));
     });
 
-    // --- College dropdown ---
-    function toggleCollegeMenu(){
-      const el = document.getElementById('collegeDropdown');
-      const btn = document.querySelector('#collegeMenu > button');
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', !expanded);
-      el.classList.toggle('hidden');
-    }
-    // close on click outside
+    mobileCeeBtn.addEventListener('click', () => {
+      mobileCee.classList.toggle('hidden');
+    });
+
+    /* ========= Desktop dropdown ========= */
+    const ceeBtn = document.getElementById('ceeBtn');
+    const ceeMenu = document.getElementById('ceeMenu');
+    const ceeArrow = document.getElementById('ceeArrow');
+
+    ceeBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ceeMenu.classList.toggle('hidden');
+      ceeArrow.classList.toggle('rotate-180');
+    });
+
     window.addEventListener('click', (e) => {
-      const menu = document.getElementById('collegeDropdown');
-      const wrap = document.getElementById('collegeMenu');
-      if(!wrap.contains(e.target)) menu.classList.add('hidden');
+      if (!ceeMenu?.contains(e.target) && !ceeBtn?.contains(e.target)) {
+        ceeMenu?.classList.add('hidden');
+        ceeArrow?.classList.remove('rotate-180');
+      }
     });
 
-    // --- Reveal animation on scroll ---
-    const reveals = document.querySelectorAll('.reveal');
+    /* ========= Reveal on scroll ========= */
+    const reveals = document.querySelectorAll('[data-reveal]');
     const obs = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting) entry.target.style.opacity = 1, entry.target.style.animationPlayState = 'running', entry.target.classList.add('animated');
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('show');
+        }
       });
-    }, {threshold:0.09});
+    }, {threshold: 0.12});
+
     reveals.forEach(r => obs.observe(r));
 
-    // --- Downloads Pagination (data from your previous code) ---
+    /* ========= Count-up ========= */
+    function animateCount(el, target, duration=1500) {
+      let start = 0;
+      const step = Math.max(1, Math.floor(target / (duration/16)));
+      const id = setInterval(() => {
+        start += step;
+        if (start >= target) {
+          el.textContent = target.toLocaleString();
+          clearInterval(id);
+        } else {
+          el.textContent = Math.floor(start).toLocaleString();
+        }
+      }, 16);
+    }
+    document.querySelectorAll('.count-num').forEach(node => {
+      const t = parseInt(node.dataset.target || '0', 10);
+      animateCount(node, t, 1800);
+    });
+
+    /* ========= Downloads pagination & data ========= */
     const pages = [
       [
-        { title: "CEE 2025 Answer Key", desc: "Official Answer Key PDF released by ASTU.", link: "https://drive.google.com/file/d/1inBKliONQDKxvUH8CEtw5aJ190DW-Ix3/view?usp=drive_link" },
-        { title: "CEE 2025 Question Paper", desc: "Official Combined Entrance Examination paper (2025).", link: "https://drive.google.com/file/d/1ZDbY5LsJzo50xvinUQ5EXKRXHg8eZejH/view?usp=drive_link" },
-        { title: "Important Circular - Oct 2025", desc: "Official circular for aspirants and counselling.", link: "#" },
-        { title: "CEE 2023 Cutoff Sheet", desc: "Branch-wise closing ranks and seat matrix (2023).", link: "#" }
+        { title: "CEE 2025 Answer Key (ASTU)", desc: "Official answer key released by ASTU.", link: "https://drive.google.com/file/d/1inBKliONQDKxvUH8CEtw5aJ190DW-Ix3/view?usp=drive_link", date: "Oct 25, 2025" },
+        { title: "CEE 2025 Question Paper", desc: "Complete question paper PDF.", link: "https://drive.google.com/file/d/1ZDbY5LsJzo50xvinUQ5EXKRXHg8eZejH/view?usp=drive_link", date: "Oct 20, 2025" },
+        { title: "Important Circular - Oct 2025", desc: "Official circular for candidates.", link: "#", date: "Oct 15, 2025" }
       ],
       [
-        { title: "Counselling Guidelines 2025", desc: "Updated admission & counselling procedures by ASTU.", link: "#" },
-        { title: "B.Tech Syllabus (1st & 2nd Sem)", desc: "Download official ASTU syllabus PDF.", link: "#" }
+        { title: "Counselling Guidelines 2025", desc: "Step-by-step counselling instructions.", link: "#", date: "Sep 10, 2025" },
+        { title: "B.Tech Syllabus (1st & 2nd Sem)", desc: "Official ASTU syllabus PDF.", link: "#", date: "Apr 2025" }
       ]
     ];
+
     let currentPage = 0;
     const listEl = document.getElementById('download-list');
     const prevBtn = document.getElementById('prevPage');
     const nextBtn = document.getElementById('nextPage');
     const pageIndicator = document.getElementById('pageIndicator');
 
-    function renderDownloads(){
+    function renderDownloads() {
       listEl.innerHTML = '';
-      pages[currentPage].forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl p-6 shadow border border-gray-100';
-        card.innerHTML = `
-          <h4 class="text-lg font-semibold text-emerald-700">${item.title}</h4>
-          <p class="text-gray-600 mt-2">${item.desc}</p>
-          <div class="mt-4">
-            <a href="${item.link}" target="_blank" class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-md">Download</a>
+      const items = pages[currentPage];
+      items.forEach(it => {
+        const div = document.createElement('div');
+        div.className = "card p-5 rounded-xl flex flex-col sm:flex-row gap-4 items-start";
+        div.innerHTML = `
+          <div class="flex-1">
+            <h4 class="font-semibold text-emerald-800">${it.title}</h4>
+            <p class="text-sm text-gray-600 mt-1">${it.desc}</p>
+            <p class="text-xs text-gray-500 mt-1">${it.date}</p>
           </div>
+          <a href="${it.link}" target="_blank" class="mt-3 sm:mt-0 inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 text-white rounded-lg">Download</a>
         `;
-        listEl.appendChild(card);
+        listEl.appendChild(div);
       });
-      pageIndicator.textContent = \`Page \${currentPage+1} of \${pages.length}\`;
+
+      pageIndicator.textContent = `Page ${currentPage+1} of ${pages.length}`;
       prevBtn.disabled = currentPage === 0;
-      nextBtn.disabled = currentPage === pages.length - 1;
-      prevBtn.classList.toggle('opacity-50', prevBtn.disabled);
-      nextBtn.classList.toggle('opacity-50', nextBtn.disabled);
+      nextBtn.disabled = currentPage === pages.length-1;
     }
-    prevBtn.addEventListener('click', () => { if(currentPage>0){ currentPage--; renderDownloads(); }});
-    nextBtn.addEventListener('click', () => { if(currentPage < pages.length-1){ currentPage++; renderDownloads(); }});
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderDownloads();
+      }
+    });
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < pages.length-1) {
+        currentPage++;
+        renderDownloads();
+      }
+    });
+
     window.addEventListener('load', renderDownloads);
 
-    // --- FAQ accordion ---
-    document.querySelectorAll('.faq-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const body = btn.parentElement.querySelector('.faq-body');
-        const icon = btn.querySelector('svg');
-        const isHidden = body.classList.contains('hidden');
-        document.querySelectorAll('.faq-body').forEach(b => b.classList.add('hidden'));
-        document.querySelectorAll('.faq-btn svg').forEach(s => s.style.transform = '');
-        if(isHidden){
-          body.classList.remove('hidden');
-          icon.style.transform = 'rotate(180deg)';
-        } else {
-          body.classList.add('hidden');
-          icon.style.transform = '';
-        }
+    /* Modal for downloads */
+    const downloadsModal = document.getElementById('downloadsModal');
+    const openDownloadsBtn = document.getElementById('openDownloads');
+    const closeDownloadsBtn = document.getElementById('closeDownloads');
+    const modalContent = document.getElementById('modalContent');
+
+    openDownloadsBtn?.addEventListener('click', () => {
+      modalContent.innerHTML = pages.flat().map(it => `
+        <div class="p-3 border-b last:border-b-0">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="font-semibold text-emerald-800">${it.title}</div>
+              <div class="text-sm text-gray-600">${it.desc}</div>
+              <div class="text-xs text-gray-500 mt-1">${it.date}</div>
+            </div>
+            <a href="${it.link}" target="_blank" class="ml-4 inline-flex items-center gap-2 px-3 py-2 bg-emerald-700 text-white rounded-md">Download</a>
+          </div>
+        </div>
+      `).join('');
+      downloadsModal.classList.remove('hidden');
+      downloadsModal.classList.add('flex');
+    });
+
+    closeDownloadsBtn?.addEventListener('click', () => {
+      downloadsModal.classList.add('hidden');
+      downloadsModal.classList.remove('flex');
+    });
+
+    downloadsModal?.addEventListener('click', (e) => {
+      if (e.target === downloadsModal) {
+        downloadsModal.classList.add('hidden');
+        downloadsModal.classList.remove('flex');
+      }
+    });
+
+    /* Contact form handling (demo only) */
+    const contactForm = document.getElementById('contactForm');
+    const contactStatus = document.getElementById('contactStatus');
+    contactForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      contactStatus.textContent = "Sending…";
+      setTimeout(() => {
+        contactStatus.textContent = "Message sent. We'll reply soon!";
+        contactForm.reset();
+        setTimeout(()=> contactStatus.textContent = '', 4000);
+      }, 900);
+    });
+
+    /* Subscribe demo */
+    const subscribeForm = document.getElementById('subscribeForm');
+    subscribeForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Thanks — you are subscribed!');
+      subscribeForm.reset();
+    });
+
+    /* tiny accessibility improvements for details elements */
+    document.querySelectorAll('details').forEach(d => {
+      d.addEventListener('toggle', () => {
+        if (d.open) d.scrollIntoView({behavior:'smooth', block:'center'});
       });
     });
 
-    // --- Contact form (frontend only) ---
-    function submitContact(e){
-      e.preventDefault();
-      const form = e.target;
-      const result = document.getElementById('contactResult');
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.textContent = 'Sending...';
-
-      // Simulate send (replace with real POST if needed)
-      setTimeout(() => {
-        result.classList.remove('hidden');
-        result.textContent = 'Thanks! Your message has been recorded. We will reply to your email soon.';
-        btn.disabled = false;
-        btn.textContent = 'Send Message';
-        form.reset();
-      }, 800);
-    }
-
-    // --- Back to top visibility ---
-    const backBtn = document.getElementById('backToTop');
-    window.addEventListener('scroll', () => {
-      if(window.scrollY > 420) backBtn.classList.remove('hidden'); else backBtn.classList.add('hidden');
+    /* small polyfill: reveal initial - show those already in view */
+    document.querySelectorAll('.reveal').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < (window.innerHeight * 0.85)) el.classList.add('show');
     });
-    backBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
-
-    // --- small accessibility: allow keyboard open/close of mobile with Enter/Space ---
-    menuBtn.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); menuBtn.click(); }
-    });
-
-    // close mobile menu on navigation
-    document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded','false');
-    }));
-
-    // animate the connected count (count-up)
-    function animateCount(id, target, ms){
-      const el = document.getElementById(id);
-      let cur = 0;
-      const step = Math.max(1, Math.floor(target / (ms / 16)));
-      const iv = setInterval(() => {
-        cur += step;
-        if(cur >= target){ cur = target; clearInterval(iv); }
-        el.textContent = cur.toLocaleString();
-      }, 16);
-    }
-    window.addEventListener('load', () => animateCount('connectedCount', 3208, 1200));
 
   </script>
 
+  <!-- END -->
 </body>
 </html>
