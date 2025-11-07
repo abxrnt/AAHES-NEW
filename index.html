@@ -468,60 +468,12 @@
       <p class="text-gray-600">This page is a placeholder. Add detailed feature pages later.</p>
     </section>
 
-    <!-- ABOUT (BLANK PAGE - EDIT LATER) -->
-    <!-- Hero -->
-  <section class="text-center py-8 px-4">
-    <h1 class="text-4xl sm:text-5xl text-green-700 font-extrabold" style="font-family: 'Playfair Display', serif;">
-      CEE Cutoff Ranks & Marks
-    </h1>
-    <p class="text-gray-600 mt-2">This serves as an approximate reference for the upcoming CEE examinations. The data has been compiled from the official ASTU records of the CEE 2024 exam.</p>
-  </section>
-
-  <!-- Filter Form -->
-  <section class="flex justify-center px-2 mb-12">
-    <form id="filterForm" class="glass p-4 rounded-2xl w-full max-w-4xl grid gap-2 md:grid-cols-4">
-      <div class="flex flex-col">
-        <label class="text-gray-800 mb-1 font-semibold">College</label>
-        <select id="college" class="p-3 rounded-lg text-gray-800 w-full">
-          <option value="">Select College</option>
-          <option value="AEC">AEC</option>
-          <option value="JEC">JEC</option>
-          <option value="JIST">JIST</option>
-          <option value="BBEC">BBEC</option>
-          <option value="GEC">GEC</option>
-          <option value="BVEC">BVEC</option>
-          <option value="DEC">DEC</option>
-        </select>
-      </div>
-
-      <div class="flex flex-col">
-        <label class="text-gray-800 mb-1 font-semibold">Branch</label>
-        <select id="branch" class="p-3 rounded-lg text-gray-800 w-full">
-          <option value="">Select Branch</option>
-        </select>
-      </div>
-
-      <div class="flex flex-col">
-        <label class="text-gray-800 mb-1 font-semibold">Category</label>
-        <select id="category" class="p-3 rounded-lg text-gray-800 w-full">
-          <option value="">Select Category</option>
-          <option value="GEN">GEN</option>
-          <option value="OBC">OBC/MOBC</option>
-          <option value="SC">SC</option>
-          <option value="STP">STP</option>
-          <option value="STH">STH</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn-green px-6 py-3 rounded-lg font-semibold w-full md:w-auto">Submit</button>
-    </form>
-  </section>
-
-  <!-- Result Section -->
-  <section class="px-4 mb-16">
-    <div id="result" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"></div>
-  </section>
-
+    <!-- FEATURES (BLANK PAGE - EDIT LATER) -->
+    <section id="route-features" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="featuresTitle">
+      <h2 id="featuresTitle" class="text-3xl font-bold text-emerald-800 mb-4">Features</h2>
+      <p class="text-gray-600">This page is a placeholder. Add detailed feature pages later.</p>
+    </section>
+    
   </main>
 
 <!-- ====== Footer Section ====== -->
@@ -897,118 +849,6 @@
       if (rect.top < window.innerHeight * 0.85) el.classList.add('show');
     });
 
-
-
-
-
-
-
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
-      authDomain: "aahes-cee-cutoffs.firebaseapp.com",
-      projectId: "aahes-cee-cutoffs",
-      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
-      messagingSenderId: "706066626405",
-      appId: "1:706066626405:web:0d254ab82beb288108938c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let cutoffData = [];
-
-    async function loadCutoffs() {
-      const querySnapshot = await getDocs(collection(db, "cutoffs"));
-      cutoffData = querySnapshot.docs.map(doc => doc.data());
-      console.log("✅ Loaded cutoffs:", cutoffData);
-    }
-
-    await loadCutoffs();
-
-    const form = document.getElementById("filterForm");
-    const result = document.getElementById("result");
-
-    document.getElementById("college").addEventListener("change", (e) => {
-      const selectedCollege = e.target.value;
-      const branchSelect = document.getElementById("branch");
-      branchSelect.innerHTML = `<option value="">Select Branch</option>`;
-
-      if (!selectedCollege) return;
-
-      const availableBranches = [...new Set(
-        cutoffData.filter(d => d.college === selectedCollege).map(d => d.branch)
-      )];
-
-      availableBranches.forEach(branch => {
-        const opt = document.createElement("option");
-        opt.value = branch;
-        opt.textContent = branch;
-        branchSelect.appendChild(opt);
-      });
-    });
-
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      const college = document.getElementById("college").value;
-      const branch = document.getElementById("branch").value;
-      const cat = document.getElementById("category").value;
-
-      if (!college || !branch || !cat) {
-        result.innerHTML = `<p class="col-span-3 text-red-500 font-semibold">⚠️ Please fill all fields.</p>`;
-        return;
-      }
-
-      const availableRounds = ["1", "2", "3"].filter(r =>
-        cutoffData.some(d => d.college === college && d.branch === branch && d.cat === cat && d.round === r)
-      );
-
-      if (availableRounds.length === 0) {
-        result.innerHTML = `<div class="text-center text-gray-600 mt-8">
-          No data found for ${college} - ${branch} (${cat})
-        </div>`;
-        return;
-      }
-
-      let html = "";
-      availableRounds.forEach(round => {
-        const match = cutoffData.find(d =>
-          d.college === college && d.branch === branch && d.cat === cat && d.round === round
-        );
-
-        html += `
-          <div class="glass p-6 rounded-2xl shadow-lg fade-up">
-            <h3 class="text-2xl font-bold text-green-700 mb-2">Round ${round}</h3>
-            <p><strong>College:</strong> ${match.college}</p>
-            <p><strong>Branch:</strong> ${match.branch}</p>
-            <p><strong>Category:</strong> ${match.cat}</p>
-            <p class="text-3xl font-extrabold text-green-800 mb-1">Closing Rank: ${match.close}</p>
-            <p class="text-2xl font-bold text-green-700 mt-2">Marks: ${match.marks}</p>
-          </div>
-        `;
-      });
-
-      result.innerHTML = html;
-      document.querySelectorAll(".fade-up").forEach((el, i) => {
-        el.style.animationDelay = `${i * 0.1}s`;
-      });
-    });
-
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
