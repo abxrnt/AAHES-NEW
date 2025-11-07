@@ -1,100 +1,100 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AAHES — All Assam Helpdesk for Engineering Students</title>
+  <title>AAHES</title>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <!-- FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
 
-  <!-- Favicon -->
-  <link rel="icon" href="favicon.jpeg" type="image/png">
+  <link rel="icon" type="image/png" href="favicon.jpeg">
 
-  <meta name="description" content="AAHES — All Assam Helpdesk for Engineering Students. Official CEE updates, cutoffs, PYQs and counselling resources." />
-
-  <!-- === Page styles (paste all your CSS here) === -->
   <style>
     :root{
-      --accent: #10b981;
-      --accent-dark: #059669;
-      --muted: #6b7280;
-      --glass-border: rgba(6,95,70,0.06);
+      --accent-1:#10b981; /* emerald */
+      --accent-2:#16a34a;
+      --soft-bg: linear-gradient(180deg,#f6fffa 0%, #ffffff 100%);
+    }
+    html,body{height:100%}
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--soft-bg);
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    html,body { height:100%; }
-    body {
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg,#f7fff8 0%, #ffffff 100%);
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      color: #0f172a;
-      -webkit-font-feature-settings: "ss01" on;
+    /* fast lightweight fade/slide animations for SPA */
+    .fade-in {
+      animation: fadeIn 280ms ease-out both;
+    }
+    .fade-out {
+      animation: fadeOut 200ms ease-in both;
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform: translateY(6px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity:1; transform: translateY(0); }
+      to { opacity:0; transform: translateY(-6px); }
     }
 
-    /* NAV / UI */
-    header { backdrop-filter: blur(8px); }
-    .nav-link { position: relative; padding-bottom: 6px; }
-    .nav-link::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0%;
-      height: 2px;
-      background: linear-gradient(90deg,var(--accent), var(--accent-dark));
-      transition: width .28s ease;
+    /* blink dot */
+    .blink-dot {
+      width:10px;height:10px;border-radius:999px;background:#16a34a;display:inline-block;margin-right:8px;
+      animation: blink 1s infinite;
     }
-    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
-
-    /* glass cards */
-    .glass {
-      background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.8));
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 8px 30px rgba(16,185,129,0.04);
+    @keyframes blink {
+      0%,50%,100%{opacity:1}
+      25%,75%{opacity:0}
     }
 
-    /* reveal / animations */
-    .reveal { opacity: 0; transform: translateY(18px); transition: all 600ms cubic-bezier(.2,.9,.3,1); }
-    .reveal.show { opacity: 1; transform: translateY(0); }
-    @keyframes fadeUp { from { opacity:0; transform: translateY(16px) } to { opacity:1; transform: translateY(0) } }
-    .fade-up { animation: fadeUp .6s ease both; }
+    /* navbar link underline */
+    .nav-link { position:relative; font-weight:600; }
+    .nav-link::after{
+      content:''; position:absolute; left:0; bottom:-6px; width:0; height:2px; background:rgba(16,185,129,0.95);
+      transition:width .22s ease;
+    }
+    .nav-link:hover::after{ width:100%; }
 
-    /* marquee */
-    @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-    .marquee { display:flex; gap:1rem; animation: marquee 28s linear infinite; will-change: transform; }
+    /* mobile menu */
+    #mobile-menu{ transition: transform .22s ease, opacity .22s ease; transform-origin:top; }
+    #mobile-menu.hidden{ transform:scaleY(0); opacity:0; height:0; overflow:hidden; pointer-events:none; }
+    #mobile-menu.open{ transform:scaleY(1); opacity:1; }
 
-    /* small UI niceties */
-    :focus { outline: 3px solid rgba(16,185,129,0.12); outline-offset: 3px; }
-    .hover-lift { transition: transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s; }
-    .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(16,185,129,0.08); }
+    /* small utility */
+    .glass { background: rgba(255,255,255,0.8); backdrop-filter: blur(6px); border:1px solid rgba(16,185,129,0.06); }
 
-    /* responsive tweaks */
-    @media (max-width:640px) { .desktop-only { display:none; } }
+    /* nice card */
+    .card { background:white; border-radius:14px; box-shadow: 0 6px 20px rgba(16,24,40,0.06); padding:18px; }
 
-    /* cutoffs table styling */
-    .cutoff-card { border-radius: 14px; padding: 1.1rem; }
-    .chip { background: rgba(16,185,129,0.08); color: #065f46; padding: .22rem .6rem; border-radius: 999px; font-weight:600; font-size:0.85rem; display:inline-flex; align-items:center; gap:.4rem; }
+    /* active tab styling */
+    .tab-active { color:white !important; background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); border-radius:10px; padding:6px 12px; }
 
-    /* modal */
-    .modal { transition: opacity .18s ease; }
-
-    /* small scrollbar clean up for modal content */
-    .no-scrollbar::-webkit-scrollbar { display:none; }
-    .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+    /* small responsive tweaks */
+    @media (max-width:640px){
+      .typed-break{display:block}
+    }
   </style>
 </head>
 
-<body class="text-gray-800 min-h-screen flex flex-col">
+<body class="text-slate-900">
 
-  <!-- =========================
-       HEADER + NAVBAR
-       ========================= -->
-  <header class="fixed w-full top-0 left-0 z-50">
-    <nav class="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-gray-200 rounded-b-xl shadow-sm">
-      <div class="flex items-center gap-3">
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 md:px-8">
+      <div class="flex items-center gap-4 py-3">
+        <!-- Logo + Title -->
+        <div class="flex items-center gap-3">
         <img src="logo.jpeg" alt="AAHES Logo" class="w-11 h-11 rounded-full object-cover border border-gray-100 shadow-sm">
         <div class="leading-none">
           <a href="#/" id="brand" class="text-2xl font-extrabold text-green-700" style="font-family: 'Playfair Display', serif">AAHES</a>
@@ -102,46 +102,59 @@
         </div>
       </div>
 
-      <ul id="navLinks" class="hidden md:flex items-center gap-4 text-sm font-medium">
-        <li><a href="#/" class="nav-link px-3 py-1 rounded-md" data-route>Home</a></li>
-        <li><a href="#/cutoffs" class="nav-link px-3 py-1 rounded-md" data-route>Cutoffs</a></li>
-        <li><a href="#/features" class="nav-link px-3 py-1 rounded-md" data-route>Features</a></li>
-        <li><a href="#/syllabus" class="nav-link px-3 py-1 rounded-md" data-route>Syllabus</a></li>
-        <li><a href="#/contact" class="nav-link px-3 py-1 rounded-md" data-route>Contact</a></li>
-      </ul>
+        <!-- Desktop tabs -->
+        <ul id="desktopTabs" class="hidden md:flex ml-auto gap-2 items-center">
+          <li><button data-tab="home" class="nav-link px-3 py-2 rounded-md text-sm">Home</button></li>
+          <li><button data-tab="syllabus" class="nav-link px-3 py-2 rounded-md text-sm">Syllabus</button></li>
+          <li class="relative">
+            <button id="ceeBtn" class="nav-link px-3 py-2 rounded-md text-sm flex items-center gap-1">CEE Aspirant
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <!-- small dropdown -->
+            <div id="ceeDropdown" class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg py-1 hidden">
+              <button data-tab="syllabus" class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Syllabus</button>
+              <button data-tab="cutoffs" class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Cutoffs</button>
+              <button data-tab="placements" class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Placements</button>
+              <button data-tab="campus" class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Campus</button>
+              <button data-tab="pyqs" class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50">PYQs</button>
+            </div>
+          </li>
+          <li><button data-tab="cutoffs" class="nav-link px-3 py-2 rounded-md text-sm">Cutoffs</button></li>
+          <li><button data-tab="placements" class="nav-link px-3 py-2 rounded-md text-sm">Placements</button></li>
+          <li><button data-tab="campus" class="nav-link px-3 py-2 rounded-md text-sm">Campus</button></li>
+          <li><button data-tab="pyqs" class="nav-link px-3 py-2 rounded-md text-sm">PYQs</button></li>
+          <li><button data-tab="contact" class="nav-link px-3 py-2 rounded-md text-sm">Contact</button></li>
+        </ul>
 
-      <div class="flex items-center gap-3">
-        <a href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN" target="_blank" class="desktop-only inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-green-600 text-green-700 hover:bg-green-600 hover:text-white transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M..."/></svg>
-          Join WhatsApp
-        </a>
+        <!-- Mobile menu button -->
+        <div class="ml-auto md:hidden">
+          <button id="menu-btn" aria-label="Open menu" class="p-2 rounded-md bg-white border shadow-sm focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
 
-        <!-- Mobile toggler -->
-        <button id="mobileToggle" class="md:hidden p-2 rounded focus:outline-none" aria-label="Open menu">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-      </div>
-    </nav>
-
-    <!-- mobile menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-200 shadow-lg">
-      <div class="px-4 py-4 space-y-2">
-        <a href="#/" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Home</a>
-        <a href="#/cutoffs" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Cutoffs</a>
-        <a href="#/features" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Features</a>
-        <a href="#/syllabus" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Syllabus</a>
-        <a href="#/contact" class="block px-3 py-2 rounded hover:bg-gray-50" data-route>Contact</a>
       </div>
     </div>
-  </header>
 
-  <!-- =========================
-       MAIN (ROUTES)
-       ========================= -->
-  <main class="pt-28 flex-1">
+    <!-- Mobile nav -->
+    <div id="mobile-menu" class="md:hidden px-4 pb-4 hidden">
+      <div class="flex flex-col gap-2">
+        <button data-tab="home" class="text-left px-3 py-2 rounded-md">🏠 Home</button>
+        <button data-tab="syllabus" class="text-left px-3 py-2 rounded-md">📘 Syllabus</button>
+        <button data-tab="cutoffs" class="text-left px-3 py-2 rounded-md">📊 Cutoffs</button>
+        <button data-tab="placements" class="text-left px-3 py-2 rounded-md">💼 Placements</button>
+        <button data-tab="campus" class="text-left px-3 py-2 rounded-md">🏫 Campus</button>
+        <button data-tab="pyqs" class="text-left px-3 py-2 rounded-md">📝 PYQs</button>
+        <button data-tab="contact" class="text-left px-3 py-2 rounded-md">✉️ Contact</button>
+      </div>
+    </div>
+  </nav>
 
+  
+  <!-- MAIN CONTENT: each section is a "page" -->
+  <main class="max-w-6xl mx-auto px-4 md:px-8 py-8">
     <!-- Home -->
-    <section id="route-home" class="route active max-w-7xl mx-auto px-4 md:px-8 pb-12" aria-labelledby="homeTitle">
+    <section id="home" class="page-section">
       <div class="grid md:grid-cols-12 gap-8 items-center">
         <div class="md:col-span-7">
           <div class="inline-flex items-center gap-3 bg-green-50/70 text-green-800 rounded-full px-4 py-2 text-sm font-semibold shadow-sm mb-4 reveal" data-reveal>
@@ -218,10 +231,59 @@
       </div>
     </section>
 
-    <!-- =========================
-         CUTOFFS PAGE
-         ========================= -->
-    <section id="route-cutoffs" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="cutoffTitle" tabindex="-1">
+    <!-- SYLLABUS -->
+    <section id="syllabus" class="page-section hidden">
+      <div class="mb-6">
+        <h2 class="text-3xl font-extrabold text-green-700">Syllabus (Sample)</h2>
+        <p class="mt-2 text-slate-600">Chapter-wise breakdown (sample dummy data). Expand and edit as needed.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Physics -->
+        <div class="card">
+          <h3 class="text-lg font-bold">Class 12 - Physics</h3>
+          <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+            <li><strong>Electrostatics</strong> — Gauss law, Coulomb's law, capacitors</li>
+            <li><strong>Current Electricity</strong> — circuits, Kirchhoff's rules</li>
+            <li><strong>Optics</strong> — interference, diffraction, polarization</li>
+            <li><strong>Modern Physics</strong> — photoelectric effect, atomic models</li>
+          </ul>
+        </div>
+
+        <!-- Chemistry -->
+        <div class="card">
+          <h3 class="text-lg font-bold">Class 12 - Chemistry</h3>
+          <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+            <li><strong>Physical Chemistry</strong> — thermodynamics, kinetics</li>
+            <li><strong>Organic Chemistry</strong> — reaction mechanisms, functional groups</li>
+            <li><strong>Inorganic Chemistry</strong> — periodicity, coordination chemistry</li>
+          </ul>
+        </div>
+
+        <!-- Mathematics -->
+        <div class="card">
+          <h3 class="text-lg font-bold">Mathematics</h3>
+          <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+            <li>Calculus — differentiation, integration, applications</li>
+            <li>Algebra — matrices, sequences, series</li>
+            <li>Coordinate Geometry & Trigonometry</li>
+          </ul>
+        </div>
+
+        <!-- Sample downloads -->
+        <div class="card">
+          <h3 class="text-lg font-bold">Downloads & Resources</h3>
+          <div class="mt-3 grid gap-3">
+            <a class="block p-3 border rounded hover:bg-slate-50" href="#" target="_blank">B.Tech Syllabus (ASTU) - Sample PDF</a>
+            <a class="block p-3 border rounded hover:bg-slate-50" href="#" target="_blank">Important Formula Sheet</a>
+            <a class="block p-3 border rounded hover:bg-slate-50" href="#" target="_blank">Reference Notes</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUTOFFS (loads from Firestore) -->
+    <section id="cutoffs" class="page-section hidden">
       <div class="max-w-5xl mx-auto">
         <h2 id="cutoffTitle" class="text-4xl font-bold text-emerald-800 text-center mb-2">CEE Cutoff Ranks & Marks</h2>
         <p class="text-gray-600 text-center mb-8">This serves as an approximate reference for the upcoming CEE examinations. Data is compiled from official sources and verified reports.</p>
@@ -265,362 +327,524 @@
             <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg w-full transition-all duration-300 hover:scale-105 shadow-md">Submit</button>
           </div>
         </form>
-
-        <!-- Results -->
         <div id="result" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"></div>
+      </div>
+    </section>
 
-        <!-- A helpful note and fallback area -->
-        <div id="cutoffNote" class="mt-6 text-sm text-gray-600">
-          If you don't see results: ensure your firebase rules allow reads, or that the "cutoffs" collection exists in Firestore. The demo includes a small simulated dataset fallback.
+    <!-- PLACEMENTS -->
+    <section id="placements" class="page-section hidden">
+      <div>
+        <h2 class="text-3xl font-extrabold text-green-700">Placements (Sample)</h2>
+        <p class="mt-1 text-slate-600">Dummy placement stats and company insights.</p>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card">
+          <h3 class="font-bold text-green-700">AEC - Batch 2024</h3>
+          <p class="mt-2 text-sm">Average package: ₹5.6 LPA</p>
+          <p class="mt-1 text-sm">Top recruiters: TCS, Wipro, L&T, Infosys</p>
+        </div>
+
+        <div class="card">
+          <h3 class="font-bold text-green-700">JEC - Batch 2024</h3>
+          <p class="mt-2 text-sm">Average package: ₹4.8 LPA</p>
+          <p class="mt-1 text-sm">Top recruiters: Cognizant, Tech Mahindra</p>
+        </div>
+
+        <div class="card">
+          <h3 class="font-bold text-green-700">GEC - Highlights</h3>
+          <p class="mt-2 text-sm">Highest: ₹12 LPA (Internship converted)</p>
+          <p class="mt-1 text-sm">Placement prep: Resume drives & mock interviews</p>
         </div>
       </div>
     </section>
 
-    <!-- Features page (placeholder) -->
-    <section id="route-features" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="featuresTitle" tabindex="-1">
-      <h2 id="featuresTitle" class="text-3xl font-bold text-emerald-800 mb-4">Features</h2>
-      <p class="text-gray-600">Cutoff analytics, Rank predictor, PYQs, and more — content coming soon.</p>
-    </section>
+    <!-- CAMPUS -->
+    <section id="campus" class="page-section hidden">
+      <div>
+        <h2 class="text-3xl font-extrabold text-green-700">Campus Profiles</h2>
+        <p class="mt-1 text-slate-600">Short campus descriptions (dummy content).</p>
+      </div>
 
-    <!-- Syllabus page (placeholder) -->
-    <section id="route-syllabus" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="syllabusTitle" tabindex="-1">
-      <h2 id="syllabusTitle" class="text-3xl font-bold text-emerald-800 mb-4">Syllabus</h2>
-      <p class="text-gray-600">ASTU / College syllabi and quick links will be added here.</p>
-    </section>
-
-    <!-- Contact -->
-    <section id="route-contact" class="route max-w-7xl mx-auto px-4 md:px-8 py-20" aria-labelledby="contactTitle" tabindex="-1">
-      <h2 id="contactTitle" class="text-3xl font-bold text-emerald-800 mb-4">Contact</h2>
-
-      <div class="grid md:grid-cols-2 gap-8">
-        <div>
-          <p class="text-gray-700 mb-3"><strong>Email:</strong> <a href="mailto:helpline.aahes@gmail.com" class="underline text-green-700">helpline.aahes@gmail.com</a></p>
-          <p class="text-gray-700 mb-3"><strong>Phone:</strong> +91 xxxxx xxxxx</p>
-          <p class="text-gray-700"><strong>Address:</strong> Assam, India</p>
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card">
+          <img src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg" class="w-full h-36 object-cover rounded-md" alt="">
+          <h4 class="mt-3 font-bold">Assam Engineering College</h4>
+          <p class="text-sm text-slate-600 mt-1">Historic institute with strong alumni network.</p>
         </div>
 
-        <form id="contactFormMain" class="space-y-3 bg-white p-6 rounded-xl border">
-          <div>
-            <label class="text-sm font-medium text-gray-700">Name</label>
-            <input required name="name" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="Your name">
-          </div>
+        <div class="card">
+          <img src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg" class="w-full h-36 object-cover rounded-md" alt="">
+          <h4 class="mt-3 font-bold">Jorhat Engineering College</h4>
+          <p class="text-sm text-slate-600 mt-1">Vibrant campus life and research labs.</p>
+        </div>
 
-          <div>
-            <label class="text-sm font-medium text-gray-700">Email</label>
-            <input required name="email" type="email" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="you@example.com">
-          </div>
+        <div class="card">
+          <img src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg" class="w-full h-36 object-cover rounded-md" alt="">
+          <h4 class="mt-3 font-bold">GEC</h4>
+          <p class="text-sm text-slate-600 mt-1">Growing industry ties and placements.</p>
+        </div>
+      </div>
+    </section>
 
-          <div>
-            <label class="text-sm font-medium text-gray-700">Message</label>
-            <textarea required name="message" rows="4" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-emerald-200" placeholder="How can we help?"></textarea>
-          </div>
+    <!-- PYQS -->
+    <section id="pyqs" class="page-section hidden">
+      <div>
+        <h2 class="text-3xl font-extrabold text-green-700">Previous Year Questions (PYQs)</h2>
+        <p class="mt-1 text-slate-600">Download sample PYQs and practice papers.</p>
+      </div>
 
-          <div class="flex items-center gap-3">
-            <button type="submit" class="bg-emerald-700 text-white px-4 py-2 rounded-lg">Send message</button>
-            <button type="reset" class="text-gray-600 px-3 py-2 rounded-lg border">Reset</button>
-            <div id="contactStatusMain" class="text-sm text-gray-600 ml-auto"></div>
-          </div>
-        </form>
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card">
+          <h4 class="font-bold">CEE 2025 - Question Paper</h4>
+          <p class="text-sm text-slate-600 mt-1">PDF sample.</p>
+          <a href="#" class="inline-block mt-3 px-3 py-2 rounded-md border">Download</a>
+        </div>
+
+        <div class="card">
+          <h4 class="font-bold">CEE 2024 - Answer Key</h4>
+          <p class="text-sm text-slate-600 mt-1">Official key (sample)</p>
+          <a href="#" class="inline-block mt-3 px-3 py-2 rounded-md border">Download</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="page-section hidden">
+      <div>
+        <h2 class="text-3xl font-extrabold text-green-700">Contact Us</h2>
+        <p class="mt-1 text-slate-600">Reach out to the AAHES team.</p>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card">
+          <h4 class="font-bold">General Enquiries</h4>
+          <p class="mt-2 text-sm">Email: <a href="mailto:helpline.aahes@gmail.com" class="text-emerald-600">helpline.aahes@gmail.com</a></p>
+          <p class="mt-1 text-sm">Phone: +91 xxxxx xxxxx</p>
+          <p class="mt-1 text-sm">Address: Assam, India</p>
+        </div>
+
+        <div class="card">
+          <h4 class="font-bold">Quick Message</h4>
+          <form id="contactForm" class="mt-3 grid gap-3">
+            <input type="text" id="cname" placeholder="Your name" class="p-3 rounded-md border" />
+            <input type="email" id="cemail" placeholder="Your email" class="p-3 rounded-md border" />
+            <textarea id="cmsg" rows="4" placeholder="Message" class="p-3 rounded-md border"></textarea>
+            <button type="submit" class="px-4 py-3 rounded-md bg-emerald-600 text-white">Send</button>
+          </form>
+          <div id="contactStatus" class="mt-2 text-sm text-slate-500"></div>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ====== Footer ====== -->
-  <footer class="bg-gray-900 text-gray-300 py-10 mt-16">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-        <div>
-          <h2 class="text-2xl font-bold text-white tracking-wide">AAHES</h2>
-          <p class="text-sm mt-2 text-gray-400 max-w-md">
-            Empowering Assam’s engineering aspirants with authentic updates, data-driven insights, and resources — all in one trusted platform.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-12 text-sm">
-          <div class="group">
-            <p class="text-white font-semibold flex items-center gap-2">Abishrant Shandilya</p>
-            <p class="text-gray-400 group-hover:text-gray-300 transition">UI/UX & Frontend Developer</p>
-            <div class="flex items-center gap-3 mt-2">
-              <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="LinkedIn">LinkedIn</a>
-              <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="GitHub">GitHub</a>
-              <a href="mailto:abishrant@gmail.com" class="text-gray-400 hover:text-emerald-400 transition">Email</a>
-            </div>
-          </div>
-
-          <div class="group">
-            <p class="text-white font-semibold flex items-center gap-2">Abhilesh Sharma</p>
-            <p class="text-gray-400 group-hover:text-gray-300 transition">Database Administrator</p>
-            <div class="flex items-center gap-3 mt-2">
-              <a href="#" class="text-gray-400 hover:text-emerald-400 transition">LinkedIn</a>
-              <a href="#" class="text-gray-400 hover:text-emerald-400 transition">GitHub</a>
-              <a href="mailto:abhilesh@gmail.com" class="text-gray-400 hover:text-emerald-400 transition">Email</a>
-            </div>
-          </div>
-        </div>
+  <!-- ====== Footer Section ====== -->
+<footer class="bg-gray-900 text-gray-300 py-10 mt-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+      
+      <!-- Left: Branding & Description -->
+      <div>
+        <h2 class="text-2xl font-bold text-white tracking-wide">AAHES</h2>
+        <p class="text-sm mt-2 text-gray-400 max-w-md">
+          Empowering Assam’s engineering aspirants with authentic updates, data-driven insights, 
+          and resources — all in one trusted platform.
+        </p>
       </div>
 
-      <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
-        © 2025 AAHES. All rights reserved.
+      <!-- Right: Team Credits -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-12 text-sm">
+        
+        <!-- Abishrant -->
+        <div class="group">
+          <p class="text-white font-semibold flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400 group-hover:text-emerald-300 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Abishrant Shandilya
+          </p>
+          <p class="text-gray-400 group-hover:text-gray-300 transition">
+            UI/UX & Frontend Developer
+          </p>
+          <div class="flex items-center gap-3 mt-2">
+            <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 
+                2.239 5 5 5h14c2.761 0 5-2.239 
+                5-5v-14c0-2.761-2.239-5-5-5zm-11 
+                19h-3v-10h3v10zm-1.5-11.268c-.966 
+                0-1.75-.783-1.75-1.75s.784-1.75 
+                1.75-1.75 1.75.783 1.75 1.75-.784 
+                1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.027-3.058-1.862-3.058-1.865 
+                0-2.152 1.456-2.152 2.961v5.701h-3v-10h2.885v1.367h.041c.402-.761 
+                1.385-1.562 2.85-1.562 3.048 0 3.611 2.007 3.611 4.617v5.578z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 .5C5.648.5.5 5.648.5 12c0 
+                5.086 3.292 9.392 7.862 10.91.574.102.784-.249.784-.554 
+                0-.273-.01-1.002-.015-1.967-3.197.695-3.873-1.541-3.873-1.541-.523-1.328-1.277-1.682-1.277-1.682-1.044-.714.08-.699.08-.699 
+                1.155.082 1.764 1.188 1.764 1.188 
+                1.027 1.76 2.693 1.252 3.35.958.104-.745.403-1.252.732-1.54-2.55-.29-5.231-1.275-5.231-5.675 
+                0-1.253.448-2.277 1.183-3.078-.119-.29-.513-1.456.112-3.036 
+                0 0 .965-.309 3.166 1.175a10.96 
+                10.96 0 0 1 2.884-.388c.978.005 1.964.132 
+                2.884.388 2.2-1.484 3.165-1.175 3.165-1.175.625 
+                1.58.231 2.746.113 3.036.736.801 
+                1.183 1.825 1.183 3.078 0 4.412-2.686 
+                5.382-5.246 5.667.414.357.78 1.06.78 2.138 
+                0 1.544-.014 2.787-.014 3.167 
+                0 .308.208.66.79.548C20.71 21.39 
+                24 17.083 24 12c0-6.352-5.148-11.5-12-11.5z"/>
+              </svg>
+            </a>
+            <a href="mailto:abishrant@gmail.com" class="text-gray-400 hover:text-emerald-400 transition" aria-label="Email">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 13.065 0 6.5v11A2.5 2.5 0 0 0 2.5 20h19a2.5 2.5 0 0 0 
+                2.5-2.5v-11l-12 6.565zM12 11 24 4.5V4a2.5 2.5 0 0 0-2.5-2.5h-19A2.5 
+                2.5 0 0 0 0 4v.5L12 11z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Abhilesh -->
+        <div class="group">
+          <p class="text-white font-semibold flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400 group-hover:text-emerald-300 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Abhilesh Sharma
+          </p>
+          <p class="text-gray-400 group-hover:text-gray-300 transition">
+            Database Administrator
+          </p>
+          <div class="flex items-center gap-3 mt-2">
+            <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 
+                2.239 5 5 5h14c2.761 0 5-2.239 
+                5-5v-14c0-2.761-2.239-5-5-5zm-11 
+                19h-3v-10h3v10zm-1.5-11.268c-.966 
+                0-1.75-.783-1.75-1.75s.784-1.75 
+                1.75-1.75 1.75.783 1.75 1.75-.784 
+                1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.027-3.058-1.862-3.058-1.865 
+                0-2.152 1.456-2.152 2.961v5.701h-3v-10h2.885v1.367h.041c.402-.761 
+                1.385-1.562 2.85-1.562 3.048 0 3.611 2.007 3.611 4.617v5.578z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-emerald-400 transition" aria-label="GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 .5C5.648.5.5 5.648.5 12c0 
+                5.086 3.292 9.392 7.862 10.91.574.102.784-.249.784-.554 
+                0-.273-.01-1.002-.015-1.967-3.197.695-3.873-1.541-3.873-1.541-.523-1.328-1.277-1.682-1.277-1.682-1.044-.714.08-.699.08-.699 
+                1.155.082 1.764 1.188 1.764 1.188 
+                1.027 1.76 2.693 1.252 3.35.958.104-.745.403-1.252.732-1.54-2.55-.29-5.231-1.275-5.231-5.675 
+                0-1.253.448-2.277 1.183-3.078-.119-.29-.513-1.456.112-3.036 
+                0 0 .965-.309 3.166 1.175a10.96 
+                10.96 0 0 1 2.884-.388c.978.005 1.964.132 
+                2.884.388 2.2-1.484 3.165-1.175 3.165-1.175.625 
+                1.58.231 2.746.113 3.036.736.801 
+                1.183 1.825 1.183 3.078 0 4.412-2.686 
+                5.382-5.246 5.667.414.357.78 1.06.78 2.138 
+                0 1.544-.014 2.787-.014 3.167 
+                0 .308.208.66.79.548C20.71 21.39 
+                24 17.083 24 12c0-6.352-5.148-11.5-12-11.5z"/>
+              </svg>
+            </a>
+            <a href="mailto:abhilesh@gmail.com" class="text-gray-400 hover:text-emerald-400 transition" aria-label="Email">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 13.065 0 6.5v11A2.5 2.5 0 0 0 2.5 20h19a2.5 2.5 0 0 0 
+                2.5-2.5v-11l-12 6.565zM12 11 24 4.5V4a2.5 2.5 0 0 0-2.5-2.5h-19A2.5 
+                2.5 0 0 0 0 4v.5L12 11z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
 
-  <!-- DOWNLOADS MODAL (used on multiple pages) -->
-  <div id="downloadsModal" class="fixed inset-0 z-60 hidden items-center justify-center bg-black/40 p-4 modal">
-    <div class="bg-white rounded-xl w-full max-w-2xl p-6 relative">
-      <button id="closeDownloads" class="absolute right-4 top-4 text-gray-500 hover:text-gray-800 text-2xl" aria-label="Close">&times;</button>
-      <h4 class="text-xl font-semibold mb-2">Downloads</h4>
-      <div id="modalContent" class="space-y-4 max-h-72 overflow-auto no-scrollbar"></div>
+    <!-- Divider -->
+    <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
+      © 2025 AAHES. All rights reserved.
     </div>
   </div>
+</footer>
 
-  <!-- =========================
-       SCRIPTS (app logic + firebase)
-       ========================= -->
 
-  <!-- NOTE:
-       - If you want to keep this file static and not include firebase, the Firestore code gracefully falls back to a small demo dataset.
-       - To enable real Firestore reads, keep the firebaseConfig below (or replace with env) and ensure Firestore rules permit reading.
-  -->
+  <!-- SCRIPTS -->
+  <script>
+    /* ---------- SPA NAVIGATION (no reload) ---------- */
+    const sections = document.querySelectorAll('.page-section');
+    const tabButtons = document.querySelectorAll('[data-tab]');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuBtn = document.getElementById('menu-btn');
+    const ceeBtn = document.getElementById('ceeBtn');
+    const ceeDropdown = document.getElementById('ceeDropdown');
+
+    // Show given section id, hide others. Add small animation.
+    function showSection(id, pushHash = true) {
+      sections.forEach(sec => {
+        if (sec.id === id) {
+          if (sec.classList.contains('hidden')) {
+            sec.classList.remove('hidden');
+            sec.classList.remove('fade-out');
+            sec.classList.add('fade-in');
+          }
+        } else {
+          if (!sec.classList.contains('hidden')) {
+            sec.classList.remove('fade-in');
+            sec.classList.add('fade-out');
+            // hide after animation
+            setTimeout(()=> sec.classList.add('hidden'), 220);
+          } else {
+            sec.classList.add('hidden');
+          }
+        }
+      });
+
+      // update tab active styles (desktop)
+      document.querySelectorAll('#desktopTabs button').forEach(btn=>{
+        if (btn.dataset.tab === id) {
+          btn.classList.add('tab-active');
+        } else {
+          btn.classList.remove('tab-active');
+        }
+      });
+
+      // update url hash (so linkable)
+      if (pushHash) history.replaceState(null, '', `#${id}`);
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // attach events to all buttons with data-tab
+    function attachTabEvents(root=document) {
+      root.querySelectorAll('[data-tab]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = btn.dataset.tab;
+          showSection(id);
+          // close mobile menu if open
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+    attachTabEvents(document);
+
+    // mobile menu toggle
+    menuBtn?.addEventListener('click', ()=>{
+      if (mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.classList.add('open');
+      } else {
+        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('open');
+      }
+    });
+
+    // CEE dropdown open/close
+    ceeBtn?.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      ceeDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e)=>{
+      if (!ceeDropdown.contains(e.target) && !ceeBtn.contains(e.target)) {
+        ceeDropdown.classList.add('hidden');
+      }
+    });
+
+    // on load: check hash or default to home
+    window.addEventListener('load', ()=>{
+      const id = location.hash ? location.hash.replace('#','') : 'home';
+      // ensure id matches a section, else home
+      if (document.getElementById(id)) showSection(id, false);
+      else showSection('home', false);
+    });
+
+    /* ---------- Small utilities ---------- */
+    // quick smooth marquee
+    (function createMarquee(){
+      const style = document.createElement('style');
+      style.innerHTML = `@keyframes marquee { 0% { transform: translateX(0%);} 100% { transform: translateX(-50%);} }
+        .animate-marquee{ display:flex; gap:20px; animation:marquee 24s linear infinite; }`;
+      document.head.appendChild(style);
+    })();
+
+    /* ---------- Typing & counter (Home) ---------- */
+    // typing
+    const typedTexts = [
+      "Your gateway to top engineering colleges.",
+      "Resources, guidance, and support at your fingertips.",
+      "Preparing Assam's future engineers for success."
+    ];
+    (function typingEffect(){
+      let idx = 0, ch = 0, forward = true, cur = '';
+      const out = document.getElementById('typed-text');
+      // create container in home if missing
+      if(!out){
+        const el = document.createElement('div');
+        el.id = 'typed-text';
+        el.className='mt-4 text-lg text-slate-700';
+        document.querySelector('#home .text-center').appendChild(el);
+      }
+      const target = document.getElementById('typed-text');
+      let delay = 100;
+      function tick(){
+        const t = typedTexts[idx];
+        if (forward){
+          if (ch < t.length) { cur += t.charAt(ch++); target.innerText = cur; setTimeout(tick, delay); }
+          else { forward = false; setTimeout(tick,1500); }
+        } else {
+          if (cur.length>0) { cur = cur.slice(0,-1); target.innerText = cur; setTimeout(tick,40); }
+          else { forward=true; idx=(idx+1)%typedTexts.length; ch=0; setTimeout(tick,300); }
+        }
+      }
+      tick();
+    })();
+
+    // count-up
+    (function counter(){
+      const el = document.querySelector('#count');
+      if(!el){
+        const d = document.createElement('div'); d.innerHTML = `<div class="mt-6 inline-flex items-center gap-2 bg-white/80 border border-emerald-100 px-4 py-2 rounded-full shadow"> <span class="blink-dot"></span> <span id="count">0</span>+ students are connected</div>`;
+        document.querySelector('#home .text-center').appendChild(d);
+      }
+      const c = document.getElementById('count');
+      let start = 0, target = 3208, dur = 1500, inc = target/(dur/16);
+      function run(){ start+=inc; if(start < target){ c.innerText = Math.floor(start).toLocaleString(); requestAnimationFrame(run); } else c.innerText = target.toLocaleString(); }
+      run();
+    })();
+
+    /* ---------- Contact form (dummy) ---------- */
+    document.getElementById('contactForm')?.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      document.getElementById('contactStatus').innerText = 'Thank you — message received (dummy).';
+      document.getElementById('contactForm').reset();
+    });
+
+    /* ---------- Downloads pagination in home (if needed) ---------- */
+    // (left as placeholder if you want to plug pages from earlier file)
+
+
+    /* ---------- FIREBASE CUTOFFS: use *same config* as provided ---------- */
+  </script>
+
+  <!-- Firebase: load & use same config (module) -->
   <script type="module">
-    /*******************************
-     * App: Simple SPA + Cutoffs
-     *******************************/
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // --- ROUTING & NAV ---
-    const routes = {
-      '/': 'route-home',
-      '/cutoffs': 'route-cutoffs',
-      '/features': 'route-features',
-      '/syllabus': 'route-syllabus',
-      '/contact': 'route-contact'
+    // === same firebase config as provided by user ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+      authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+      projectId: "aahes-cee-cutoffs",
+      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+      messagingSenderId: "706066626405",
+      appId: "1:706066626405:web:0d254ab82beb288108938c"
     };
 
-    const navLinks = document.querySelectorAll('[data-route]');
-    const routeEls = document.querySelectorAll('.route');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileToggle = document.getElementById('mobileToggle');
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    mobileToggle?.addEventListener('click', () => {
-      if (mobileMenu) mobileMenu.classList.toggle('hidden');
-    });
 
-    function getPathFromHash() {
-      const hash = location.hash.replace('#', '') || '/';
-      return hash.startsWith('/') ? hash : '/';
+    async function loadCutoffsFromFirestore() {
+      try {
+        const snap = await getDocs(collection(db, "cutoffs"));
+        cutoffData = snap.docs.map(d => d.data());
+        document.getElementById('cutoffStatus').innerText = `Loaded ${cutoffData.length} cutoff records.`;
+        console.log("Loaded cutoffs:", cutoffData);
+      } catch (err) {
+        console.error("Error loading cutoffs:", err);
+        document.getElementById('cutoffStatus').innerText = `Failed to load cutoffs (see console).`;
+      }
     }
 
-    function setActiveNav(path) {
-      navLinks.forEach(link => {
-        const href = link.getAttribute('href') || '';
-        const route = (href.split('#')[1] || '/') ;
-        if (route === path) {
-          link.classList.add('active', 'text-emerald-800');
-        } else {
-          link.classList.remove('active', 'text-emerald-800');
-        }
-      });
-    }
+    // Immediately load
+    await loadCutoffsFromFirestore();
 
-    function showRoute(path, push=false) {
-      const id = routes[path] || 'route-home';
-      routeEls.forEach(el => {
-        if (el.id === id) el.classList.add('active');
-        else el.classList.remove('active');
-      });
-      setActiveNav(path);
-      if (push) location.hash = path;
-      if (mobileMenu && !mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
+    // Populate branch select based on college selection
+    const collegeSelect = document.getElementById('college');
+    const branchSelect = document.getElementById('branch');
+    const categorySelect = document.getElementById('category');
+    const resultDiv = document.getElementById('result');
+    const filterForm = document.getElementById('filterForm');
 
-      // run reveal logic when switching
-      runReveals();
-
-      // accessibility: focus main heading of active route
-      setTimeout(() => {
-        const container = document.getElementById(id);
-        if (!container) return;
-        const h = container.querySelector('h1,h2,h3');
-        if (h && typeof h.focus === 'function') h.focus({preventScroll:true});
-      }, 80);
-    }
-
-    window.addEventListener('hashchange', () => {
-      const path = getPathFromHash();
-      showRoute(path, false);
-    });
-
-    window.addEventListener('load', () => {
-      const path = getPathFromHash();
-      showRoute(path, false);
-      runReveals();
-    });
-
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const href = link.getAttribute('href') || '#/';
-        const path = (href.split('#')[1] || '/');
-        showRoute(path, true);
+    collegeSelect?.addEventListener('change', (e)=>{
+      const val = e.target.value;
+      branchSelect.innerHTML = `<option value="">Select Branch</option>`;
+      if (!val) return;
+      const branches = [...new Set(cutoffData.filter(d=>d.college===val).map(d=>d.branch))];
+      branches.forEach(b=>{
+        const opt = document.createElement('option'); opt.value = b; opt.textContent = b; branchSelect.appendChild(opt);
       });
     });
 
-    // --- reveal-on-scroll ---
-    function runReveals() {
-      document.querySelectorAll('[data-reveal]').forEach(el => el.classList.remove('show'));
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) e.target.classList.add('show');
-        });
-      }, {threshold: 0.12});
-      document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
-    }
-
-    // simple count-up
-    function animateCount(el, target=0, duration=1500) {
-      let start = 0;
-      const step = Math.max(1, Math.floor(target/(duration/16)));
-      const id = setInterval(() => {
-        start += step;
-        if (start >= target) {
-          el.textContent = target.toLocaleString();
-          clearInterval(id);
-        } else {
-          el.textContent = Math.floor(start).toLocaleString();
-        }
-      }, 16);
-    }
-
-    document.querySelectorAll('.count-num').forEach(node => {
-      const t = parseInt(node.dataset.target || '0', 10);
-      animateCount(node, t, 1800);
-    });
-
-    // --- Downloads modal (shared) ---
-    const pages = [
-      [
-        { title: "CEE 2025 Answer Key (ASTU)", desc: "Official answer key released by ASTU.", link: "https://drive.google.com/file/d/1inBKliONQDKxvUH8CEtw5aJ190DW-Ix3/view?usp=drive_link", date: "Oct 25, 2025" },
-        { title: "CEE 2025 Question Paper", desc: "Complete question paper PDF.", link: "https://drive.google.com/file/d/1ZDbY5LsJzo50xvinUQ5EXKRXHg8eZejH/view?usp=drive_link", date: "Oct 20, 2025" },
-        { title: "Important Circular - Oct 2025", desc: "Official circular for candidates.", link: "#", date: "Oct 15, 2025" }
-      ],
-      [
-        { title: "Counselling Guidelines 2025", desc: "Step-by-step counselling instructions.", link: "#", date: "Sep 10, 2025" },
-        { title: "B.Tech Syllabus (1st & 2nd Sem)", desc: "Official ASTU syllabus PDF.", link: "#", date: "Apr 2025" }
-      ]
-    ];
-    let currentPage = 0;
-    const listEl = document.getElementById('download-list');
-    const prevBtn = document.getElementById('prevPage');
-    const nextBtn = document.getElementById('nextPage');
-    const pageIndicator = document.getElementById('pageIndicator');
-    const modal = document.getElementById('downloadsModal');
-    const openDownloadsTop = document.getElementById('openDownloadsTop');
-    const openDownloadsBtn = document.getElementById('openDownloads');
-    const closeDownloadsBtn = document.getElementById('closeDownloads');
-    const modalContent = document.getElementById('modalContent');
-
-    function renderDownloads() {
-      if (!listEl) return;
-      listEl.innerHTML = '';
-      const items = pages[currentPage] || [];
-      items.forEach(it => {
-        const div = document.createElement('div');
-        div.className = "glass p-4 rounded-xl flex flex-col sm:flex-row gap-4 items-start hover-lift transition";
-        div.innerHTML = `
-          <div class="flex-1">
-            <div class="font-semibold text-emerald-800">${it.title}</div>
-            <div class="text-sm text-gray-600 mt-1">${it.desc}</div>
-            <div class="text-xs text-gray-500 mt-1">${it.date}</div>
-          </div>
-          <a href="${it.link}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 text-white rounded-lg">Download</a>
-        `;
-        listEl.appendChild(div);
-      });
-      if (pageIndicator) pageIndicator.textContent = `Page ${currentPage+1} of ${pages.length}`;
-      if (prevBtn) prevBtn.disabled = currentPage === 0;
-      if (nextBtn) nextBtn.disabled = currentPage === pages.length-1;
-    }
-
-    if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 0) { currentPage--; renderDownloads(); } });
-    if (nextBtn) nextBtn.addEventListener('click', () => { if (currentPage < pages.length-1) { currentPage++; renderDownloads(); } });
-
-    openDownloadsTop?.addEventListener('click', () => {
-      showDownloadsModal();
-    });
-    openDownloadsBtn?.addEventListener('click', () => {
-      showDownloadsModal();
-    });
-
-    function showDownloadsModal() {
-      if (!modal) return;
-      modalContent.innerHTML = pages.flat().map(it => `
-        <div class="p-3 border-b last:border-b-0">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="font-semibold text-emerald-800">${it.title}</div>
-              <div class="text-sm text-gray-600">${it.desc}</div>
-              <div class="text-xs text-gray-500 mt-1">${it.date}</div>
-            </div>
-            <a href="${it.link}" target="_blank" class="ml-4 inline-flex items-center gap-2 px-3 py-2 bg-emerald-700 text-white rounded-md">Download</a>
-          </div>
-        </div>
-      `).join('');
-      modal.classList.remove('hidden'); modal.classList.add('flex');
-    }
-
-    closeDownloadsBtn?.addEventListener('click', () => { modal.classList.add('hidden'); modal.classList.remove('flex'); });
-    modal?.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); } });
-
-    window.addEventListener('load', renderDownloads);
-
-    // --- Contact demo ---
-    const contactFormMain = document.getElementById('contactFormMain');
-    const contactStatusMain = document.getElementById('contactStatusMain');
-    contactFormMain?.addEventListener('submit', (e) => {
+    // Filter submit
+    filterForm?.addEventListener('submit', (e)=>{
       e.preventDefault();
-      contactStatusMain.textContent = 'Sending…';
-      setTimeout(() => {
-        contactStatusMain.textContent = "Thanks — message sent! We'll reply soon.";
-        contactFormMain.reset();
-        setTimeout(()=> contactStatusMain.textContent = '', 4000);
-      }, 900);
+      const college = collegeSelect.value;
+      const branch = branchSelect.value;
+      const cat = categorySelect.value;
+      if (!college || !branch || !cat) {
+        resultDiv.innerHTML = `<div class="col-span-3 text-red-500 font-semibold">⚠️ Please fill all fields.</div>`;
+        return;
+      }
+
+      // find available rounds (1,2,3,... may be strings)
+      const rounds = [...new Set(cutoffData.filter(d=>d.college===college && d.branch===branch && d.cat===cat).map(d=>d.round))].sort();
+      if (rounds.length === 0) {
+        resultDiv.innerHTML = `<div class="text-center text-slate-600 mt-8">No data found for ${college} - ${branch} (${cat})</div>`;
+        return;
+      }
+
+      // for each round, show the record(s)
+      let html = '';
+      rounds.forEach(r=>{
+        const rec = cutoffData.find(d => d.college===college && d.branch===branch && d.cat===cat && String(d.round) === String(r));
+        if (!rec) return;
+        html += `
+          <div class="glass p-5 rounded-xl shadow">
+            <h3 class="text-xl font-bold text-green-700 mb-2">Round ${rec.round}</h3>
+            <p><strong>College:</strong> ${rec.college}</p>
+            <p><strong>Branch:</strong> ${rec.branch}</p>
+            <p><strong>Category:</strong> ${rec.cat}</p>
+            <p class="text-3xl font-extrabold text-green-800 mt-2">Closing Rank: ${rec.close ?? 'N/A'}</p>
+            <p class="text-lg font-bold text-green-700 mt-2">Marks: ${rec.marks ?? 'N/A'}</p>
+          </div>
+        `;
+      });
+
+      resultDiv.innerHTML = html;
+      // subtle animate
+      resultDiv.querySelectorAll('.glass').forEach((el,i) => { el.style.animation = `fadeIn 220ms ease ${i*40}ms both`; });
     });
 
-    // --- small accessibility tweaks ---
-    document.querySelectorAll('details').forEach(d => {
-      d.addEventListener('toggle', () => { if (d.open) d.scrollIntoView({behavior:'smooth', block:'center'}); });
+    // reset
+    document.getElementById('resetFilter')?.addEventListener('click', ()=>{
+      filterForm.reset();
+      branchSelect.innerHTML = `<option value="">Select Branch</option>`;
+      resultDiv.innerHTML = '';
     });
 
-    // show reveals initially if already in viewport
-    document.querySelectorAll('[data-reveal]').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.85) el.classList.add('show');
+  </script>
+
+  <!-- final tiny script to attach data-tab listeners again to dynamically created elements inside dropdown -->
+  <script>
+    // attach events to dropdown buttons too
+    document.querySelectorAll('#ceeDropdown [data-tab]').forEach(b=>{
+      b.addEventListener('click', ()=> {
+        const id = b.dataset.tab;
+        showSection(id);
+        ceeDropdown.classList.add('hidden');
+      });
     });
+    // also attach to inner buttons (home cards)
+    attachTabEvents(document);
+  </script>
 
-    /**********************************************************************
-     * CUTOFFS: Firestore loader + in-memory fallback + UI rendering
-     *
-     * Where to paste CSS and JS for cutoffs?
-     *   - CSS: already included above (the .glass, .fade-up styles)
-     *   - JS: THIS SCRIPT block (we're placing everything inside this module)
-     *
-     * Behavior:
-     *   1. Try to load from Firestore if available.
-     *   2. If Firestore fails or is not configured, fall back to demo dataset.
-     *
-     **********************************************************************/
-    // demo fallback data (structure expected in Firestore):
-    // { college: 'AEC', branch: 'CSE', cat: 'GEN', round: '1', close: 512, marks: 145 }
-    const demoCutoffs = [
-      { college: "AEC", branch: "CSE", cat: "GEN", round: "1", close: 512, marks: 145 },
-      { college: "AEC", branch: "CSE", cat: "GEN", round: "2", close: 620, marks: 138 },
-      { college: "AEC", branch: "EEE", cat: "GEN", round: "1", close: 840, marks: 120 },
-      { college: "JEC", branch: "CSE", cat: "GEN", round: "1", close: 1100, marks: 95 },
-      { college: "BBEC", branch: "ME", cat: "GEN", round: "1", close: 1500, marks: 70 },
-      { college: "GEC", branch: "CSE", cat: "OBC", round: "1", close: 650, marks: 132 },
-      // add more demo items as needed
-    ];
-
+  <script>
     // state
     let cutoffData = []; // will be overwritten by Firestore if available
 
@@ -630,8 +854,6 @@
         // Lazy import firebase packages
         const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js');
         const { getFirestore, collection, getDocs } = await import('https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js');
-
-        // <-- Replace with your actual firebase config if needed -->
         const firebaseConfig = {
           apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
           authDomain: "aahes-cee-cutoffs.firebaseapp.com",
@@ -640,8 +862,6 @@
           messagingSenderId: "706066626405",
           appId: "1:706066626405:web:0d254ab82beb288108938c"
         };
-
-        // Initialize
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -762,12 +982,7 @@
         document.querySelectorAll('.fade-up').forEach((el,i) => el.style.animationDelay = `${i*0.06}s`);
       });
     }
-
-    // If you want to programmatically push a prefilled filter state (e.g., open via link),
-    // you can add a function here that sets selects and triggers submit.
-
   </script>
 
-  <!-- End module -->
 </body>
 </html>
