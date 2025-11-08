@@ -1,1 +1,1702 @@
-Comming Soon
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AAHES</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FONTS -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <style>
+      :root {
+        --accent-1: #10b981;
+        /* emerald */
+        --accent-2: #16a34a;
+        --soft-bg: linear-gradient(180deg, #f6fffa 0%, #ffffff 100%);
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
+        background: var(--soft-bg);
+        color: #0f172a;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* fast lightweight fade/slide animations for SPA */
+      .fade-in {
+        animation: fadeIn 280ms ease-out both;
+      }
+
+      .fade-out {
+        animation: fadeOut 200ms ease-in both;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        to {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+      }
+
+      /* blink dot */
+      .blink-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #16a34a;
+        display: inline-block;
+        margin-right: 8px;
+        animation: blink 1s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        50%,
+        100% {
+          opacity: 1;
+        }
+
+        25%,
+        75% {
+          opacity: 0;
+        }
+      }
+
+      /* navbar link underline */
+      .nav-link {
+        position: relative;
+        font-weight: 600;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0;
+        height: 2px;
+        background: rgba(16, 185, 129, 0.95);
+        transition: width 0.22s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      /* mobile menu */
+      #mobile-menu {
+        transition: transform 0.22s ease, opacity 0.22s ease;
+        transform-origin: top;
+      }
+
+      #mobile-menu.hidden {
+        transform: scaleY(0);
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      #mobile-menu.open {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+
+      /* small utility */
+      .glass {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(16, 185, 129, 0.06);
+      }
+
+      /* nice card */
+      .card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(16, 24, 40, 0.06);
+        padding: 18px;
+      }
+
+      /* active tab styling */
+      .tab-active {
+        color: white !important;
+        background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+        border-radius: 10px;
+        padding: 6px 12px;
+      }
+
+      /* small responsive tweaks */
+      @media (max-width: 640px) {
+        .typed-break {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-900">
+    <!-- NAVBAR -->
+    <nav
+      class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200"
+    >
+      <div class="max-w-6xl mx-auto px-4 md:px-8">
+        <div class="flex items-center gap-4 py-3">
+          <!-- Logo + Title -->
+          <div class="flex items-center gap-3">
+            <img
+              src="logo.png"
+              alt="AAHES Logo"
+              class="w-11 h-11 rounded-full object-cover border border-gray-100 shadow-sm"
+            />
+            <div class="leading-none">
+              <a
+                href="#/"
+                id="brand"
+                class="text-2xl font-extrabold text-green-700"
+                style="font-family: 'Playfair Display', serif"
+                >AAHES</a
+              >
+              <div class="text-xs text-gray-500 -mt-0.5">
+                All Assam Helpdesk for Engineering Students
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop tabs -->
+          <ul
+            id="desktopTabs"
+            class="hidden md:flex ml-auto gap-2 items-center"
+          >
+            <li>
+              <button
+                data-tab="home"
+                class="nav-link px-3 py-2 rounded-md text-sm"
+              >
+                Home
+              </button>
+            </li>
+            <li>
+              <button
+                data-tab="syllabus"
+                class="nav-link px-3 py-2 rounded-md text-sm"
+              >
+                Syllabus
+              </button>
+            </li>
+            <li class="relative">
+              <button
+                id="ceeBtn"
+                class="nav-link px-3 py-2 rounded-md text-sm flex items-center gap-1"
+              >
+                CEE Aspirant
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-slate-600"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <!-- small dropdown -->
+              <div
+                id="ceeDropdown"
+                class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg py-1 hidden"
+              >
+                <button
+                  data-tab="syllabus"
+                  class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50"
+                >
+                  Syllabus
+                </button>
+                <button
+                  data-tab="cutoffs"
+                  class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50"
+                >
+                  Cutoffs
+                </button>
+                <button
+                  data-tab="placements"
+                  class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50"
+                >
+                  Placements
+                </button>
+                <button
+                  data-tab="campus"
+                  class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50"
+                >
+                  Campus
+                </button>
+                <button
+                  data-tab="pyqs"
+                  class="block w-full text-left px-3 py-2 text-sm hover:bg-slate-50"
+                >
+                  PYQs
+                </button>
+              </div>
+            </li>
+            <li>
+              <button
+                data-tab="cutoffs"
+                class="nav-link px-3 py-2 rounded-md text-sm"
+              >
+                Cutoffs
+              </button>
+            </li>
+            <li>
+              <button
+                data-tab="placements"
+                class="nav-link px-3 py-2 rounded-md text-sm"
+              >
+                Placements
+              </button>
+            </li>
+            <li>
+              <button
+                data-tab="campus"
+                class="nav-link px-3 py-2 rounded-md text-sm"
+              >
+                Campus
+              </button>
+            </li>
+            <li>
+              <button
+                data-tab="pyqs"
+                class="nav-link px-3 py-2 rounded-md text-sm"
+              >
+                PYQs
+              </button>
+            </li>
+            <li>
+              <button
+                data-tab="contact"
+                class="nav-link px-3 py-2 rounded-md text-sm"
+              >
+                Contact
+              </button>
+            </li>
+          </ul>
+
+          <!-- Mobile menu button -->
+          <div class="ml-auto md:hidden">
+            <button
+              id="menu-btn"
+              aria-label="Open menu"
+              class="p-2 rounded-md bg-white border shadow-sm focus:outline-none"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile nav -->
+      <div id="mobile-menu" class="md:hidden px-4 pb-4 hidden">
+        <div class="flex flex-col gap-2">
+          <button data-tab="home" class="text-left px-3 py-2 rounded-md">
+            🏠 Home
+          </button>
+          <button data-tab="syllabus" class="text-left px-3 py-2 rounded-md">
+            📘 Syllabus
+          </button>
+          <button data-tab="cutoffs" class="text-left px-3 py-2 rounded-md">
+            📊 Cutoffs
+          </button>
+          <button data-tab="placements" class="text-left px-3 py-2 rounded-md">
+            💼 Placements
+          </button>
+          <button data-tab="campus" class="text-left px-3 py-2 rounded-md">
+            🏫 Campus
+          </button>
+          <button data-tab="pyqs" class="text-left px-3 py-2 rounded-md">
+            📝 PYQs
+          </button>
+          <button data-tab="contact" class="text-left px-3 py-2 rounded-md">
+            ✉️ Contact
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT: each section is a "page" -->
+    <main class="max-w-6xl mx-auto px-4 md:px-8 py-8">
+      <!-- Home -->
+      <section id="home" class="page-section">
+        <div class="grid md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-7">
+            <div
+              class="inline-flex items-center gap-3 bg-green-50/70 text-green-800 rounded-full px-4 py-2 text-sm font-semibold shadow-sm mb-4 reveal"
+              data-reveal
+            >
+              <span
+                class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse inline-block"
+              ></span>
+              V3.7 — Updated & improved
+            </div>
+
+            <h1
+              id="homeTitle"
+              class="text-4xl md:text-5xl font-extrabold leading-tight text-emerald-900 mb-4 reveal"
+              data-reveal
+              style="font-family: 'Playfair Display', serif"
+            >
+              AAHES — Trusted guidance for Assam's engineering aspirants
+            </h1>
+
+            <p class="text-gray-700 text-lg max-w-2xl mb-6 reveal" data-reveal>
+              We consolidate official CEE updates, historical cutoffs, curated
+              PYQs and practical counselling advice — everything you need to
+              make an informed admission decision.
+            </p>
+
+            <div
+              class="mt-8 fade-up flex flex-wrap justify-center gap-4"
+              style="--delay: 0.9s"
+            >
+              <!-- Cutoffs Button -->
+              <button
+                class="bg-green-600 text-white font-bold text-base rounded-xl px-6 py-3 shadow-2xl hover:shadow-inner hover:bg-green-700 transform hover:-translate-y-1 transition-all"
+              >
+                About Us
+              </button>
+
+              <!-- WhatsApp Button -->
+              <a
+                href="https://chat.whatsapp.com/L6RRF1a8l4cCzeuVEl7xLN"
+                target="_blank"
+              >
+                <button
+                  class="border-2 border-green-600 text-green-600 font-bold text-base rounded-xl px-6 py-3 shadow-2xl hover:shadow-inner hover:bg-green-600 hover:text-white transform hover:-translate-y-1 transition-all flex items-center gap-2"
+                >
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                    alt="WhatsApp"
+                    class="w-5 h-5"
+                  />
+                  Join Us on Whatsapp
+                </button>
+              </a>
+            </div>
+          </div>
+
+          <div class="md:col-span-5 reveal" data-reveal>
+            <div
+              class="glass rounded-3xl p-6 md:p-8 relative overflow-hidden hover-lift"
+            >
+              <div
+                class="absolute -right-16 -top-16 w-44 h-44 bg-gradient-to-tr from-green-200 to-transparent opacity-30 rounded-full blur-2xl"
+              ></div>
+
+              <img
+                src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg"
+                alt="campus"
+                class="w-full h-44 object-cover rounded-xl border border-green-100 shadow-sm mb-4"
+              />
+
+              <h3 class="text-xl font-bold text-emerald-800">
+                Find your best-fit college faster
+              </h3>
+              <p class="text-sm text-gray-600 mt-2">
+                Use historical trends and verified notices to shortlist colleges
+                and branches that match your rank and goals.
+              </p>
+
+              <ul class="text-sm text-gray-700 mt-4 space-y-2">
+                <li class="flex items-start gap-2">
+                  <span class="text-green-600 mt-1">•</span> Cutoff analytics &
+                  trends
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-green-600 mt-1">•</span> Official circulars
+                  & PYQs
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-green-600 mt-1">•</span> Counselling
+                  checklists
+                </li>
+              </ul>
+
+              <div class="mt-4 flex gap-2">
+                <a
+                  href="#cutoffs"
+                  class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-emerald-700 text-white rounded-lg"
+                  >See Cutoffs</a
+                >
+                <a
+                  href="#syllabus"
+                  class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-200 rounded-lg"
+                  >Syllabus</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SYLLABUS -->
+      <section id="syllabus" class="page-section hidden">
+        <div class="mb-6">
+          <h2 class="text-3xl font-extrabold text-green-700">Syllabus</h2>
+          <p class="mt-2 text-slate-600">
+            Chapter-wise breakdown of subjects and topics for Class 11 & 12,
+            covering Physics, Chemistry, Mathematics, and resources for exam
+            preparation.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Physics -->
+          <div class="card">
+            <h3 class="text-lg font-bold">Class XI - Physics</h3>
+            <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+              <li><strong>Unit and Measurement</strong></li>
+              <li><strong>Motion in a Straight Line</strong></li>
+              <li><strong>Motion in a Plane</strong></li>
+              <li><strong>Newton's Laws of Motion</strong></li>
+              <li><strong>Work, Energy, and Power</strong></li>
+              <li>
+                <strong>System of Particles and Rotational Motion</strong>
+              </li>
+              <li><strong>Gravitation</strong></li>
+              <li><strong>Mechanical Properties of Solids</strong></li>
+              <li><strong>Mechanical Properties of Fluids</strong></li>
+              <li><strong>Thermal Properties of Matter</strong></li>
+              <li><strong>Thermodynamics</strong></li>
+              <li><strong>Kinetic Theory of Gases</strong></li>
+              <li><strong>Oscillations</strong></li>
+              <li><strong>Waves</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 class="text-lg font-bold">Class XII - Physics</h3>
+            <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+              <li><strong>Electric Charges and Fields</strong></li>
+              <li><strong>Electrostatic Potential and Capacitance</strong></li>
+              <li><strong>Current Electricity</strong></li>
+              <li><strong>Moving Charges and Magnetism</strong></li>
+              <li><strong>Magnetism and Matter</strong></li>
+              <li><strong>Electromagnetic Induction</strong></li>
+              <li><strong>Alternating Current</strong></li>
+              <li><strong>Electromagnetic Waves</strong></li>
+              <li><strong>Ray Optics and Optical Instruments</strong></li>
+              <li><strong>Wave Optics</strong></li>
+              <li><strong>Dual Nature of Matter and Radiation</strong></li>
+              <li><strong>Atoms</strong></li>
+              <li><strong>Nuclei</strong></li>
+              <li><strong>Semiconductor Electronics</strong></li>
+            </ul>
+          </div>
+
+          <!-- Chemistry -->
+          <div class="card">
+            <h3 class="text-lg font-bold">Physical Chemistry</h3>
+            <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+              <li><strong>Some Basic Concepts of Chemistry</strong></li>
+              <li><strong>Structure of Atom</strong></li>
+              <li><strong>Thermodynamics</strong></li>
+              <li><strong>Equilibrium</strong></li>
+              <li><strong>Solutions</strong></li>
+              <li><strong>Electrochemistry</strong></li>
+              <li><strong>Chemical Kinetics</strong></li>
+              <li><strong>Redox Reactions</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 class="text-lg font-bold">Inorganic Chemistry</h3>
+            <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+              <li>
+                <strong
+                  >Classification of Elements and Periodicity in
+                  Properties</strong
+                >
+              </li>
+              <li><strong>Chemical Bonding and Molecular Structure</strong></li>
+              <li><strong>Hydrogen</strong></li>
+              <li><strong>The S-Block Elements</strong></li>
+              <li><strong>The P-Block Elements</strong></li>
+              <li><strong>The D and F-Block Elements</strong></li>
+              <li><strong>Coordination Compounds</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 class="text-lg font-bold">Organic Chemistry</h3>
+            <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+              <li><strong>IUPAC Nomenclature</strong></li>
+              <li><strong>Isomerism</strong></li>
+              <li><strong>General Organic Chemistry</strong></li>
+              <li><strong>Hydrocarbons</strong></li>
+              <li><strong>Haloalkanes and Haloarenes</strong></li>
+              <li><strong>Alcohols, Phenols, and Ethers</strong></li>
+              <li><strong>Aldehydes, Ketones, and Carboxylic Acids</strong></li>
+              <li><strong>Amines</strong></li>
+              <li><strong>Biomolecules</strong></li>
+              <li><strong>Polymers</strong></li>
+              <li><strong>Environmental Chemistry</strong></li>
+              <li><strong>Practical Organic Chemistry (POC)</strong></li>
+            </ul>
+          </div>
+
+          <!-- Mathematics -->
+          <div class="card">
+            <h3 class="text-lg font-bold">Mathematics</h3>
+            <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+              <li>Calculus — differentiation, integration, applications</li>
+              <li>Algebra — matrices, sequences, series</li>
+              <li>Coordinate Geometry & Trigonometry</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 class="text-lg font-bold">Mathematics</h3>
+            <ul class="mt-3 list-disc pl-5 text-sm text-slate-700 space-y-1">
+              <li>Calculus — differentiation, integration, applications</li>
+              <li>Algebra — matrices, sequences, series</li>
+              <li>Coordinate Geometry & Trigonometry</li>
+            </ul>
+          </div>
+
+          <!-- Sample downloads -->
+          <div class="card">
+            <h3 class="text-lg font-bold">Downloads & Resources</h3>
+            <div class="mt-3 grid gap-3">
+              <a
+                class="block p-3 border rounded hover:bg-slate-50"
+                href="#"
+                target="_blank"
+                >B.Tech Syllabus (ASTU) - Sample PDF</a
+              >
+              <a
+                class="block p-3 border rounded hover:bg-slate-50"
+                href="#"
+                target="_blank"
+                >Important Formula Sheet</a
+              >
+              <a
+                class="block p-3 border rounded hover:bg-slate-50"
+                href="#"
+                target="_blank"
+                >Reference Notes</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CUTOFFS (loads from Firestore) -->
+      <section id="cutoffs" class="page-section hidden">
+        <div class="max-w-5xl mx-auto">
+          <h2
+            id="cutoffTitle"
+            class="text-4xl font-bold text-emerald-800 text-center mb-2"
+          >
+            CEE Cutoff Ranks & Marks
+          </h2>
+          <p class="text-gray-600 text-center mb-8">
+            This serves as an approximate reference for the upcoming CEE
+            examinations. Data is compiled from official sources and verified
+            reports.
+          </p>
+
+          <!-- Filter Form -->
+          <form
+            id="filterForm"
+            class="bg-white/70 backdrop-blur-lg border border-emerald-200 shadow-lg rounded-2xl p-6 grid gap-4 md:grid-cols-4"
+          >
+            <div class="flex flex-col">
+              <label class="text-gray-800 mb-1 font-semibold">College</label>
+              <select
+                id="collegeSelect"
+                class="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-400 outline-none"
+              >
+                <option value="">Select College</option>
+                <option value="AEC">AEC</option>
+                <option value="JEC">JEC</option>
+                <option value="JIST">JIST</option>
+                <option value="BBEC">BBEC</option>
+                <option value="GEC">GEC</option>
+                <option value="BVEC">BVEC</option>
+                <option value="DEC">DEC</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-gray-800 mb-1 font-semibold">Branch</label>
+              <select
+                id="branchSelect"
+                class="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-400 outline-none"
+              >
+                <option value="">Select Branch</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-gray-800 mb-1 font-semibold">Category</label>
+              <select
+                id="categorySelect"
+                class="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-400 outline-none"
+              >
+                <option value="">Select Category</option>
+                <option value="GEN">GEN</option>
+                <option value="OBC">OBC/MOBC</option>
+                <option value="SC">SC</option>
+                <option value="STP">STP</option>
+                <option value="STH">STH</option>
+              </select>
+            </div>
+
+            <div class="flex items-end">
+              <button
+                type="submit"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg w-full transition-all duration-300 hover:scale-105 shadow-md"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+          <div
+            id="result"
+            class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"
+          ></div>
+        </div>
+      </section>
+
+      <!-- PLACEMENTS -->
+      <section id="placements" class="page-section hidden">
+        <div>
+          <h2 class="text-3xl font-extrabold text-green-700">
+            Placements (Sample)
+          </h2>
+          <p class="mt-1 text-slate-600">
+            Dummy placement stats and company insights.
+          </p>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="card">
+            <h3 class="font-bold text-green-700">AEC - Batch 2024</h3>
+            <p class="mt-2 text-sm">Average package: ₹5.6 LPA</p>
+            <p class="mt-1 text-sm">Top recruiters: TCS, Wipro, L&T, Infosys</p>
+          </div>
+
+          <div class="card">
+            <h3 class="font-bold text-green-700">JEC - Batch 2024</h3>
+            <p class="mt-2 text-sm">Average package: ₹4.8 LPA</p>
+            <p class="mt-1 text-sm">Top recruiters: Cognizant, Tech Mahindra</p>
+          </div>
+
+          <div class="card">
+            <h3 class="font-bold text-green-700">GEC - Highlights</h3>
+            <p class="mt-2 text-sm">Highest: ₹12 LPA (Internship converted)</p>
+            <p class="mt-1 text-sm">
+              Placement prep: Resume drives & mock interviews
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CAMPUS -->
+      <section id="campus" class="page-section hidden">
+        <div>
+          <h2 class="text-3xl font-extrabold text-green-700">College Campus</h2>
+          <p class="mt-1 text-slate-600">
+            A vibrant hub where young minds explore, innovate, and shape the
+            technologies of tomorrow.
+          </p>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="card">
+            <img
+              src="https://www.aec.ac.in/static/media/aec-banner-main.91cf0ae4.jpg"
+              class="w-full h-36 object-cover rounded-md"
+              alt=""
+            />
+            <h4 class="mt-3 font-bold">Assam Engineering College (AEC)</h4>
+            <p class="text-sm text-slate-600 mt-1">
+              Historic institute with strong alumni network.
+            </p>
+          </div>
+
+          <div class="card">
+            <img
+              src="https://jecassam.ac.in/wp-content/uploads/2023/11/slide1.jpg"
+              class="w-full h-36 object-cover rounded-md"
+              alt=""
+            />
+            <h4 class="mt-3 font-bold">Jorhat Engineering College (JEC)</h4>
+            <p class="text-sm text-slate-600 mt-1">
+              Vibrant campus life and research labs.
+            </p>
+          </div>
+
+          <div class="card">
+            <img
+              src="https://gecassam.ac.in/wp-content/uploads/2024/12/VIST-GEC.jpeg"
+              class="w-full h-36 object-cover rounded-md"
+              alt=""
+            />
+            <h4 class="mt-3 font-bold">Golaghat Engineering College (GEC)</h4>
+            <p class="text-sm text-slate-600 mt-1">
+              Growing industry ties and placements.
+            </p>
+          </div>
+
+          <div class="card">
+            <img
+              src="https://jist.ac.in/jist-old-static-site/images/tiranga01.jpg"
+              class="w-full h-36 object-cover rounded-md"
+              alt=""
+            />
+            <h4 class="mt-3 font-bold">
+              Jorhat Institute of Science & Technology (JIST)
+            </h4>
+            <p class="text-sm text-slate-600 mt-1">
+              Growing industry ties and placements.
+            </p>
+          </div>
+
+          <div class="card">
+            <img
+              src="https://assaminfo.com/files/education/m_87.jpg"
+              class="w-full h-36 object-cover rounded-md"
+              alt=""
+            />
+            <h4 class="mt-3 font-bold">
+              Bineswar Brahma Engineering College (BBEC)
+            </h4>
+            <p class="text-sm text-slate-600 mt-1">
+              Growing industry ties and placements.
+            </p>
+          </div>
+
+          <div class="card">
+            <img
+              src="https://bvec.ac.in/images/slide/1534516181.jpg"
+              class="w-full h-36 object-cover rounded-md"
+              alt=""
+            />
+            <h4 class="mt-3 font-bold">
+              Barak Valley Engineering College (BVEC)
+            </h4>
+            <p class="text-sm text-slate-600 mt-1">
+              Growing industry ties and placements.
+            </p>
+          </div>
+
+          <div class="card">
+            <img
+              src="https://dec.ac.in/gallery/g12.jpeg"
+              class="w-full h-36 object-cover rounded-md"
+              alt=""
+            />
+            <h4 class="mt-3 font-bold">
+              Dhemaji Engineering College (DEC)
+            </h4>
+            <p class="text-sm text-slate-600 mt-1">
+              Growing industry ties and placements.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PYQS -->
+      <section id="pyqs" class="page-section hidden">
+        <div>
+          <h2 class="text-3xl font-extrabold text-green-700">
+            Previous Year Questions (PYQs)
+          </h2>
+          <p class="mt-1 text-slate-600">
+            Download sample PYQs and practice papers.
+          </p>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="card">
+            <h4 class="font-bold">CEE 2025 - Question Paper</h4>
+            <p class="text-sm text-slate-600 mt-1">PDF sample.</p>
+            <a href="#" class="inline-block mt-3 px-3 py-2 rounded-md border"
+              >Download</a
+            >
+          </div>
+
+          <div class="card">
+            <h4 class="font-bold">CEE 2024 - Answer Key</h4>
+            <p class="text-sm text-slate-600 mt-1">Official key (sample)</p>
+            <a href="#" class="inline-block mt-3 px-3 py-2 rounded-md border"
+              >Download</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="page-section hidden">
+        <div>
+          <h2 class="text-3xl font-extrabold text-green-700">Contact Us</h2>
+          <p class="mt-1 text-slate-600">Reach out to the AAHES team.</p>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="card">
+            <h4 class="font-bold">General Enquiries</h4>
+            <p class="mt-2 text-sm">
+              Email:
+              <a href="mailto:helpline.aahes@gmail.com" class="text-emerald-600"
+                >helpline.aahes@gmail.com</a
+              >
+            </p>
+            <p class="mt-1 text-sm">Phone: +91 xxxxx xxxxx</p>
+            <p class="mt-1 text-sm">Address: Assam, India</p>
+          </div>
+
+          <div class="card">
+            <h4 class="font-bold">Quick Message</h4>
+            <form id="contactForm" class="mt-3 grid gap-3">
+              <input
+                type="text"
+                id="cname"
+                placeholder="Your name"
+                class="p-3 rounded-md border"
+              />
+              <input
+                type="email"
+                id="cemail"
+                placeholder="Your email"
+                class="p-3 rounded-md border"
+              />
+              <textarea
+                id="cmsg"
+                rows="4"
+                placeholder="Message"
+                class="p-3 rounded-md border"
+              ></textarea>
+              <button
+                type="submit"
+                class="px-4 py-3 rounded-md bg-emerald-600 text-white"
+              >
+                Send
+              </button>
+            </form>
+            <div id="contactStatus" class="mt-2 text-sm text-slate-500"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ====== Footer Section ====== -->
+    <footer class="bg-gray-900 text-gray-300 py-10 mt-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8"
+        >
+          <!-- Left: Branding & Description -->
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-wide">AAHES</h2>
+            <p class="text-sm mt-2 text-gray-400 max-w-md">
+              Empowering Assam’s engineering aspirants with authentic updates,
+              data-driven insights, and resources — all in one trusted platform.
+            </p>
+          </div>
+
+          <!-- Right: Team Credits -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-12 text-sm">
+            <!-- Abishrant -->
+            <div class="group">
+              <p class="text-white font-semibold flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-emerald-400 group-hover:text-emerald-300 transition"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Abishrant Shandilya
+              </p>
+              <p class="text-gray-400 group-hover:text-gray-300 transition">
+                UI/UX & Frontend Developer
+              </p>
+              <div class="flex items-center gap-3 mt-2">
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-emerald-400 transition"
+                  aria-label="LinkedIn"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 
+                2.239 5 5 5h14c2.761 0 5-2.239 
+                5-5v-14c0-2.761-2.239-5-5-5zm-11 
+                19h-3v-10h3v10zm-1.5-11.268c-.966 
+                0-1.75-.783-1.75-1.75s.784-1.75 
+                1.75-1.75 1.75.783 1.75 1.75-.784 
+                1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.027-3.058-1.862-3.058-1.865 
+                0-2.152 1.456-2.152 2.961v5.701h-3v-10h2.885v1.367h.041c.402-.761 
+                1.385-1.562 2.85-1.562 3.048 0 3.611 2.007 3.611 4.617v5.578z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-emerald-400 transition"
+                  aria-label="GitHub"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 .5C5.648.5.5 5.648.5 12c0 
+                5.086 3.292 9.392 7.862 10.91.574.102.784-.249.784-.554 
+                0-.273-.01-1.002-.015-1.967-3.197.695-3.873-1.541-3.873-1.541-.523-1.328-1.277-1.682-1.277-1.682-1.044-.714.08-.699.08-.699 
+                1.155.082 1.764 1.188 1.764 1.188 
+                1.027 1.76 2.693 1.252 3.35.958.104-.745.403-1.252.732-1.54-2.55-.29-5.231-1.275-5.231-5.675 
+                0-1.253.448-2.277 1.183-3.078-.119-.29-.513-1.456.112-3.036 
+                0 0 .965-.309 3.166 1.175a10.96 
+                10.96 0 0 1 2.884-.388c.978.005 1.964.132 
+                2.884.388 2.2-1.484 3.165-1.175 3.165-1.175.625 
+                1.58.231 2.746.113 3.036.736.801 
+                1.183 1.825 1.183 3.078 0 4.412-2.686 
+                5.382-5.246 5.667.414.357.78 1.06.78 2.138 
+                0 1.544-.014 2.787-.014 3.167 
+                0 .308.208.66.79.548C20.71 21.39 
+                24 17.083 24 12c0-6.352-5.148-11.5-12-11.5z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="mailto:abishrant@gmail.com"
+                  class="text-gray-400 hover:text-emerald-400 transition"
+                  aria-label="Email"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 13.065 0 6.5v11A2.5 2.5 0 0 0 2.5 20h19a2.5 2.5 0 0 0 
+                2.5-2.5v-11l-12 6.565zM12 11 24 4.5V4a2.5 2.5 0 0 0-2.5-2.5h-19A2.5 
+                2.5 0 0 0 0 4v.5L12 11z"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Abhilesh -->
+            <div class="group">
+              <p class="text-white font-semibold flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-emerald-400 group-hover:text-emerald-300 transition"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Abhilesh Sharma
+              </p>
+              <p class="text-gray-400 group-hover:text-gray-300 transition">
+                Database Administrator
+              </p>
+              <div class="flex items-center gap-3 mt-2">
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-emerald-400 transition"
+                  aria-label="LinkedIn"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 
+                2.239 5 5 5h14c2.761 0 5-2.239 
+                5-5v-14c0-2.761-2.239-5-5-5zm-11 
+                19h-3v-10h3v10zm-1.5-11.268c-.966 
+                0-1.75-.783-1.75-1.75s.784-1.75 
+                1.75-1.75 1.75.783 1.75 1.75-.784 
+                1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.027-3.058-1.862-3.058-1.865 
+                0-2.152 1.456-2.152 2.961v5.701h-3v-10h2.885v1.367h.041c.402-.761 
+                1.385-1.562 2.85-1.562 3.048 0 3.611 2.007 3.611 4.617v5.578z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-emerald-400 transition"
+                  aria-label="GitHub"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 .5C5.648.5.5 5.648.5 12c0 
+                5.086 3.292 9.392 7.862 10.91.574.102.784-.249.784-.554 
+                0-.273-.01-1.002-.015-1.967-3.197.695-3.873-1.541-3.873-1.541-.523-1.328-1.277-1.682-1.277-1.682-1.044-.714.08-.699.08-.699 
+                1.155.082 1.764 1.188 1.764 1.188 
+                1.027 1.76 2.693 1.252 3.35.958.104-.745.403-1.252.732-1.54-2.55-.29-5.231-1.275-5.231-5.675 
+                0-1.253.448-2.277 1.183-3.078-.119-.29-.513-1.456.112-3.036 
+                0 0 .965-.309 3.166 1.175a10.96 
+                10.96 0 0 1 2.884-.388c.978.005 1.964.132 
+                2.884.388 2.2-1.484 3.165-1.175 3.165-1.175.625 
+                1.58.231 2.746.113 3.036.736.801 
+                1.183 1.825 1.183 3.078 0 4.412-2.686 
+                5.382-5.246 5.667.414.357.78 1.06.78 2.138 
+                0 1.544-.014 2.787-.014 3.167 
+                0 .308.208.66.79.548C20.71 21.39 
+                24 17.083 24 12c0-6.352-5.148-11.5-12-11.5z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="mailto:abhilesh@gmail.com"
+                  class="text-gray-400 hover:text-emerald-400 transition"
+                  aria-label="Email"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      d="M12 13.065 0 6.5v11A2.5 2.5 0 0 0 2.5 20h19a2.5 2.5 0 0 0 
+                2.5-2.5v-11l-12 6.565zM12 11 24 4.5V4a2.5 2.5 0 0 0-2.5-2.5h-19A2.5 
+                2.5 0 0 0 0 4v.5L12 11z"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div
+          class="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500"
+        >
+          © 2025 AAHES. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+      /* ---------- SPA NAVIGATION (no reload) ---------- */
+      const sections = document.querySelectorAll(".page-section");
+      const tabButtons = document.querySelectorAll("[data-tab]");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const menuBtn = document.getElementById("menu-btn");
+      const ceeBtn = document.getElementById("ceeBtn");
+      const ceeDropdown = document.getElementById("ceeDropdown");
+
+      // Show given section id, hide others. Add small animation.
+      function showSection(id, pushHash = true) {
+        sections.forEach((sec) => {
+          if (sec.id === id) {
+            if (sec.classList.contains("hidden")) {
+              sec.classList.remove("hidden");
+              sec.classList.remove("fade-out");
+              sec.classList.add("fade-in");
+            }
+          } else {
+            if (!sec.classList.contains("hidden")) {
+              sec.classList.remove("fade-in");
+              sec.classList.add("fade-out");
+              // hide after animation
+              setTimeout(() => sec.classList.add("hidden"), 220);
+            } else {
+              sec.classList.add("hidden");
+            }
+          }
+        });
+
+        // update tab active styles (desktop)
+        document.querySelectorAll("#desktopTabs button").forEach((btn) => {
+          if (btn.dataset.tab === id) {
+            btn.classList.add("tab-active");
+          } else {
+            btn.classList.remove("tab-active");
+          }
+        });
+
+        // update url hash (so linkable)
+        if (pushHash) history.replaceState(null, "", `#${id}`);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // attach events to all buttons with data-tab
+      function attachTabEvents(root = document) {
+        root.querySelectorAll("[data-tab]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const id = btn.dataset.tab;
+            showSection(id);
+            // close mobile menu if open
+            mobileMenu.classList.add("hidden");
+          });
+        });
+      }
+      attachTabEvents(document);
+
+      // mobile menu toggle
+      menuBtn?.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+          mobileMenu.classList.remove("hidden");
+          mobileMenu.classList.add("open");
+        } else {
+          mobileMenu.classList.add("hidden");
+          mobileMenu.classList.remove("open");
+        }
+      });
+
+      // CEE dropdown open/close
+      ceeBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        ceeDropdown.classList.toggle("hidden");
+      });
+      document.addEventListener("click", (e) => {
+        if (!ceeDropdown.contains(e.target) && !ceeBtn.contains(e.target)) {
+          ceeDropdown.classList.add("hidden");
+        }
+      });
+
+      // on load: check hash or default to home
+      window.addEventListener("load", () => {
+        const id = location.hash ? location.hash.replace("#", "") : "home";
+        // ensure id matches a section, else home
+        if (document.getElementById(id)) showSection(id, false);
+        else showSection("home", false);
+      });
+
+      /* ---------- Small utilities ---------- */
+      // quick smooth marquee
+      (function createMarquee() {
+        const style = document.createElement("style");
+        style.innerHTML = `@keyframes marquee { 0% { transform: translateX(0%);} 100% { transform: translateX(-50%);} }
+        .animate-marquee{ display:flex; gap:20px; animation:marquee 24s linear infinite; }`;
+        document.head.appendChild(style);
+      })();
+
+      /* ---------- Typing & counter (Home) ---------- */
+      // typing
+      const typedTexts = [
+        "Your gateway to top engineering colleges.",
+        "Resources, guidance, and support at your fingertips.",
+        "Preparing Assam's future engineers for success.",
+      ];
+      (function typingEffect() {
+        let idx = 0,
+          ch = 0,
+          forward = true,
+          cur = "";
+        const out = document.getElementById("typed-text");
+        // create container in home if missing
+        if (!out) {
+          const el = document.createElement("div");
+          el.id = "typed-text";
+          el.className = "mt-4 text-lg text-slate-700";
+          document.querySelector("#home .text-center").appendChild(el);
+        }
+        const target = document.getElementById("typed-text");
+        let delay = 100;
+        function tick() {
+          const t = typedTexts[idx];
+          if (forward) {
+            if (ch < t.length) {
+              cur += t.charAt(ch++);
+              target.innerText = cur;
+              setTimeout(tick, delay);
+            } else {
+              forward = false;
+              setTimeout(tick, 1500);
+            }
+          } else {
+            if (cur.length > 0) {
+              cur = cur.slice(0, -1);
+              target.innerText = cur;
+              setTimeout(tick, 40);
+            } else {
+              forward = true;
+              idx = (idx + 1) % typedTexts.length;
+              ch = 0;
+              setTimeout(tick, 300);
+            }
+          }
+        }
+        tick();
+      })();
+
+      // count-up
+      (function counter() {
+        const el = document.querySelector("#count");
+        if (!el) {
+          const d = document.createElement("div");
+          d.innerHTML = `<div class="mt-6 inline-flex items-center gap-2 bg-white/80 border border-emerald-100 px-4 py-2 rounded-full shadow"> <span class="blink-dot"></span> <span id="count">0</span>+ students are connected</div>`;
+          document.querySelector("#home .text-center").appendChild(d);
+        }
+        const c = document.getElementById("count");
+        let start = 0,
+          target = 3208,
+          dur = 1500,
+          inc = target / (dur / 16);
+        function run() {
+          start += inc;
+          if (start < target) {
+            c.innerText = Math.floor(start).toLocaleString();
+            requestAnimationFrame(run);
+          } else c.innerText = target.toLocaleString();
+        }
+        run();
+      })();
+
+      /* ---------- Contact form (dummy) ---------- */
+      document
+        .getElementById("contactForm")
+        ?.addEventListener("submit", (e) => {
+          e.preventDefault();
+          document.getElementById("contactStatus").innerText =
+            "Thank you — message received (dummy).";
+          document.getElementById("contactForm").reset();
+        });
+
+      /* ---------- Downloads pagination in home (if needed) ---------- */
+      // (left as placeholder if you want to plug pages from earlier file)
+
+      /* ---------- FIREBASE CUTOFFS: use *same config* as provided ---------- */
+    </script>
+
+    <!-- Firebase: load & use same config (module) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+      // === same firebase config as provided by user ===
+      const firebaseConfig = {
+        apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+        authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+        projectId: "aahes-cee-cutoffs",
+        storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+        messagingSenderId: "706066626405",
+        appId: "1:706066626405:web:0d254ab82beb288108938c",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      async function loadCutoffsFromFirestore() {
+        try {
+          const snap = await getDocs(collection(db, "cutoffs"));
+          cutoffData = snap.docs.map((d) => d.data());
+          document.getElementById(
+            "cutoffStatus"
+          ).innerText = `Loaded ${cutoffData.length} cutoff records.`;
+          console.log("Loaded cutoffs:", cutoffData);
+        } catch (err) {
+          console.error("Error loading cutoffs:", err);
+          document.getElementById(
+            "cutoffStatus"
+          ).innerText = `Failed to load cutoffs (see console).`;
+        }
+      }
+
+      // Immediately load
+      await loadCutoffsFromFirestore();
+
+      // Populate branch select based on college selection
+      const collegeSelect = document.getElementById("college");
+      const branchSelect = document.getElementById("branch");
+      const categorySelect = document.getElementById("category");
+      const resultDiv = document.getElementById("result");
+      const filterForm = document.getElementById("filterForm");
+
+      collegeSelect?.addEventListener("change", (e) => {
+        const val = e.target.value;
+        branchSelect.innerHTML = `<option value="">Select Branch</option>`;
+        if (!val) return;
+        const branches = [
+          ...new Set(
+            cutoffData.filter((d) => d.college === val).map((d) => d.branch)
+          ),
+        ];
+        branches.forEach((b) => {
+          const opt = document.createElement("option");
+          opt.value = b;
+          opt.textContent = b;
+          branchSelect.appendChild(opt);
+        });
+      });
+
+      // Filter submit
+      filterForm?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const college = collegeSelect.value;
+        const branch = branchSelect.value;
+        const cat = categorySelect.value;
+        if (!college || !branch || !cat) {
+          resultDiv.innerHTML = `<div class="col-span-3 text-red-500 font-semibold">⚠️ Please fill all fields.</div>`;
+          return;
+        }
+
+        // find available rounds (1,2,3,... may be strings)
+        const rounds = [
+          ...new Set(
+            cutoffData
+              .filter(
+                (d) =>
+                  d.college === college && d.branch === branch && d.cat === cat
+              )
+              .map((d) => d.round)
+          ),
+        ].sort();
+        if (rounds.length === 0) {
+          resultDiv.innerHTML = `<div class="text-center text-slate-600 mt-8">No data found for ${college} - ${branch} (${cat})</div>`;
+          return;
+        }
+
+        // for each round, show the record(s)
+        let html = "";
+        rounds.forEach((r) => {
+          const rec = cutoffData.find(
+            (d) =>
+              d.college === college &&
+              d.branch === branch &&
+              d.cat === cat &&
+              String(d.round) === String(r)
+          );
+          if (!rec) return;
+          html += `
+          <div class="glass p-5 rounded-xl shadow">
+            <h3 class="text-xl font-bold text-green-700 mb-2">Round ${
+              rec.round
+            }</h3>
+            <p><strong>College:</strong> ${rec.college}</p>
+            <p><strong>Branch:</strong> ${rec.branch}</p>
+            <p><strong>Category:</strong> ${rec.cat}</p>
+            <p class="text-3xl font-extrabold text-green-800 mt-2">Closing Rank: ${
+              rec.close ?? "N/A"
+            }</p>
+            <p class="text-lg font-bold text-green-700 mt-2">Marks: ${
+              rec.marks ?? "N/A"
+            }</p>
+          </div>
+        `;
+        });
+
+        resultDiv.innerHTML = html;
+        // subtle animate
+        resultDiv.querySelectorAll(".glass").forEach((el, i) => {
+          el.style.animation = `fadeIn 220ms ease ${i * 40}ms both`;
+        });
+      });
+
+      // reset
+      document.getElementById("resetFilter")?.addEventListener("click", () => {
+        filterForm.reset();
+        branchSelect.innerHTML = `<option value="">Select Branch</option>`;
+        resultDiv.innerHTML = "";
+      });
+    </script>
+
+    <!-- final tiny script to attach data-tab listeners again to dynamically created elements inside dropdown -->
+    <script>
+      // attach events to dropdown buttons too
+      document.querySelectorAll("#ceeDropdown [data-tab]").forEach((b) => {
+        b.addEventListener("click", () => {
+          const id = b.dataset.tab;
+          showSection(id);
+          ceeDropdown.classList.add("hidden");
+        });
+      });
+      // also attach to inner buttons (home cards)
+      attachTabEvents(document);
+    </script>
+
+    <script>
+      // state
+      let cutoffData = []; // will be overwritten by Firestore if available
+
+      // Attempt to load Firestore data. If anything fails, fall back to demo.
+      async function tryLoadFromFirestore() {
+        try {
+          // Lazy import firebase packages
+          const { initializeApp } = await import(
+            "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"
+          );
+          const { getFirestore, collection, getDocs } = await import(
+            "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"
+          );
+          const firebaseConfig = {
+            apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+            authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+            projectId: "aahes-cee-cutoffs",
+            storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+            messagingSenderId: "706066626405",
+            appId: "1:706066626405:web:0d254ab82beb288108938c",
+          };
+          const app = initializeApp(firebaseConfig);
+          const db = getFirestore(app);
+
+          const qSnap = await getDocs(collection(db, "cutoffs"));
+          const docs = qSnap.docs.map((d) => d.data());
+          if (!docs || docs.length === 0) {
+            console.warn(
+              "Firestore returned no documents — falling back to demo data."
+            );
+            cutoffData = demoCutoffs;
+            return;
+          }
+
+          cutoffData = docs;
+          console.log("✅ Loaded cutoffs from Firestore:", cutoffData);
+        } catch (err) {
+          console.warn(
+            "Could not load Firestore (falling back to demo). Error:",
+            err
+          );
+          cutoffData = demoCutoffs;
+        }
+      }
+
+      // call loader (don't block UI)
+      (async () => {
+        await tryLoadFromFirestore();
+        // After load, enable cutoffs UI interactions
+        initCutoffUI();
+      })();
+
+      function initCutoffUI() {
+        const collegeSel = document.getElementById("collegeSelect");
+        const branchSel = document.getElementById("branchSelect");
+        const catSel = document.getElementById("categorySelect");
+        const filterForm = document.getElementById("filterForm");
+        const result = document.getElementById("result");
+
+        // populate branch when college changes
+        collegeSel?.addEventListener("change", (e) => {
+          const selectedCollege = e.target.value;
+          branchSel.innerHTML = `<option value="">Select Branch</option>`;
+          if (!selectedCollege) return;
+          const availableBranches = [
+            ...new Set(
+              cutoffData
+                .filter((d) => d.college === selectedCollege)
+                .map((d) => d.branch)
+            ),
+          ].sort();
+          if (availableBranches.length === 0) {
+            // if Firestore loaded but college not present, optionally show all branches from demo
+            const fallbackBranches = [
+              ...new Set(cutoffData.map((d) => d.branch)),
+            ].sort();
+            fallbackBranches.forEach((b) => {
+              const opt = document.createElement("option");
+              opt.value = b;
+              opt.textContent = b;
+              branchSel.appendChild(opt);
+            });
+            return;
+          }
+          availableBranches.forEach((branch) => {
+            const opt = document.createElement("option");
+            opt.value = branch;
+            opt.textContent = branch;
+            branchSel.appendChild(opt);
+          });
+        });
+
+        // handle form submit
+        filterForm?.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const college = (collegeSel?.value || "").trim();
+          const branch = (branchSel?.value || "").trim();
+          const cat = (catSel?.value || "").trim();
+
+          if (!college || !branch || !cat) {
+            result.innerHTML = `<p class="col-span-3 text-red-500 font-semibold text-center">⚠️ Please fill all fields.</p>`;
+            return;
+          }
+
+          // find all rounds where this combination exists
+          const rounds = [
+            ...new Set(
+              cutoffData
+                .filter(
+                  (d) =>
+                    d.college === college &&
+                    d.branch === branch &&
+                    d.cat === cat
+                )
+                .map((d) => d.round)
+            ),
+          ].sort();
+          if (!rounds || rounds.length === 0) {
+            result.innerHTML = `<div class="text-center text-gray-600 mt-8">
+            No data found for <strong>${college} - ${branch}</strong> (<span class="font-semibold">${cat}</span>)
+          </div>`;
+            return;
+          }
+
+          // sort rounds numerically if possible
+          const sortedRounds = rounds.sort((a, b) => {
+            const na = Number(a),
+              nb = Number(b);
+            if (!isNaN(na) && !isNaN(nb)) return na - nb;
+            return String(a).localeCompare(String(b));
+          });
+
+          // build HTML
+          let html = "";
+          sortedRounds.forEach((r, idx) => {
+            // pick the record for this round. If multiple records exist pick first.
+            const match = cutoffData.find(
+              (d) =>
+                d.college === college &&
+                d.branch === branch &&
+                d.cat === cat &&
+                d.round === r
+            );
+            if (!match) return;
+            html += `
+            <div class="glass cutoff-card p-6 rounded-2xl shadow-lg fade-up">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="text-sm text-gray-500">Round ${r}</div>
+                  <h3 class="text-2xl font-bold text-emerald-700">${
+                    match.college
+                  } — ${match.branch}</h3>
+                  <div class="mt-2 text-sm text-gray-600">Category: <span class="font-medium">${
+                    match.cat
+                  }</span></div>
+                </div>
+
+                <div class="text-right">
+                  <div class="text-xs text-gray-500">Closing Rank</div>
+                  <div class="text-3xl font-extrabold text-emerald-800">${
+                    match.close ?? "—"
+                  }</div>
+                  <div class="text-sm text-gray-700 mt-2">Marks: <span class="font-bold">${
+                    match.marks ?? "—"
+                  }</span></div>
+                </div>
+              </div>
+
+              <!-- optional meta row -->
+              <div class="mt-4 flex items-center justify-between">
+                <div class="text-xs text-gray-500">Source: ${
+                  match.source ?? "ASTU Website"
+                }</div>
+                <div class="text-xs text-gray-500">Updated: ${
+                  match.updated ?? "October 2025"
+                }</div>
+              </div>
+            </div>
+          `;
+          });
+
+          result.innerHTML = html;
+          // add small stagger animation delay
+          document
+            .querySelectorAll(".fade-up")
+            .forEach((el, i) => (el.style.animationDelay = `${i * 0.06}s`));
+        });
+      }
+    </script>
+  </body>
+</html>
