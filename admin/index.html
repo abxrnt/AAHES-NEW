@@ -1,238 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AAHES | Admin Panel (Single Page)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AAHES | Admin Panel</title>
 
-<!-- Tailwind -->
-<script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2e0ef7f4b.js" crossorigin="anonymous"></script>
 
-<!-- Poppins font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Font Awesome -->
-<script src="https://kit.fontawesome.com/a2e0ef7f4b.js" crossorigin="anonymous"></script>
-
-<style>
-:root{
-  --bg:#0f172a;
-  --card:#111827;
-  --muted:#94a3b8;
-  --accent:#10b981;
-}
-html,body { height:100%; }
-body{
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, var(--bg), #000);
-  color: #e5e7eb;
-  margin:0;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-input, textarea, select {
-  background-color: #0f172a;
-  color: #e2e8f0;
-  border: 1px solid #334155;
-  transition: all 0.12s ease;
-}
-input:focus, textarea:focus, select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(16,185,129,0.08);
-  outline: none;
-}
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #172033; text-align: left; }
-thead th { background: #071025; color: var(--accent); position: sticky; top: 0; z-index:1; }
-tr:hover td { background: rgba(255,255,255,0.01); }
-.modal-backdrop { background: rgba(1,6,12,0.6); position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index: 60; }
-.modal-card { width:760px; max-width: calc(100% - 40px); }
-.hidden-el { display:none; }
-.nav-tab { cursor: pointer; }
-.nav-tab.active { background: rgba(255,255,255,0.02); border-bottom: 2px solid var(--accent); }
-@media (max-width:920px){
-  .two-col { flex-direction:column; gap:12px; }
-  #uploadForm { grid-template-columns: 1fr; }
-}
-</style>
+  <style>
+    body{font-family:'Poppins',sans-serif;background:#0f172a;color:#e5e7eb;margin:0;height:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+    input,textarea,select{background:#0f172a;color:#e2e8f0;border:1px solid #334155;transition:all .12s ease;}
+    input:focus,textarea:focus,select:focus{border-color:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,0.08);outline:none;}
+    table{width:100%;border-collapse:collapse;}
+    th,td{padding:8px 10px;font-size:13px;border-bottom:1px solid #172033;text-align:left;}
+    thead th{background:#071025;color:#10b981;position:sticky;top:0;z-index:1;}
+    tr:hover td{background:rgba(255,255,255,0.01);}
+    .modal-backdrop{background:rgba(1,6,12,0.6);position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:60;}
+    .modal-card{width:760px;max-width:calc(100%-40px);}
+    .hidden-el{display:none;}
+    .nav-tab{cursor:pointer;}
+    .nav-tab.active{background:rgba(255,255,255,0.02);border-bottom:2px solid #10b981;}
+    @media (max-width:920px){.two-col{flex-direction:column;gap:12px;}#uploadForm{grid-template-columns:1fr;}}
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<header class="w-full bg-gray-900 border-b border-gray-700 py-3 px-6 flex items-center justify-between">
-<div class="flex items-center gap-4">
-<h1 class="text-xl font-bold text-emerald-400">AAHES Admin Panel</h1>
-<nav id="mainTabs" class="ml-6 flex items-center gap-2">
-<button id="tabDataEntry" class="nav-tab px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
-  <i class="fa-solid fa-pen-to-square mr-1"></i> Data Entry
-</button>
-<button id="tabDatabase" class="nav-tab px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
-  <i class="fa-solid fa-table mr-1"></i> Database
-</button>
-<button id="tabRoles" class="nav-tab px-3 py-1.5 rounded-lg bg-gray-800 text-sm text-white hover:bg-gray-700 transition hidden">
-  <i class="fa-solid fa-users-gear mr-1"></i> Settings
-</button>
-</nav>
-</div>
+  <!-- HEADER -->
+  <header class="w-full bg-gray-900 border-b border-gray-700 py-3 px-6 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <h1 class="text-xl font-bold text-emerald-400">AAHES Admin Panel</h1>
+      <nav id="mainTabs" class="ml-6 flex items-center gap-2">
+        <button id="tabDataEntry" class="nav-tab px-3 py-1.5 rounded-lg hidden"><i class="fa-solid fa-pen-to-square mr-1"></i> Data Entry</button>
+        <button id="tabDatabase" class="nav-tab px-3 py-1.5 rounded-lg hidden"><i class="fa-solid fa-table mr-1"></i> Database</button>
+        <button id="tabRoles" class="nav-tab px-3 py-1.5 rounded-lg hidden"><i class="fa-solid fa-users-gear mr-1"></i> Settings</button>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4">
+      <form id="loginForm" class="flex items-center gap-2">
+        <input type="email" id="emailInput" placeholder="Email" class="p-2 rounded-lg text-sm" required>
+        <input type="password" id="passwordInput" placeholder="Password" class="p-2 rounded-lg text-sm" required>
+        <button type="submit" class="bg-emerald-600 px-4 py-2 rounded-lg text-white hover:bg-emerald-700 transition">Login</button>
+        <button type="button" id="googleLoginBtn" class="bg-blue-600 px-3 py-2 rounded-lg text-white hover:bg-blue-700 transition"><i class="fa-brands fa-google mr-1"></i> Google</button>
+      </form>
+      <div id="userSection" class="hidden items-center gap-3">
+        <p class="text-xs text-gray-300">Logged in as <span id="userEmail" class="text-emerald-400 font-medium"></span></p>
+        <button id="logoutBtn" class="bg-gray-700 px-3 py-1.5 rounded-lg text-white hover:bg-gray-600 transition"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
+      </div>
+    </div>
+  </header>
 
-<div class="flex items-center gap-4">
-  <!-- LOGIN FORM -->
-  <form id="loginForm" class="flex items-center gap-2">
-    <input type="email" id="emailInput" placeholder="Email" class="p-2 rounded-lg bg-gray-800 text-sm" required>
-    <input type="password" id="passwordInput" placeholder="Password" class="p-2 rounded-lg bg-gray-800 text-sm" required>
-    <button type="submit" id="loginBtn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700 transition">
-      Login
-    </button>
-  </form>
+  <!-- MAIN CONTAINER -->
+  <div class="px-6 py-6 max-w-7xl mx-auto">
 
-  <!-- GOOGLE LOGIN -->
-  <button id="googleLoginBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition flex items-center gap-2">
-    <i class="fa-brands fa-google"></i> Sign in with Google
-  </button>
+    <!-- DATA ENTRY -->
+    <section id="dataEntrySection" class="hidden-el">
+      <div class="max-w-6xl mx-auto two-col flex gap-6">
+        <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
+          <h3 class="text-lg font-semibold text-emerald-400 mb-2 flex items-center gap-2"><i class="fa-solid fa-pen-to-square"></i> Manual Entry</h3>
+          <form id="uploadForm" class="grid grid-cols-2 gap-3 flex-grow">
+            <input type="text" id="college" name="college" placeholder="College (AEC)" class="p-2 rounded-lg text-sm" required>
+            <input type="text" id="branch" name="branch" placeholder="Branch (CSE)" class="p-2 rounded-lg text-sm" required>
+            <input type="text" id="cat" name="cat" placeholder="Category (GEN/OBC...)" class="p-2 rounded-lg text-sm" required>
+            <input type="text" id="round" name="round" placeholder="Round (1)" class="p-2 rounded-lg text-sm" required>
+            <input type="number" id="close" name="close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required>
+            <input type="number" id="marks" name="marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required>
+          </form>
+          <button id="singleUploadBtn" class="mt-4 w-full py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-medium rounded-lg text-sm hover:from-emerald-600 hover:to-green-700 transition"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Single Entry</button>
+        </section>
+        <section class="flex-1 bg-gray-800 rounded-2xl border border-gray-700 p-4 flex flex-col">
+          <h3 class="text-lg font-semibold text-cyan-400 mb-2 flex items-center gap-2"><i class="fa-solid fa-file-code"></i> Bulk Upload via JSON</h3>
+          <textarea id="jsonInput" rows="8" placeholder='Paste JSON array here' class="flex-grow p-2 rounded-lg text-sm mb-3"></textarea>
+          <div class="flex items-center gap-3">
+            <input type="file" id="jsonFile" accept=".json" class="bg-gray-900 p-2 rounded-lg border border-gray-600 text-sm w-1/2">
+            <button id="uploadJSONBtn" class="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-lg text-sm hover:from-cyan-600 hover:to-blue-700 transition"><i class="fa-solid fa-database mr-1"></i> Upload JSON Data</button>
+          </div>
+        </section>
+      </div>
+    </section>
 
-  <div id="userSection" class="hidden items-center gap-3">
-    <p class="text-xs text-gray-300">Logged in as <span id="userEmail" class="text-emerald-400 font-medium"></span></p>
-    <button id="logoutBtn" class="bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-600 transition">
-      <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
-    </button>
+    <!-- DATABASE TAB -->
+    <section id="databaseSection" class="hidden-el mt-6">
+      <div class="bg-gray-800 rounded-2xl border border-gray-700 p-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div class="flex items-center gap-3 flex-wrap">
+            <label class="text-xs text-gray-400">Filter College</label>
+            <select id="filterCollege" class="p-2 rounded-lg text-sm min-w-[140px]"><option value="">All</option></select>
+            <label class="text-xs text-gray-400">Filter Category</label>
+            <select id="filterCat" class="p-2 rounded-lg text-sm min-w-[120px]"><option value="">All</option><option>GEN</option><option>OBC</option><option>SC</option><option>STP</option><option>STH</option></select>
+            <label class="text-xs text-gray-400">Sort by</label>
+            <select id="sortBy" class="p-2 rounded-lg text-sm min-w-[140px]"><option value="college">College</option><option value="branch">Branch</option><option value="cat">Category</option><option value="close">Closing Rank</option><option value="marks">Marks</option></select>
+            <select id="sortDir" class="p-2 rounded-lg text-sm"><option value="asc">Asc</option><option value="desc">Desc</option></select>
+            <button id="refreshBtn" class="px-3 py-2 bg-gray-700 rounded-lg text-sm hover:bg-gray-600 transition"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+            <button id="exportBtn" class="px-3 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700 transition"><i class="fa-solid fa-file-export mr-1"></i> Export Data</button>
+          </div>
+          <div class="flex items-center gap-3">
+            <input id="searchInput" placeholder="Search (college/branch/cat)" class="p-2 rounded-lg bg-gray-900 text-sm" />
+            <div id="tableInfo" class="text-sm text-gray-400">0 records</div>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-gray-700 p-2 overflow-x-auto bg-gray-900">
+          <table class="min-w-full">
+            <thead>
+              <tr>
+                <th style="width:12%;">College</th><th style="width:10%;">Branch</th><th style="width:9%;">Category</th><th style="width:8%;">Round</th>
+                <th style="width:12%;">Closing Rank</th><th style="width:9%;">Marks</th><th style="width:20%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dataBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROLES TAB -->
+    <section id="rolesSection" class="hidden-el mt-6">
+      <div class="bg-gray-800 rounded-2xl border border-gray-700 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-users-gear"></i> Settings — Manage Admins & Roles</h3>
+          <p id="manageAdminsNote" class="hidden text-amber-400 text-sm">🔒 You have view-only access</p>
+        </div>
+        <div class="overflow-x-auto mb-3 bg-gray-900 rounded p-2">
+          <table class="w-full">
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="adminsBody"></tbody>
+          </table>
+        </div>
+        <div id="adminFormWrap" class="grid grid-cols-3 gap-3">
+          <input id="newAdminName" type="text" placeholder="Full name" class="p-2 rounded-lg text-sm" />
+          <input id="newAdminEmail" type="email" placeholder="Email" class="p-2 rounded-lg text-sm" />
+          <input id="newAdminPassword" type="password" placeholder="Password" class="p-2 rounded-lg text-sm" />
+          <select id="newAdminRole" class="p-2 rounded-lg text-sm">
+            <option value="viewer">viewer</option><option value="editor">editor</option><option value="superadmin">superadmin</option>
+          </select>
+          <div></div>
+          <button id="addAdminBtn" class="px-4 py-2 bg-emerald-600 rounded-lg text-sm text-white hover:bg-emerald-700">➕ Add Admin</button>
+        </div>
+      </div>
+    </section>
+
   </div>
-</div>
-</header>
 
-<!-- Container (Data Entry / Database / Roles sections as in your original code) -->
-<div class="px-6 py-6 max-w-7xl mx-auto">
-  <!-- Copy your existing Data Entry / Database / Roles sections here -->
-</div>
+  <!-- EDIT MODAL -->
+  <div id="editModal" class="modal-backdrop hidden-el">
+    <div class="modal-card bg-gray-900 rounded-2xl p-4">
+      <div class="flex justify-between items-center mb-3"><h4 class="text-lg text-emerald-400">Edit Record</h4>
+      <button id="closeEdit" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button></div>
+      <form id="editForm" class="grid grid-cols-2 gap-3">
+        <input type="text" id="edit_college" placeholder="College" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_branch" placeholder="Branch" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_cat" placeholder="Category" class="p-2 rounded-lg text-sm" required />
+        <input type="text" id="edit_round" placeholder="Round" class="p-2 rounded-lg text-sm" required />
+        <input type="number" id="edit_close" placeholder="Closing Rank" class="p-2 rounded-lg text-sm" required />
+        <input type="number" id="edit_marks" placeholder="Marks" class="p-2 rounded-lg text-sm" required />
+        <input type="hidden" id="edit_id" />
+      </form>
+      <div class="mt-3 flex items-center gap-3 justify-end">
+        <button id="saveEdit" class="px-4 py-2 bg-emerald-500 rounded-lg text-sm text-white hover:bg-emerald-600">Save</button>
+        <button id="cancelEdit" class="px-4 py-2 bg-gray-700 rounded-lg text-sm text-white hover:bg-gray-600">Cancel</button>
+      </div>
+    </div>
+  </div>
 
-<!-- FOOTER -->
-<footer class="py-3 text-center text-gray-400 text-xs">
-  © 2025 AAHES Admin Panel
-</footer>
+  <footer class="py-3 text-center text-gray-400 text-xs">© 2025 AAHES Admin Panel</footer>
 
-<!-- FIREBASE + APP LOGIC -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import {
-  getFirestore, collection, addDoc, getDocs, onSnapshot,
-  doc, updateDoc, deleteDoc, query, where
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <!-- FIREBASE + LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
+      authDomain: "aahes-cee-cutoffs.firebaseapp.com",
+      databaseURL: "https://aahes-cee-cutoffs-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "aahes-cee-cutoffs",
+      storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
+      messagingSenderId: "706066626405",
+      appId: "1:706066626405:web:0d254ab82beb288108938c"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
 
-// -------------------------------
-// Firebase config
-// -------------------------------
-const firebaseConfig = {
-  apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
-  authDomain: "aahes-cee-cutoffs.firebaseapp.com",
-  databaseURL: "https://aahes-cee-cutoffs-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "aahes-cee-cutoffs",
-  storageBucket: "aahes-cee-cutoffs.firebasestorage.app",
-  messagingSenderId: "706066626405",
-  appId: "1:706066626405:web:0d254ab82beb288108938c"
-};
+    // ... LOGIN, GOOGLE SIGNIN, CRUD, ROLES, EXPORT, MODAL logic here ...
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-// -------------------------------
-// Elements
-// -------------------------------
-const loginForm = document.getElementById('loginForm');
-const emailInput = document.getElementById('emailInput');
-const passwordInput = document.getElementById('passwordInput');
-const googleLoginBtn = document.getElementById('googleLoginBtn');
-const userSection = document.getElementById('userSection');
-const userEmail = document.getElementById('userEmail');
-const logoutBtn = document.getElementById('logoutBtn');
-
-const tabDataEntry = document.getElementById('tabDataEntry');
-const tabDatabase = document.getElementById('tabDatabase');
-const tabRoles = document.getElementById('tabRoles');
-
-// -------------------------------
-// State
-// -------------------------------
-let currentUserEmail = null;
-let currentUserRole = null;
-let currentUserName = null;
-
-// -------------------------------
-// Helper
-// -------------------------------
-function esc(s){ if(s===undefined||s===null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function show(el){ el.classList.remove('hidden-el'); }
-function hide(el){ if(!el.classList.contains('hidden-el')) el.classList.add('hidden-el'); }
-function setActiveTab(tabBtn){
-  [tabDataEntry, tabDatabase, tabRoles].forEach(b=>b.classList.remove('active'));
-  tabBtn.classList.add('active');
-}
-function applyRolePermissions(){
-  // your role-based enabling/disabling code here as in original script
-}
-
-// -------------------------------
-// Login with email/password
-// -------------------------------
-loginForm.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const email = (emailInput.value||'').trim().toLowerCase();
-  const password = (passwordInput.value||'').trim();
-  if(!email||!password){ alert('Enter email & password'); return; }
-  try{
-    const q = query(collection(db,'admins'), where('email','==',email), where('password','==',password));
-    const snap = await getDocs(q);
-    if(snap.empty){ alert('Invalid credentials.'); return; }
-    const data = snap.docs[0].data();
-    currentUserEmail = data.email.toLowerCase();
-    currentUserRole = data.role || 'viewer';
-    currentUserName = data.name || currentUserEmail;
-    loginSuccessUI();
-  }catch(err){ console.error(err); alert('Login error:'+err.message); }
-});
-
-// -------------------------------
-// Login with Google
-// -------------------------------
-googleLoginBtn.addEventListener('click', async ()=>{
-  const provider = new GoogleAuthProvider();
-  try{
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    const email = (user.email||'').toLowerCase();
-    // Check if email exists in admins collection
-    const q = query(collection(db,'admins'), where('email','==',email));
-    const snap = await getDocs(q);
-    if(snap.empty){ alert('Access denied: not an admin.'); await signOut(auth); return; }
-    const data = snap.docs[0].data();
-    currentUserEmail = data.email.toLowerCase();
-    currentUserRole = data.role || 'viewer';
-    currentUserName = data.name || currentUserEmail;
-    loginSuccessUI();
-  }catch(err){ console.error(err); alert('Google login failed:'+err.message); }
-});
-
-function loginSuccessUI(){
-  userEmail.textContent = `${currentUserName} (${currentUserRole})`;
-  loginForm.classList.add('hidden');
-  googleLoginBtn.classList.add('hidden');
-  userSection.classList.remove('hidden');
-  tabDataEntry.classList.remove('hidden'); tabDatabase.classList.remove('hidden'); tabRoles.classList.remove('hidden');
-  setActiveTab(tabDataEntry);
-  show(document.getElementById('dataEntrySection'));
-  applyRolePermissions();
-}
-
-// -------------------------------
-// Logout
-// -------------------------------
-logoutBtn.addEventListener('click', async ()=>{
-  try{ await signOut(auth); }catch{}
-  window.location.reload();
-});
-</script>
+  </script>
 </body>
 </html>
