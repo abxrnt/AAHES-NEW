@@ -165,12 +165,11 @@
       }
     }
 
-    .card-img {
-min-width: 160px;
-max-width: 180px;
-height: 120px;
+.card-img {
+width: 100px;
+height: 80px;
 object-fit: cover;
-border-radius: .5rem;
+border-radius: 0.5rem;
 }
   </style>
 </head>
@@ -384,71 +383,67 @@ border-radius: .5rem;
           </div>
         </div>
       </div>
-      <section class="max-w-7xl mx-auto px-4 py-12">
-<header class="mb-6">
+      <section class="max-w-5xl mx-auto px-4 py-12">
+<header class="mb-6 text-center">
 <h2 class="text-2xl font-semibold">Explore Departments</h2>
-<p class="text-sm text-gray-600">Six quick links — each card has an image, short description and a button that redirects.</p>
+<p class="text-sm text-gray-600">Six compact cards with image, description, and link button.</p>
 </header>
 
 
-<!-- Horizontal scroll container for smaller screens, grid for large -->
-<div class="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
-
-
-<!-- Card (repeat 6 times) -->
-<article class="snap-start flex-shrink-0 w-[720px] sm:w-[640px] lg:w-full lg:max-w-2xl bg-white rounded-2xl shadow-md p-4 flex items-center gap-4">
-<img class="card-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6c0b4d06f0fa9d67b8d7f36d7f3a2d5d" alt="Computer Science" />
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<article class="bg-white rounded-xl shadow-md p-4 flex items-center gap-3">
+<img class="card-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80" alt="Computer Science" />
 <div class="flex-1">
-<h3 class="text-lg font-medium">Computer Science and Engineering</h3>
-<p class="text-sm text-gray-600 mt-1">Programs, labs, and research in algorithms, systems and AI.</p>
-</div>
-<div class="flex-shrink-0">
-<a href="https://example.com/cse" target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">Visit</a>
+<h3 class="text-base font-medium">Computer Science and Engineering</h3>
+<a href="https://example.com/cse" target="_blank" class="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Visit</a>
 </div>
 </article>
 
 
-<article class="snap-start flex-shrink-0 w-[720px] sm:w-[640px] lg:w-full lg:max-w-2xl bg-white rounded-2xl shadow-md p-4 flex items-center gap-4">
-<img class="card-img" src="https://images.unsplash.com/photo-1505685296765-3a2736de412f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=7d6b1f7a8ee3f4f5c9a1e8a1c4f9ea6b" alt="Electrical Engineering" />
+<article class="bg-white rounded-xl shadow-md p-4 flex items-center gap-3">
+<img class="card-img" src="https://images.unsplash.com/photo-1505685296765-3a2736de412f?q=80" alt="Electrical Engineering" />
 <div class="flex-1">
-<h3 class="text-lg font-medium">Electrical Engineering</h3>
-<p class="text-sm text-gray-600 mt-1">Power systems, circuits, control and renewable energy projects.</p>
-</div>
-<div class="flex-shrink-0">
-<a href="https://example.com/ee" target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">Visit</a>
+<h3 class="text-base font-medium">Electrical Engineering</h3>
+<a href="https://example.com/ee" target="_blank" class="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Visit</a>
 </div>
 </article>
 
 
-<article class="snap-start flex-shrink-0 w-[720px] sm:w-[640px] lg:w-full lg:max-w-2xl bg-white rounded-2xl shadow-md p-4 flex items-center gap-4">
-<img class="card-img" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=9d5f9a5a4f8b6c5b0d3f6d2f1e9b0c2d" alt="Mechanical Engineering" />
+<article class="bg-white rounded-xl shadow-md p-4 flex items-center gap-3">
+<img class="card-img" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80" alt="Mechanical Engineering" />
 <div class="flex-1">
-<h3 class="text-lg font-medium">Mechanical Engineering</h3>
-<p class="text-sm text-gray-600 mt-1">Design, manufacturing, thermodynamics and fluid mechanics labs.</p>
-</div>
-<div class="flex-shrink-0">
-<a href="https://example.com/me" target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">Visit</a>
+<h3 class="text-base font-medium">Mechanical Engineering</h3>
+<a href="https://example.com/me" target="_blank" class="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Visit</a>
 </div>
 </article>
 
 
-<article class="snap-start flex-shrink-0 w-[720px] sm:w-[640px] lg:w-full lg:max-w-2xl bg-white rounded-2xl shadow-md p-4 flex items-center gap-4">
-<img class="card-img" src="https://images.unsplash.com/photo-1483794344563-d27a8d38a0c9?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3b7a7c0b9c1b2e4f5a6d7c8e9b0a1c2d" alt="Civil Engineering" />
+<article class="bg-white rounded-xl shadow-md p-4 flex items-center gap-3">
+<img class="card-img" src="https://images.unsplash.com/photo-1483794344563-d27a8d38a0c9?q=80" alt="Civil Engineering" />
 <div class="flex-1">
-<h3 class="text-lg font-medium">Civil Engineering</h3>
-<p class="text-sm text-gray-600 mt-1">Infrastructure, structural design and geotechnical research.</p>
-</div>
-<div class="flex-shrink-0">
-<a href="https://example.com/ce" target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">Visit</a>
+<h3 class="text-base font-medium">Civil Engineering</h3>
+<a href="https://example.com/ce" target="_blank" class="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Visit</a>
 </div>
 </article>
 
 
-<article class="snap-start flex-shrink-0 w-[720px] sm:w-[640px] lg:w-full lg:max-w-2xl bg-white rounded-2xl shadow-md p-4 flex items-center gap-4">
-<img class="card-img" src="https://images.unsplash.com/photo-1581091012184-7a8e8d7b4c2f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d" alt="Chemical Engineering" />
+<article class="bg-white rounded-xl shadow-md p-4 flex items-center gap-3">
+<img class="card-img" src="https://images.unsplash.com/photo-1581091012184-7a8e8d7b4c2f?q=80" alt="Chemical Engineering" />
 <div class="flex-1">
-<h3 class="text-lg font-medium">Chemical Engineering</h3>
-<p class="text-sm text-gray-600 mt-1">Process engineering, materials and pilot plant activities.</p>
+<h3 class="text-base font-medium">Chemical Engineering</h3>
+<a href="https://example.com/che" target="_blank" class="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Visit</a>
+</div>
+</article>
+
+
+<article class="bg-white rounded-xl shadow-md p-4 flex items-center gap-3">
+<img class="card-img" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80" alt="Electronics and Telecom" />
+<div class="flex-1">
+<h3 class="text-base font-medium">Electronics and Telecommunication Engineering</h3>
+<a href="https://example.com/ete" target="_blank" class="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Visit</a>
+</div>
+</article>
+</div>
 </section>
     </section>
 
@@ -1665,6 +1660,7 @@ if (e.key === 'ArrowLeft') container.scrollBy({ left: -320, behavior: 'smooth' }
 </body>
 
 </html>
+
 
 
 
