@@ -1228,78 +1228,6 @@ border-radius: 0.5rem;
       document.head.appendChild(style);
     })();
 
-    /* ---------- Typing & counter (Home) ---------- */
-    // typing
-    const typedTexts = [
-      "Your gateway to top engineering colleges.",
-      "Resources, guidance, and support at your fingertips.",
-      "Preparing Assam's future engineers for success.",
-    ];
-    (function typingEffect() {
-      let idx = 0,
-        ch = 0,
-        forward = true,
-        cur = "";
-      const out = document.getElementById("typed-text");
-      // create container in home if missing
-      if (!out) {
-        const el = document.createElement("div");
-        el.id = "typed-text";
-        el.className = "mt-4 text-lg text-slate-700";
-        document.querySelector("#home .text-center").appendChild(el);
-      }
-      const target = document.getElementById("typed-text");
-      let delay = 100;
-      function tick() {
-        const t = typedTexts[idx];
-        if (forward) {
-          if (ch < t.length) {
-            cur += t.charAt(ch++);
-            target.innerText = cur;
-            setTimeout(tick, delay);
-          } else {
-            forward = false;
-            setTimeout(tick, 1500);
-          }
-        } else {
-          if (cur.length > 0) {
-            cur = cur.slice(0, -1);
-            target.innerText = cur;
-            setTimeout(tick, 40);
-          } else {
-            forward = true;
-            idx = (idx + 1) % typedTexts.length;
-            ch = 0;
-            setTimeout(tick, 300);
-          }
-        }
-      }
-      tick();
-    })();
-
-    // count-up
-    (function counter() {
-      const el = document.querySelector("#count");
-      if (!el) {
-        const d = document.createElement("div");
-        d.innerHTML = `<div class="mt-6 inline-flex items-center gap-2 bg-white/80 border border-emerald-100 px-4 py-2 rounded-full shadow"> <span class="blink-dot"></span> <span id="count">0</span>+ students are connected</div>`;
-        document.querySelector("#home .text-center").appendChild(d);
-      }
-      const c = document.getElementById("count");
-      let start = 0,
-        target = 3208,
-        dur = 1500,
-        inc = target / (dur / 16);
-      function run() {
-        start += inc;
-        if (start < target) {
-          c.innerText = Math.floor(start).toLocaleString();
-          requestAnimationFrame(run);
-        } else c.innerText = target.toLocaleString();
-      }
-      run();
-    })();
-
     /* ---------- Contact form (dummy) ---------- */
     document
       .getElementById("contactForm")
@@ -1309,14 +1237,7 @@ border-radius: 0.5rem;
           "Thank you — message received (dummy).";
         document.getElementById("contactForm").reset();
       });
-
-    /* ---------- Downloads pagination in home (if needed) ---------- */
-    // (left as placeholder if you want to plug pages from earlier file)
-
-    /* ---------- FIREBASE CUTOFFS: use *same config* as provided ---------- */
   </script>
-
-  <!-- Firebase: load & use same config (module) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import {
@@ -1324,8 +1245,6 @@ border-radius: 0.5rem;
       collection,
       getDocs,
     } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-    // === same firebase config as provided by user ===
     const firebaseConfig = {
       apiKey: "AIzaSyBOVl1hdmprJXpgdN_sNTO3FsNePD_zNZY",
       authDomain: "aahes-cee-cutoffs.firebaseapp.com",
@@ -1660,6 +1579,7 @@ if (e.key === 'ArrowLeft') container.scrollBy({ left: -320, behavior: 'smooth' }
 </body>
 
 </html>
+
 
 
 
